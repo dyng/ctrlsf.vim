@@ -137,9 +137,9 @@ func! s:HighlightContent()
     syntax match ctrlsfLnumMatch /^\d\+:/
     syntax match ctrlsfLnumUnmatch /^\d\+-/
 
-    highlight ctrlsfFilename term=bold ctermfg=10 gui=bold guifg=#E6DB74
-    highlight ctrlsfLnumMatch term=underline ctermfg=13 gui=bold guifg=#AE81FF
-    highlight ctrlsfLnumUnmatch term=underline ctermfg=13 gui=bold guifg=#684D99
+    hi link ctrlsfFilename Title
+    hi link ctrlsfLnumMatch Visual
+    hi link ctrlsfLnumUnmatch Comment
 endf
 
 func! s:CallAck(args)
