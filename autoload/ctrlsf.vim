@@ -1,4 +1,4 @@
-" default config {{{
+" Default Config {{{
 if !exists('g:ctrlsf_left')
     let g:ctrlsf_left = 1
 endif
@@ -12,9 +12,10 @@ if !exists('g:ctrlsf_auto_close')
 endif
 " }}}
 
-" Global Variables
-let s:parsed_result = []
+" Global Variables {{{
+let s:match_table = []
 let s:jump_table = []
+" }}}
 
 func! CtrlSF#Search(args)
     call s:OpenWindow()
@@ -136,7 +137,7 @@ func! s:FocusTargetWindow(file)
 endf
 
 func! s:ParseSearchOutput(raw_output)
-    let s:parsed_result = []
+    let s:match_table = []
 
     for line in split(a:raw_output, '\n')
         " ignore blank line
@@ -148,12 +149,12 @@ func! s:ParseSearchOutput(raw_output)
 
         " if line doesn't match, consider it as filename
         if empty(matched)
-            call add(s:parsed_result, {
+            call add(s:match_table, {
                 \ 'filename' : line,
                 \ 'lines'    : [],
                 \ })
         else
-            call add(s:parsed_result[-1]['lines'], {
+            call add(s:match_table[-1]['lines'], {
                 \ 'lnum'    : matched[1],
                 \ 'matched' : matched[2],
                 \ 'col'     : matched[3],
@@ -167,7 +168,7 @@ func! s:RenderContent()
     let s:jump_table = []
 
     let output = ''
-    for file in s:parsed_result
+    for file in s:match_table
         " Filename
         let output .= s:FormatAndSetJmp('filename', file.filename)
 
@@ -185,7 +186,7 @@ func! s:RenderContent()
         endfo
 
         " Insert empty line between files
-        if file isnot s:parsed_result[-1]
+        if file isnot s:match_table[-1]
             let output .= s:FormatAndSetJmp('blank')
         endif
     endfo
