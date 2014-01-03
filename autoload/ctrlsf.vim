@@ -84,19 +84,36 @@ endf
 func! s:JumpTo()
     let [file, lnum, col] = s:jump_table[line('.') - 1]
 
+    if empty(file) || empty(lnum)
+        return
+    endif
+
     if g:ctrlsf_auto_close
         call s:CloseWindow()
-    else
-        wincmd p
     endif
 
-    if &modified
-        exec 'silent split ' . file
-    else
-        exec 'edit ' . file
-    endif
+    call s:FocusTargetWindow(file)
 
     call cursor(lnum, col)
+endf
+
+func! s:FocusTargetWindow(file)
+    let target_winnr = bufwinnr(a:file)
+
+    if target_winnr == -1
+        let target_winnr = winnr('#')
+        let need_open_file = 1
+    endif
+
+    exec target_winnr . 'wincmd w'
+
+    if exists('need_open_file')
+        if &modified
+            exec 'silent split ' . a:file
+        else
+            exec 'edit ' . a:file
+        endif
+    endif
 endf
 
 func! s:ParseSearchOutput(raw_output)
@@ -104,7 +121,7 @@ func! s:ParseSearchOutput(raw_output)
 
     for line in split(a:raw_output, '\n')
         " ignore blank line
-        if line =~ "^$"
+        if line =~ '^$'
             continue
         endif
 
