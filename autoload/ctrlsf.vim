@@ -39,6 +39,14 @@ func! CtrlSF#Search(args)
     endif
 endf
 
+func! CtrlSF#OpenWindow()
+    call s:OpenWindow()
+endf
+
+func! CtrlSF#CloseWindow()
+    call s:CloseWindow()
+endf
+
 func! s:BuildCommand(args)
     let prg_args = {
         \ 'ack' : ' --heading --group --nocolor --nobreak --column -C 3 ',
@@ -74,14 +82,18 @@ func! s:InitWindow()
 
     " default map
     map <silent><buffer> <CR> :call <SID>JumpTo()<CR>
-    map <silent><buffer> q    :quit<CR>
+    map <silent><buffer> q    :call <SID>CloseWindow()<CR>
+endf
+
+func! s:CloseWindow()
+    close
 endf
 
 func! s:JumpTo()
     let [file, lnum, col] = s:jump_table[line('.') - 1]
 
     if g:ctrlsf_auto_close
-        quit
+        call s:CloseWindow()
     else
         wincmd p
     endif
