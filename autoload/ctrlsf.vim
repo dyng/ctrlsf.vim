@@ -133,7 +133,7 @@ endf
 
 func! s:HighlightContent()
     syntax case match
-    syntax match ctrlsfFilename /^.*:$/
+    syntax match ctrlsfFilename /^.*\ze:$/
     syntax match ctrlsfLnumMatch /^\d\+:/
     syntax match ctrlsfLnumUnmatch /^\d\+-/
 
