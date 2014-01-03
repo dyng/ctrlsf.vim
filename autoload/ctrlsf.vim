@@ -33,7 +33,7 @@ let s:ACK_ARGLIST = {
     \ }
 " }}}
 
-func! CtrlSF#Search(args)
+func! CtrlSF#Search(args) abort
     call s:OpenWindow()
 
     let ackprg_output = system(s:BuildCommand(a:args))
@@ -54,11 +54,11 @@ func! CtrlSF#Search(args)
     call cursor(1, 1)
 endf
 
-func! CtrlSF#OpenWindow()
+func! CtrlSF#OpenWindow() abort
     call s:OpenWindow()
 endf
 
-func! CtrlSF#CloseWindow()
+func! CtrlSF#CloseWindow() abort
     call s:CloseWindow()
 endf
 
@@ -103,11 +103,12 @@ endf
 
 func! s:BuildCommand(args)
     let prg      = g:ctrlsf_ackprg
+    let uargs    = escape(a:args, '%#!')
     let prg_args = {
         \ 'ack' : '--heading --group --nocolor --nobreak --column',
         \ 'ag'  : '--heading --group --nocolor --nobreak --column',
         \ }
-    return printf('%s %s %s %s 2>/dev/null', prg, prg_args[prg], g:ctrlsf_context, a:args)
+    return printf('%s %s %s %s 2>/dev/null', prg, prg_args[prg], g:ctrlsf_context, uargs)
 endf
 
 func! s:OpenWindow()
