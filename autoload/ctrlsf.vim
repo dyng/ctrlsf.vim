@@ -48,10 +48,24 @@ func! s:BuildCommand(args)
 endf
 
 func! s:OpenWindow()
+    if s:FocusCtrlsfWindow() != -1
+        return
+    endif
+
     let openpos = g:ctrlsf_left ? 'topleft vertical ' : 'botright vertical '
     exec 'silent keepalt ' . openpos . 'split ' . '__CtrlSF__'
 
     call s:InitWindow()
+endf
+
+func! s:FocusCtrlsfWindow()
+    let ctrlsf_winnr = bufwinnr('__CtrlSF__')
+    if ctrlsf_winnr == -1
+        return -1
+    else
+        exec ctrlsf_winnr . 'wincm w'
+        return ctrlsf_winnr
+    endif
 endf
 
 func! s:InitWindow()
@@ -78,6 +92,11 @@ func! s:InitWindow()
 endf
 
 func! s:CloseWindow()
+    if s:FocusCtrlsfWindow() == -1
+        return
+    endif
+
+    " Surely we are in CtrlSF window
     close
 endf
 
