@@ -7,10 +7,6 @@ if !exists('g:ctrlsf_ackprg')
     let g:ctrlsf_ackprg = 'ack'
 endif
 
-if !exists('g:ctrlsf_highlight')
-    let g:ctrlsf_highlight = 1
-endif
-
 if !exists('g:ctrlsf_auto_close')
     let g:ctrlsf_auto_close = 1
 endif
@@ -33,10 +29,6 @@ func! CtrlSF#Search(args)
     setl nomodifiable
 
     call cursor(1, 1)
-
-    if g:ctrlsf_highlight
-        call s:HighlightContent()
-    endif
 endf
 
 func! CtrlSF#OpenWindow()
@@ -200,17 +192,6 @@ endf
 
 func! s:SetJmp(file, line, col)
     call add(s:jump_table, [a:file, a:line, a:col])
-endf
-
-func! s:HighlightContent()
-    syntax case match
-    syntax match ctrlsfFilename /^.*\ze:$/
-    syntax match ctrlsfLnumMatch /^\d\+:/
-    syntax match ctrlsfLnumUnmatch /^\d\+-/
-
-    hi link ctrlsfFilename Title
-    hi link ctrlsfLnumMatch Visual
-    hi link ctrlsfLnumUnmatch Comment
 endf
 
 " vim: set foldmarker={{{,}}} foldlevel=0 foldmethod=marker spell:
