@@ -17,6 +17,18 @@ let s:match_table = []
 let s:jump_table = []
 " }}}
 
+" Constants {{{
+let s:ACK_ARGLIST = {
+    \ '-A'      : { 'argc' : 1 },
+    \ '-B'      : { 'argc' : 1 },
+    \ '-C'      : { 'argc' : 1 },
+    \ '-g'      : { 'argc' : 1 },
+    \ '-G'      : { 'argc' : 1 },
+    \ '-p'      : { 'argc' : 1 },
+    \ '--pager' : { 'argc' : 1 },
+    \ }
+" }}}
+
 func! CtrlSF#Search(args)
     call s:OpenWindow()
 
@@ -29,6 +41,12 @@ func! CtrlSF#Search(args)
     silent 0put =s:RenderContent()
     setl nomodifiable
 
+    if exists('b:current_syntax') && b:current_syntax == 'ctrlsf'
+        call clearmatches()
+        let pattern = s:ExtractPattern(a:args)
+        call matchadd('ctrlsfMatch', pattern)
+    endif
+
     call cursor(1, 1)
 endf
 
@@ -38,6 +56,45 @@ endf
 
 func! CtrlSF#CloseWindow()
     call s:CloseWindow()
+endf
+
+" A primitive approach. *CAN NOT* guarantee extracting correct pattern in the
+" worst situation.
+func! s:ExtractPattern(args)
+    let args = a:args
+
+    " example: "a b" -> a\ b, "a\" b" -> a\"\ b
+    let args = substitute(args,'\v(\\)@<!"(.{-})(\\)@<!"','\=escape(submatch(2)," ")','g')
+
+    " example: 'a b' -> a\ b, 'a\' b' -> a\'\ b
+    let args = substitute(args,'\v(\\)@<!''(.{-})(\\)@<!''','\=escape(submatch(2)," ")','g')
+
+    let argv = split(args, '\v(\\)@<!\s+')
+    let argc = len(argv)
+
+    let candidate = []
+
+    let i = 0
+    while i < argc
+        let a = argv[i]
+        let i += 1
+
+        if has_key(s:ACK_ARGLIST, a)
+            let i += s:ACK_ARGLIST[a].argc
+            continue
+        endif
+
+        if a =~ '^-'
+            continue
+        endif
+
+        call add(candidate, a)
+    endwhile
+
+    let pattern = empty(candidate) ? '' : candidate[0]
+    let pattern = substitute(pattern, '\\ ', ' ', 'g')
+
+    return pattern
 endf
 
 func! s:BuildCommand(args)
@@ -146,7 +203,7 @@ func! s:ParseAckprgOutput(raw_output)
             continue
         endif
 
-        let matched = matchlist(line, '^\(\d*\)\([-:]\)\(\d*\)\([-:]\)\?\(.*\)$')
+        let matched = matchlist(line, '\v^(\d*)([-:])(\d*)([-:])?(.*)$')
 
         " if line doesn't match, consider it as filename
         if empty(matched)
