@@ -98,33 +98,62 @@ func! s:RenderContent()
 
     let output = ''
     for file in s:parsed_result
-        let output .= s:FormatLine('filename', file.filename)
-        call s:SetJmp('', '', '')
+        " Filename
+        let output .= s:FormatAndSetJmp('filename', file.filename)
+
+        " Result
         for line in file.lines
             if !empty(line.lnum)
-                let output .= s:FormatLine('normal', line)
-                call s:SetJmp(file.filename, line.lnum, line.col)
+                let output .= s:FormatAndSetJmp('normal', line, {
+                    \ 'file' : file.filename,
+                    \ 'lnum' : line.lnum,
+                    \ 'col'  : line.col,
+                    \ })
             else
-                let output .= s:FormatLine('empty', line)
-                call s:SetJmp('', '', '')
+                let output .= s:FormatAndSetJmp('ellipsis')
             endif
         endfo
+
+        " Insert empty line between files
+        if file isnot s:parsed_result[-1]
+            let output .= s:FormatAndSetJmp('blank')
+        endif
     endfo
 
     return output
 endf
 
-func! s:FormatLine(type, line)
-    if a:type == 'filename'
-        return a:line . ":\n"
-    elseif a:type == 'normal'
-        return a:line.lnum . a:line.matched . repeat(' ', 8) . a:line.content . "\n"
-    elseif a:type == 'empty'
-        return repeat('.', 4) . "\n"
+func! s:FormatAndSetJmp(type, ...)
+    let line    = exists('a:1') ? a:1 : ''
+    let jmpinfo = exists('a:2') ? a:2 : {}
+
+    let output = s:FormatLine(a:type, line)
+
+    if !empty(jmpinfo)
+        call s:SetJmp(jmpinfo.file, jmpinfo.lnum, jmpinfo.col)
     else
-        " TODO // Log this as an error
-        return ''
+        call s:SetJmp('', '', '')
     endif
+
+    return output
+endf
+
+func! s:FormatLine(type, line)
+    let output = ''
+    let line   = a:line
+
+    if a:type == 'filename'
+        let output .= line . ":\n"
+    elseif a:type == 'normal'
+        let output .= line.lnum . line.matched
+        let output .= repeat(' ', 12 - len(output)) . line.content . "\n"
+    elseif a:type == 'ellipsis'
+        let output .= repeat('.', 4) . "\n"
+    elseif a:type == 'blank'
+        let output .= "\n"
+    endif
+
+    return output
 endf
 
 func! s:SetJmp(file, line, col)
