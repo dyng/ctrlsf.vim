@@ -10,6 +10,10 @@ endif
 if !exists('g:ctrlsf_auto_close')
     let g:ctrlsf_auto_close = 1
 endif
+
+if !exists('g:ctrlsf_context')
+    let g:ctrlsf_context = '-C 3'
+endif
 " }}}
 
 " Global Variables {{{
@@ -98,11 +102,12 @@ func! s:ExtractPattern(args)
 endf
 
 func! s:BuildCommand(args)
+    let prg      = g:ctrlsf_ackprg
     let prg_args = {
-        \ 'ack' : ' --heading --group --nocolor --nobreak --column -C 3 ',
-        \ 'ag'  : ' --heading --group --nocolor --nobreak --column -C 3 ',
+        \ 'ack' : '--heading --group --nocolor --nobreak --column',
+        \ 'ag'  : '--heading --group --nocolor --nobreak --column',
         \ }
-    return g:ctrlsf_ackprg . prg_args[g:ctrlsf_ackprg] . a:args . ' 2>/dev/null'
+    return printf('%s %s %s %s 2>/dev/null', prg, prg_args[prg], g:ctrlsf_context, a:args)
 endf
 
 func! s:OpenWindow()
