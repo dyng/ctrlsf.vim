@@ -114,6 +114,7 @@ func! s:JumpTo()
 
     call s:FocusTargetWindow(file)
 
+    exec 'normal ' . lnum . 'z.'
     call cursor(lnum, col)
 endf
 
