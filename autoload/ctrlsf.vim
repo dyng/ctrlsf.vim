@@ -1,6 +1,6 @@
 " Default Config {{{
-if !exists('g:ctrlsf_left')
-    let g:ctrlsf_left = 1
+if !exists('g:ctrlsf_open_left')
+    let g:ctrlsf_open_left = 1
 endif
 
 if !exists('g:ctrlsf_ackprg')
@@ -22,7 +22,7 @@ func! CtrlSF#Search(args)
 
     let ackprg_output = system(s:BuildCommand(a:args))
 
-    call s:ParseSearchOutput(ackprg_output)
+    call s:ParseAckprgOutput(ackprg_output)
 
     setl modifiable
     silent %delete _
@@ -53,7 +53,7 @@ func! s:OpenWindow()
         return
     endif
 
-    let openpos = g:ctrlsf_left ? 'topleft vertical ' : 'botright vertical '
+    let openpos = g:ctrlsf_open_left ? 'topleft vertical ' : 'botright vertical '
     exec 'silent keepalt ' . openpos . 'split ' . '__CtrlSF__'
 
     call s:InitWindow()
@@ -137,7 +137,7 @@ func! s:FocusTargetWindow(file)
     endif
 endf
 
-func! s:ParseSearchOutput(raw_output)
+func! s:ParseAckprgOutput(raw_output)
     let s:match_table = []
 
     for line in split(a:raw_output, '\n')
