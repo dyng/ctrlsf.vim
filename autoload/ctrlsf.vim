@@ -1,3 +1,4 @@
+" default config {{{
 if !exists('g:ctrlsf_left')
     let g:ctrlsf_left = 1
 endif
@@ -13,10 +14,37 @@ endif
 if !exists('g:ctrlsf_auto_close')
     let g:ctrlsf_auto_close = 1
 endif
+" }}}
 
-func! CtrlSF#CtrlSF(args)
+" Global Variables
+let s:parsed_result = []
+let s:jump_table = []
+
+func! CtrlSF#Search(args)
     call s:OpenWindow()
-    call s:CallAck(a:args)
+
+    let ackprg_output = system(s:BuildCommand(a:args))
+
+    call s:ParseSearchOutput(ackprg_output)
+
+    setl modifiable
+    silent %delete _
+    silent 0put =s:RenderContent()
+    setl nomodifiable
+
+    call cursor(1, 1)
+
+    if g:ctrlsf_highlight
+        call s:HighlightContent()
+    endif
+endf
+
+func! s:BuildCommand(args)
+    let prg_args = {
+        \ 'ack' : ' --heading --group --nocolor --nobreak --column -C 3 ',
+        \ 'ag'  : ' --heading --group --nocolor --nobreak --column -C 3 ',
+        \ }
+    return g:ctrlsf_ackprg . prg_args[g:ctrlsf_ackprg] . a:args . ' 2>/dev/null'
 endf
 
 func! s:OpenWindow()
@@ -44,10 +72,7 @@ func! s:InitWindow()
     let &winwidth = exists('g:ctrlsf_width') ? g:ctrlsf_width : &columns/2
     wincmd =
 
-    call s:SetDefaultMap()
-endf
-
-func! s:SetDefaultMap()
+    " default map
     map <silent><buffer> <CR> :call <SID>JumpTo()<CR>
     map <silent><buffer> q    :quit<CR>
 endf
@@ -74,7 +99,12 @@ func! s:ParseSearchOutput(raw_output)
     let s:parsed_result = []
 
     for line in split(a:raw_output, '\n')
-        let matched = matchlist(line, '^\(\d*\)\([-:]\)\(\d*\)\([-:]\)\(.*\)$')
+        " ignore blank line
+        if line =~ "^$"
+            continue
+        endif
+
+        let matched = matchlist(line, '^\(\d*\)\([-:]\)\(\d*\)\([-:]\)\?\(.*\)$')
 
         " if line doesn't match, consider it as filename
         if empty(matched)
@@ -85,8 +115,8 @@ func! s:ParseSearchOutput(raw_output)
         else
             call add(s:parsed_result[-1]['lines'], {
                 \ 'lnum'    : matched[1],
+                \ 'matched' : matched[2],
                 \ 'col'     : matched[3],
-                \ 'matched' : matched[4],
                 \ 'content' : matched[5],
                 \ })
         endif
@@ -171,22 +201,4 @@ func! s:HighlightContent()
     hi link ctrlsfLnumUnmatch Comment
 endf
 
-func! s:CallAck(args)
-    setl modifiable
-
-    silent %delete _
-
-    let default_args = ' -H --heading --nocolor --column -C 3 '
-    let raw_output = system(g:ctrlsf_ackprg . default_args . a:args . ' 2>/dev/null')
-
-    call s:ParseSearchOutput(raw_output)
-
-    silent 0put =s:RenderContent()
-    call cursor(1, 1)
-
-    if g:ctrlsf_highlight
-        call s:HighlightContent()
-    endif
-
-    setl nomodifiable
-endf
+" vim: set foldmarker={{{,}}} foldlevel=0 foldmethod=marker spell:
