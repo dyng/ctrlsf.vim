@@ -17,24 +17,56 @@ endif
 " }}}
 
 " Global Variables {{{
-let s:match_table = []
-let s:jump_table = []
+let s:match_table    = []
+let s:jump_table     = []
+let s:ackprg_options = {}
 " }}}
 
 " Constants {{{
 let s:ACK_ARGLIST = {
-    \ '-A'      : { 'argc' : 1 },
-    \ '-B'      : { 'argc' : 1 },
-    \ '-C'      : { 'argc' : 1 },
-    \ '-g'      : { 'argc' : 1 },
-    \ '-G'      : { 'argc' : 1 },
-    \ '-p'      : { 'argc' : 1 },
-    \ '--pager' : { 'argc' : 1 },
+    \ '-A' : { 'argt': 'space', 'argc': 1, 'alias': '--after-context' },
+    \ '-B' : { 'argt': 'space', 'argc': 1, 'alias': '--before-context' },
+    \ '-C' : { 'argt': 'space', 'argc': 1, 'alias': '--context' },
+    \ '-g' : { 'argt': 'space', 'argc': 1 },
+    \ '--match' : { 'argt': 'space',  'argc': 1 },
+    \ '--pager' : { 'argt': 'equals', 'argc': 1 },
+    \ '--context'        : { 'argt': 'equals', 'argc': 1 },
+    \ '--after-context'  : { 'argt': 'equals', 'argc': 1 },
+    \ '--before-context' : { 'argt': 'equals', 'argc': 1 },
+    \ '--file-from'      : { 'argt': 'equals', 'argc': 1 },
+    \ }
+let s:AG_ARGLIST = {
+    \ '-A' : { 'argt': 'space', 'argc': 1, 'alias': '--after' },
+    \ '-B' : { 'argt': 'space', 'argc': 1, 'alias': '--before' },
+    \ '-C' : { 'argt': 'space', 'argc': 1, 'alias': '--context' },
+    \ '-g' : { 'argt': 'space', 'argc': 1 },
+    \ '-G' : { 'argt': 'space', 'argc': 1, 'alias': '--file-search-regex' },
+    \ '-i' : { 'argt': 'none',  'argc': 0, 'alias': '--ignore-case' },
+    \ '-m' : { 'argt': 'space', 'argc': 1, 'alias': '--max-count' },
+    \ '-p' : { 'argt': 'space', 'argc': 1, 'alias': '--path-to-agignore' },
+    \ '--after'       : { 'argt': 'space', 'argc': 1 },
+    \ '--before'      : { 'argt': 'space', 'argc': 1 },
+    \ '--context'     : { 'argt': 'space', 'argc': 1 },
+    \ '--depth'       : { 'argt': 'space', 'argc': 1 },
+    \ '--file-from'   : { 'argt': 'space', 'argc': 1 },
+    \ '--ignore'      : { 'argt': 'space', 'argc': 1 },
+    \ '--ignore-case' : { 'argt': 'none',  'argc': 0 },
+    \ '--ignore-dir'  : { 'argt': 'space', 'argc': 1 },
+    \ '--max-count'   : { 'argt': 'space', 'argc': 1 },
+    \ '--pager'       : { 'argt': 'space', 'argc': 1 },
+    \ '--file-search-regex' : { 'argt': 'space', 'argc': 1 },
+    \ '--path-to-agignore'  : { 'argt': 'space', 'argc': 1 },
+    \ }
+let s:ARGLIST = {
+    \ 'ack' : s:ACK_ARGLIST,
+    \ 'ag'  : s:AG_ARGLIST,
     \ }
 " }}}
 
 func! CtrlSF#Search(args) abort
     call s:OpenWindow()
+
+    call s:ParseAckprgOptions(a:args)
 
     let ackprg_output = system(s:BuildCommand(a:args))
 
@@ -47,7 +79,7 @@ func! CtrlSF#Search(args) abort
 
     if exists('b:current_syntax') && b:current_syntax == 'ctrlsf'
         call clearmatches()
-        let pattern = s:ExtractPattern(a:args)
+        let pattern = s:ackprg_options['pattern']
         call matchadd('ctrlsfMatch', pattern)
     endif
 
@@ -62,43 +94,68 @@ func! CtrlSF#CloseWindow() abort
     call s:CloseWindow()
 endf
 
-" A primitive approach. *CAN NOT* guarantee extracting correct pattern in the
-" worst situation.
-func! s:ExtractPattern(args)
+" A primitive approach. *CAN NOT* guarantee to parse correctly in the worst
+" situation.
+func! s:ParseAckprgOptions(args)
+    let s:ackprg_options = {}
+
     let args = a:args
+    let prg  = g:ctrlsf_ackprg
 
     " example: "a b" -> a\ b, "a\" b" -> a\"\ b
-    let args = substitute(args,'\v(\\)@<!"(.{-})(\\)@<!"','\=escape(submatch(2)," ")','g')
+    let args = substitute(args, '\v(\\)@<!"(.{-})(\\)@<!"', '\=escape(submatch(2)," ")', 'g')
 
-    " example: 'a b' -> a\ b, 'a\' b' -> a\'\ b
-    let args = substitute(args,'\v(\\)@<!''(.{-})(\\)@<!''','\=escape(submatch(2)," ")','g')
+    " example: 'a b' -> a\ b
+    let args = substitute(args, '\v''(.{-})''', '\=escape(submatch(1)," ")', 'g')
 
     let argv = split(args, '\v(\\)@<!\s+')
+    call map(argv, 'substitute(v:val, ''\\ '', " ", "g")')
+
     let argc = len(argv)
 
-    let candidate = []
-
-    let i = 0
+    let path = []
+    let i    = 0
     while i < argc
-        let a = argv[i]
+        let arg = argv[i]
+
+        let tmp_match = matchstr(arg, '^[0-9A-Za-z-]\+\ze=')
+        if !empty(tmp_match)
+            let arg = tmp_match
+        endif
+
+        if has_key(s:ARGLIST[prg], arg)
+            let arginfo = s:ARGLIST[prg][arg]
+            let key = exists('arginfo.alias') ? arginfo.alias : arg
+
+            if arginfo.argt == 'space'
+                let s:ackprg_options[key] = argv[ i+1 : i+arginfo.argc ]
+                let i += arginfo.argc
+            elseif arginfo.argt == 'none'
+                let s:ackprg_options[key] = 1
+            elseif arginfo.argt == 'equals'
+                let s:ackprg_options[key] = matchstr(argv[i], '^[^=]*=\zs.*$')
+            endif
+        else
+            if arg =~ '^-'
+                " unlisted arguments
+                let s:ackprg_options[arg] = 1
+            else
+                " possible path
+                call add(path, arg)
+            endif
+        endif
+
         let i += 1
-
-        if has_key(s:ACK_ARGLIST, a)
-            let i += s:ACK_ARGLIST[a].argc
-            continue
-        endif
-
-        if a =~ '^-'
-            continue
-        endif
-
-        call add(candidate, a)
     endwhile
 
-    let pattern = empty(candidate) ? '' : candidate[0]
-    let pattern = substitute(pattern, '\\ ', ' ', 'g')
+    if !has_key(s:ackprg_options, '--match')
+        let pattern = empty(path) ? '' : remove(path, 0)
+        let s:ackprg_options['--match'] = [pattern]
+    endif
 
-    return pattern
+    " currently these are arguments we are interested
+    let s:ackprg_options['path']    = path
+    let s:ackprg_options['pattern'] = s:ackprg_options['--match'][0]
 endf
 
 func! s:BuildCommand(args)
