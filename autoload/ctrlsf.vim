@@ -1,21 +1,3 @@
-" Default Config {{{
-if !exists('g:ctrlsf_open_left')
-    let g:ctrlsf_open_left = 1
-endif
-
-if !exists('g:ctrlsf_ackprg')
-    let g:ctrlsf_ackprg = 'ack'
-endif
-
-if !exists('g:ctrlsf_auto_close')
-    let g:ctrlsf_auto_close = 1
-endif
-
-if !exists('g:ctrlsf_context')
-    let g:ctrlsf_context = '-C 3'
-endif
-" }}}
-
 " Global Variables {{{
 let s:match_table    = []
 let s:jump_table     = []
@@ -67,10 +49,56 @@ let s:ARGLIST = {
     \ }
 " }}}
 
+func! s:Init()
+    if !exists('g:ctrlsf_open_left')
+        let g:ctrlsf_open_left = 1
+    endif
+
+    if !exists('g:ctrlsf_ackprg')
+        let g:ctrlsf_ackprg = 'ack'
+    endif
+
+    if !exists('g:ctrlsf_auto_close')
+        let g:ctrlsf_auto_close = 1
+    endif
+
+    if !exists('g:ctrlsf_context')
+        let g:ctrlsf_context = '-C 3'
+    endif
+
+    call s:CheckAckprg()
+endf
+
+func! s:CheckAckprg()
+    let prg = g:ctrlsf_ackprg
+
+    if !has_key(s:ARGLIST, prg)
+        echoerr printf('%s isn''t supported by ctrlsf.vim!', prg)
+        return -1
+    endif
+
+    if !executable(prg)
+        echoerr printf('%s does not seem installed!', prg)
+        return -2
+    endif
+endf
+
 func! CtrlSF#Search(args) abort
     call s:ParseAckprgOptions(a:args)
 
-    let ackprg_output = system(s:BuildCommand(a:args))
+    let command = s:BuildCommand(a:args)
+    let ackprg_output = system(command)
+    if v:shell_error
+        echoerr printf('CtrlSF: Some error occurs in %s execution!', g:ctrlsf_ackprg)
+        echomsg printf('Executed command: "%s".', command)
+        if !empty(ackprg_output)
+            echomsg 'Command output:'
+            for line in split(ackprg_output, '\n')
+                echomsg line
+            endfo
+        endif
+        return -1
+    endif
 
     call s:ParseAckprgOutput(ackprg_output)
 
@@ -116,6 +144,7 @@ func! s:ParseAckprgOptions(args)
     while i < argc
         let arg = argv[i]
 
+        " extract option name from arguments like '--context=3'
         let tmp_match = matchstr(arg, '^[0-9A-Za-z-]\+\ze=')
         if !empty(tmp_match)
             let arg = tmp_match
@@ -164,7 +193,7 @@ func! s:BuildCommand(args)
         \ 'ack' : '--heading --group --nocolor --nobreak --column',
         \ 'ag'  : '--heading --group --nocolor --nobreak --column',
         \ }
-    return printf('%s %s %s %s 2>/dev/null', prg, prg_args[prg], g:ctrlsf_context, uargs)
+    return printf('%s %s %s %s', prg, prg_args[prg], g:ctrlsf_context, uargs)
 endf
 
 func! s:OpenWindow()
@@ -174,6 +203,9 @@ func! s:OpenWindow()
 
         call s:InitWindow()
     endif
+
+    " resize other windows
+    wincmd =
 
     call s:HighlightMatch()
 endf
@@ -195,7 +227,6 @@ func! s:InitWindow()
     setl nofoldenable
 
     let &winwidth = exists('g:ctrlsf_width') ? g:ctrlsf_width : &columns/2
-    wincmd =
 
     " default map
     map <silent><buffer> <CR> :call <SID>JumpTo()<CR>
@@ -369,5 +400,8 @@ func! s:HighlightMatch()
         exec 'match ctrlsfMatch ' . pattern
     endif
 endf
+
+" Initialize once loaded
+call s:Init()
 
 " vim: set foldmarker={{{,}}} foldlevel=0 foldmethod=marker spell:
