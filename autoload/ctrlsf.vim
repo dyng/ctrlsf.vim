@@ -192,6 +192,7 @@ func! s:InitWindow()
     setl winfixwidth
     setl textwidth=0
     setl nospell
+    setl nofoldenable
 
     let &winwidth = exists('g:ctrlsf_width') ? g:ctrlsf_width : &columns/2
     wincmd =
