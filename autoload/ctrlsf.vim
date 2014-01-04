@@ -260,6 +260,16 @@ endf
 func! s:ParseAckprgOutput(raw_output)
     let s:match_table = []
 
+    if len(s:ackprg_options.path) == 1
+        let single_file = s:ackprg_options.path[0]
+        if getftype(single_file) == 'file'
+            call add(s:match_table, {
+                \ 'filename' : single_file,
+                \ 'lines'    : [],
+                \ })
+        endif
+    endif
+
     for line in split(a:raw_output, '\n')
         " ignore blank line
         if line =~ '^$'
