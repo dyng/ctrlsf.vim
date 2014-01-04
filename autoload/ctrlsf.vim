@@ -64,24 +64,18 @@ let s:ARGLIST = {
 " }}}
 
 func! CtrlSF#Search(args) abort
-    call s:OpenWindow()
-
     call s:ParseAckprgOptions(a:args)
 
     let ackprg_output = system(s:BuildCommand(a:args))
 
     call s:ParseAckprgOutput(ackprg_output)
 
+    call s:OpenWindow()
+
     setl modifiable
     silent %delete _
     silent 0put =s:RenderContent()
     setl nomodifiable
-
-    if exists('b:current_syntax') && b:current_syntax == 'ctrlsf'
-        call clearmatches()
-        let pattern = s:ackprg_options['pattern']
-        call matchadd('ctrlsfMatch', pattern)
-    endif
 
     call cursor(1, 1)
 endf
@@ -169,24 +163,14 @@ func! s:BuildCommand(args)
 endf
 
 func! s:OpenWindow()
-    if s:FocusCtrlsfWindow() != -1
-        return
+    if s:FocusCtrlsfWindow() == -1
+        let openpos = g:ctrlsf_open_left ? 'topleft vertical ' : 'botright vertical '
+        exec 'silent keepalt ' . openpos . 'split ' . '__CtrlSF__'
+
+        call s:InitWindow()
     endif
 
-    let openpos = g:ctrlsf_open_left ? 'topleft vertical ' : 'botright vertical '
-    exec 'silent keepalt ' . openpos . 'split ' . '__CtrlSF__'
-
-    call s:InitWindow()
-endf
-
-func! s:FocusCtrlsfWindow()
-    let ctrlsf_winnr = bufwinnr('__CtrlSF__')
-    if ctrlsf_winnr == -1
-        return -1
-    else
-        exec ctrlsf_winnr . 'wincm w'
-        return ctrlsf_winnr
-    endif
+    call s:HighlightMatch()
 endf
 
 func! s:InitWindow()
@@ -236,6 +220,16 @@ func! s:JumpTo()
 
     exec 'normal ' . lnum . 'z.'
     call cursor(lnum, col)
+endf
+
+func! s:FocusCtrlsfWindow()
+    let ctrlsf_winnr = bufwinnr('__CtrlSF__')
+    if ctrlsf_winnr == -1
+        return -1
+    else
+        exec ctrlsf_winnr . 'wincm w'
+        return ctrlsf_winnr
+    endif
 endf
 
 func! s:FocusTargetWindow(file)
@@ -360,6 +354,13 @@ endf
 
 func! s:SetJmp(file, line, col)
     call add(s:jump_table, [a:file, a:line, a:col])
+endf
+
+func! s:HighlightMatch()
+    if exists('b:current_syntax') && b:current_syntax == 'ctrlsf'
+        let pattern = printf("/%s/", escape(s:ackprg_options['pattern'], '/'))
+        exec 'match ctrlsfMatch ' . pattern
+    endif
 endf
 
 " vim: set foldmarker={{{,}}} foldlevel=0 foldmethod=marker spell:
