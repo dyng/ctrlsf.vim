@@ -24,12 +24,16 @@ let s:ackprg_options = {}
 
 " Constants {{{
 let s:ACK_ARGLIST = {
-    \ '-A' : { 'argt': 'space', 'argc': 1, 'alias': '--after-context' },
-    \ '-B' : { 'argt': 'space', 'argc': 1, 'alias': '--before-context' },
-    \ '-C' : { 'argt': 'space', 'argc': 1, 'alias': '--context' },
-    \ '-g' : { 'argt': 'space', 'argc': 1 },
-    \ '--match' : { 'argt': 'space',  'argc': 1 },
-    \ '--pager' : { 'argt': 'equals', 'argc': 1 },
+    \ '-A' : { 'argt': 'space',  'argc': 1, 'alias': '--after-context' },
+    \ '-B' : { 'argt': 'space',  'argc': 1, 'alias': '--before-context' },
+    \ '-C' : { 'argt': 'space',  'argc': 1, 'alias': '--context' },
+    \ '-g' : { 'argt': 'space',  'argc': 1 },
+    \ '-i' : { 'argt': 'none',   'argc': 0, 'alias': '--ignore-case' },
+    \ '-m' : { 'argt': 'equals', 'argc': 1, 'alias': '--max-count' },
+    \ '--ignore-case'    : { 'argt': 'none',   'argc': 0 },
+    \ '--match'          : { 'argt': 'space',  'argc': 1 },
+    \ '--max-count'      : { 'argt': 'equals', 'argc': 1 },
+    \ '--pager'          : { 'argt': 'equals', 'argc': 1 },
     \ '--context'        : { 'argt': 'equals', 'argc': 1 },
     \ '--after-context'  : { 'argt': 'equals', 'argc': 1 },
     \ '--before-context' : { 'argt': 'equals', 'argc': 1 },
@@ -148,8 +152,9 @@ func! s:ParseAckprgOptions(args)
     endif
 
     " currently these are arguments we are interested
-    let s:ackprg_options['path']    = path
-    let s:ackprg_options['pattern'] = s:ackprg_options['--match'][0]
+    let s:ackprg_options['path']       = path
+    let s:ackprg_options['pattern']    = s:ackprg_options['--match'][0]
+    let s:ackprg_options['ignorecase'] = has_key(s:ackprg_options, '--ignore-case') ? 1 : 0
 endf
 
 func! s:BuildCommand(args)
@@ -358,7 +363,8 @@ endf
 
 func! s:HighlightMatch()
     if exists('b:current_syntax') && b:current_syntax == 'ctrlsf'
-        let pattern = printf("/%s/", escape(s:ackprg_options['pattern'], '/'))
+        let case = s:ackprg_options['ignorecase'] ? '\c' : ''
+        let pattern = printf("/%s%s/", case, escape(s:ackprg_options['pattern'], '/'))
         exec 'match ctrlsfMatch ' . pattern
     endif
 endf
