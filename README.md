@@ -11,9 +11,9 @@ An ack/ag powered code search and view tool, in an intuitive way with fairly mor
 
     In vundle:
 
-        ```vim
-        Bundle 'dyng/ctrlsf.vim'
-        ```
+    ```vim
+    Bundle 'dyng/ctrlsf.vim'
+    ```
 
 3. Read *Basic Usage* for more.
 
@@ -52,7 +52,7 @@ A full document about options can be found in `:help ctrlsf-options`. (Coming la
 
 ## Why not ack.vim or ag.vim ?
 1. ack.vim depends on vim's builtin `:grep` command, which you can not change the output format. What makes me to write this plugin is that I found reading lines with no highlight and no context is totally a pain. (Use of `:cnext` and `:cprevious` can relieve it, yes.)
-2. Fixed misescape in ack.vim (and also ag.vim), it lets you can use literal '#' and '%' without annoying escape now. For more information, read issue [#5][7].
+2. Fixed misescape in ack.vim (and also ag.vim), it lets you can use literal '#' and '%' without annoying escape now. For more information, read [manual][7] of ack.vim.
 3. ag.vim is actually a fork of ack.vim with minor change.
 
 [1]: https://github.com/petdance/ack
@@ -61,4 +61,4 @@ A full document about options can be found in `:help ctrlsf-options`. (Coming la
 [4]: https://github.com/gmarik/vundle
 [5]: https://github.com/Shougo/neobundle.vim
 [6]: http://search.cpan.org/~petdance/ack-2.12/ack#OPTIONS
-[7]: https://github.com/mileszs/ack.vim/issues/5
+[7]: https://github.com/mileszs/ack.vim#gotchas
