@@ -190,7 +190,7 @@ func! s:BuildCommand(args)
     let prg      = g:ctrlsf_ackprg
     let uargs    = escape(a:args, '%#!')
     let prg_args = {
-        \ 'ack' : '--heading --group --nocolor --nobreak --column',
+        \ 'ack' : '--heading --group --nocolor --nobreak',
         \ 'ag'  : '--heading --group --nocolor --nobreak --column',
         \ }
     return printf('%s %s %s %s', prg, prg_args[prg], g:ctrlsf_context, uargs)
