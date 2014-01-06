@@ -236,7 +236,9 @@ func! s:OpenWindow()
     " resize other windows
     wincmd =
 
-    call s:HighlightMatch()
+    if has_key(s:ackprg_options, 'pattern')
+        call s:HighlightMatch()
+    endif
 endf
 
 func! s:InitWindow()
@@ -424,7 +426,7 @@ endf
 
 func! s:HighlightMatch()
     if exists('b:current_syntax') && b:current_syntax == 'ctrlsf'
-        let case = s:ackprg_options['ignorecase'] ? '\c' : ''
+        let case    = get(s:ackprg_option, 'ignorecase') ? '\c' : ''
         let pattern = printf("/%s%s/", case, escape(s:ackprg_options['pattern'], '/'))
         exec 'match ctrlsfMatch ' . pattern
     endif
