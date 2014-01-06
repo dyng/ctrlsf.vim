@@ -423,7 +423,7 @@ func! s:SetJmp(file, line, col)
 endf
 
 func! s:HighlightMatch()
-    if exists('b:current_syntax') && b:current_syntax == 'ctrlsf'
+    if !exists('b:current_syntax') || b:current_syntax != 'ctrlsf'
         return -1
     endif
 
@@ -431,7 +431,7 @@ func! s:HighlightMatch()
         return -2
     endif
 
-    let case    = get(s:ackprg_option, 'ignorecase') ? '\c' : ''
+    let case    = get(s:ackprg_options, 'ignorecase') ? '\c' : ''
     let pattern = printf("/%s%s/", case, escape(s:ackprg_options['pattern'], '/'))
     exec 'match ctrlsfMatch ' . pattern
 endf
