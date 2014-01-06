@@ -63,7 +63,7 @@ func! s:Init()
     endif
 
     if !exists('g:ctrlsf_ackprg')
-        let g:ctrlsf_ackprg = 'ack'
+        let g:ctrlsf_ackprg = s:DetectAckprg()
     endif
 
     if !exists('g:ctrlsf_auto_close')
@@ -77,11 +77,28 @@ func! s:Init()
     call s:CheckAckprg()
 endf
 
+func! s:DetectAckprg()
+    if executable('ag')
+        return 'ag'
+    endif
+
+    if executable('ack')
+        return 'ack'
+    endif
+
+    return ''
+endf
+
 func! s:CheckAckprg()
+    if !exists('g:ctrlsf_ackprg') || empty('g:ctrlsf_ackprg')
+        echoerr 'g:ctrlsf_ackprg is not defined!'
+        return -99
+    endif
+
     let prg = g:ctrlsf_ackprg
 
     if !has_key(s:ARGLIST, prg)
-        echoerr printf('%s isn''t supported by ctrlsf.vim!', prg)
+        echoerr printf('%s is not supported by ctrlsf.vim!', prg)
         return -1
     endif
 
@@ -93,6 +110,10 @@ endf
 
 func! CtrlSF#Search(args) abort
     call s:ParseAckprgOptions(a:args)
+
+    if s:CheckAckprg() < 0
+        return -1
+    endif
 
     let command = s:BuildCommand(a:args)
     let ackprg_output = system(command)
