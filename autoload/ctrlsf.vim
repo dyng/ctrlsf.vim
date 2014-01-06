@@ -90,8 +90,13 @@ func! s:DetectAckprg()
 endf
 
 func! s:CheckAckprg()
-    if !exists('g:ctrlsf_ackprg') || empty('g:ctrlsf_ackprg')
+    if !exists('g:ctrlsf_ackprg')
         echoerr 'g:ctrlsf_ackprg is not defined!'
+        return -99
+    endif
+
+    if empty('g:ctrlsf_ackprg')
+        echoerr 'ack/ag is not found in the system!'
         return -99
     endif
 
