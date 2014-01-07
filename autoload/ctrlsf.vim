@@ -110,14 +110,22 @@ endf
 " s:OpenWindow() {{{2
 func! s:OpenWindow()
     if s:FocusCtrlsfWindow() == -1
+        if g:ctrlsf_width =~ '\d\{1,2}%'
+            let width = &columns * str2nr(g:ctrlsf_width) / 100
+        elseif g:ctrlsf_width =~ '\d\+'
+            let width = str2nr(g:ctrlsf_width)
+        else
+            let width = &columns / 2
+        endif
+
         let openpos = g:ctrlsf_open_left ? 'topleft vertical ' : 'botright vertical '
-        exec 'silent keepalt ' . openpos . 'split ' . '__CtrlSF__'
+        exec 'silent keepalt ' . openpos . width . 'split ' . '__CtrlSF__'
 
         call s:InitWindow()
-    endif
 
-    " resize other windows
-    wincmd =
+        " resize other windows
+        wincmd =
+    endif
 
     call s:HighlightMatch()
 endf
@@ -172,11 +180,9 @@ func! s:InitWindow()
     setl nospell
     setl nofoldenable
 
-    let &winwidth = exists('g:ctrlsf_width') ? g:ctrlsf_width : &columns/2
-
     " default map
-    map <silent><buffer> <CR> :call <SID>JumpTo()<CR>
-    map <silent><buffer> q    :call <SID>CloseWindow()<CR>
+    nnoremap <silent><buffer> <CR> :call <SID>JumpTo()<CR>
+    nnoremap <silent><buffer> q    :call <SID>CloseWindow()<CR>
 endf
 " }}}
 
@@ -344,8 +350,8 @@ endf
 " s:RenderContent() {{{2
 func! s:RenderContent()
     let s:jump_table = []
+    let output       = ''
 
-    let output = ''
     for file in s:match_table
         " Filename
         let output .= s:FormatAndSetJmp('filename', file.filename)
@@ -488,6 +494,10 @@ func! s:Init()
 
     if !exists('g:ctrlsf_context')
         let g:ctrlsf_context = '-C 3'
+    endif
+
+    if !exists('g:ctrlsf_width')
+        let g:ctrlsf_width = 'auto'
     endif
 
     call s:CheckAckprg()
