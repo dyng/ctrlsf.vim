@@ -122,10 +122,10 @@ func! s:OpenWindow()
         exec 'silent keepalt ' . openpos . width . 'split ' . '__CtrlSF__'
 
         call s:InitWindow()
-
-        " resize other windows
-        wincmd =
     endif
+
+    " resize other windows
+    wincmd =
 
     call s:HighlightMatch()
 endf
