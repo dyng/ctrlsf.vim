@@ -30,7 +30,7 @@ An ack/ag powered code search and view tool, in an intuitive way with fairly mor
 
 ## Configuration
 
-- `g:ctrlsf_ackprg` defines the external ack-like program which CtrlSF uses as source. By default, CtrlSF use `ack` but you can change it to `ag` for a speed up.
+- `g:ctrlsf_ackprg` defines the external ack-like program which CtrlSF uses as source. If nothing is specified, CtrlSF will try *ag* first and fallback to *ack* if *ag* is not available. You can also explicitly define it by
 
     ```vim
     let g:ctrlsf_ackprg = 'ag'
