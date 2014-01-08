@@ -58,8 +58,8 @@ let s:ARGLIST = {
 " }}}
 
 " Public Functions {{{1
-" CtrlSF#Search(args) {{{2
-func! CtrlSF#Search(args) abort
+" ctrlsf#Search(args) {{{2
+func! ctrlsf#Search(args) abort
     call s:ParseAckprgOptions(a:args)
 
     if s:CheckAckprg() < 0
@@ -93,14 +93,15 @@ func! CtrlSF#Search(args) abort
 endf
 " }}}
 
-" CtrlSF#OpenWindow() {{{2
-func! CtrlSF#OpenWindow() abort
+" ctrlsf#OpenWindow() {{{2
+func! ctrlsf#OpenWindow() abort
     call s:OpenWindow()
 endf
 " }}}
+"
 
-" CtrlSF#CloseWindow() {{{2
-func! CtrlSF#CloseWindow() abort
+" ctrlsf#CloseWindow() {{{2
+func! ctrlsf#CloseWindow() abort
     call s:CloseWindow()
 endf
 " }}}

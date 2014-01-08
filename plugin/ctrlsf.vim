@@ -11,9 +11,9 @@ if !exists('g:ctrlsf_debug') && exists('g:ctrlsf_loaded')
 endif
 let g:ctrlsf_loaded = 1
 
-com! -n=+ -comp=customlist,s:PathnameComp CtrlSF      call CtrlSF#Search(<q-args>)
-com! -n=0                                 CtrlSFOpen  call CtrlSF#OpenWindow()
-com! -n=0                                 CtrlSFClose call CtrlSF#CloseWindow()
+com! -n=+ -comp=customlist,s:PathnameComp CtrlSF      call ctrlsf#Search(<q-args>)
+com! -n=0                                 CtrlSFOpen  call ctrlsf#OpenWindow()
+com! -n=0                                 CtrlSFClose call ctrlsf#CloseWindow()
 
 " We need a custom completion function because if we use '-comp=file' then vim
 " regards CtrlSF expecting file arguments and expand '%' to current file, '#'
