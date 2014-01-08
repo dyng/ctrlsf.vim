@@ -99,7 +99,6 @@ func! ctrlsf#OpenWindow() abort
     call s:OpenWindow()
 endf
 " }}}
-"
 
 " ctrlsf#CloseWindow() {{{2
 func! ctrlsf#CloseWindow() abort
