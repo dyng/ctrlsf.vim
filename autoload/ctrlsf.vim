@@ -52,8 +52,9 @@ let s:AG_ARGLIST = {
     \ '--path-to-agignore'  : { 'argt': 'space', 'argc': 1 },
     \ }
 let s:ARGLIST = {
-    \ 'ack' : s:ACK_ARGLIST,
-    \ 'ag'  : s:AG_ARGLIST,
+    \ 'ag'       : s:AG_ARGLIST,
+    \ 'ack-grep' : s:ACK_ARGLIST,
+    \ 'ack'      : s:ACK_ARGLIST,
     \ }
 " }}}
 
@@ -431,6 +432,10 @@ func! s:DetectAckprg()
         return 'ag'
     endif
 
+    if executable('ack-grep')
+        return 'ack-grep'
+    endif
+
     if executable('ack')
         return 'ack'
     endif
@@ -470,8 +475,9 @@ func! s:BuildCommand(args)
     let prg      = g:ctrlsf_ackprg
     let uargs    = escape(a:args, '%#!')
     let prg_args = {
-        \ 'ack' : '--heading --group --nocolor --nobreak',
-        \ 'ag'  : '--heading --group --nocolor --nobreak --column',
+        \ 'ag'       : '--heading --group --nocolor --nobreak --column',
+        \ 'ack'      : '--heading --group --nocolor --nobreak',
+        \ 'ack-grep' : '--heading --group --nocolor --nobreak',
         \ }
     return printf('%s %s %s %s', prg, prg_args[prg], g:ctrlsf_context, uargs)
 endf
