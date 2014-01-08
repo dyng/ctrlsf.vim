@@ -6,13 +6,13 @@
 " Version: 0.01
 " ============================================================================
 
-" Global Variables {{{
+" Global Variables {{{1
 let s:match_table    = []
 let s:jump_table     = []
 let s:ackprg_options = {}
 " }}}
 
-" Constants {{{
+" Static Constants {{{1
 let s:ACK_ARGLIST = {
     \ '-A' : { 'argt': 'space',  'argc': 1, 'alias': '--after-context' },
     \ '-B' : { 'argt': 'space',  'argc': 1, 'alias': '--before-context' },
@@ -57,62 +57,8 @@ let s:ARGLIST = {
     \ }
 " }}}
 
-func! s:Init()
-    if !exists('g:ctrlsf_open_left')
-        let g:ctrlsf_open_left = 1
-    endif
-
-    if !exists('g:ctrlsf_ackprg')
-        let g:ctrlsf_ackprg = s:DetectAckprg()
-    endif
-
-    if !exists('g:ctrlsf_auto_close')
-        let g:ctrlsf_auto_close = 1
-    endif
-
-    if !exists('g:ctrlsf_context')
-        let g:ctrlsf_context = '-C 3'
-    endif
-
-    call s:CheckAckprg()
-endf
-
-func! s:DetectAckprg()
-    if executable('ag')
-        return 'ag'
-    endif
-
-    if executable('ack')
-        return 'ack'
-    endif
-
-    return ''
-endf
-
-func! s:CheckAckprg()
-    if !exists('g:ctrlsf_ackprg')
-        echoerr 'g:ctrlsf_ackprg is not defined!'
-        return -99
-    endif
-
-    if empty('g:ctrlsf_ackprg')
-        echoerr 'ack/ag is not found in the system!'
-        return -99
-    endif
-
-    let prg = g:ctrlsf_ackprg
-
-    if !has_key(s:ARGLIST, prg)
-        echoerr printf('%s is not supported by ctrlsf.vim!', prg)
-        return -1
-    endif
-
-    if !executable(prg)
-        echoerr printf('%s does not seem installed!', prg)
-        return -2
-    endif
-endf
-
+" Public Functions {{{1
+" CtrlSF#Search(args) {{{2
 func! CtrlSF#Search(args) abort
     call s:ParseAckprgOptions(a:args)
 
@@ -145,15 +91,153 @@ func! CtrlSF#Search(args) abort
 
     call cursor(1, 1)
 endf
+" }}}
 
+" CtrlSF#OpenWindow() {{{2
 func! CtrlSF#OpenWindow() abort
     call s:OpenWindow()
 endf
+" }}}
 
+" CtrlSF#CloseWindow() {{{2
 func! CtrlSF#CloseWindow() abort
     call s:CloseWindow()
 endf
+" }}}
+" }}}
 
+" Actions {{{1
+" s:OpenWindow() {{{2
+func! s:OpenWindow()
+    if s:FocusCtrlsfWindow() == -1
+        if g:ctrlsf_width =~ '\d\{1,2}%'
+            let width = &columns * str2nr(g:ctrlsf_width) / 100
+        elseif g:ctrlsf_width =~ '\d\+'
+            let width = str2nr(g:ctrlsf_width)
+        else
+            let width = &columns / 2
+        endif
+
+        let openpos = g:ctrlsf_open_left ? 'topleft vertical ' : 'botright vertical '
+        exec 'silent keepalt ' . openpos . width . 'split ' . '__CtrlSF__'
+
+        call s:InitWindow()
+    endif
+
+    " resize other windows
+    wincmd =
+
+    call s:HighlightMatch()
+endf
+" }}}
+
+" s:CloseWindow() {{{2
+func! s:CloseWindow()
+    if s:FocusCtrlsfWindow() == -1
+        return
+    endif
+
+    " Surely we are in CtrlSF window
+    close
+endf
+" }}}
+
+" s:JumpTo() {{{2
+func! s:JumpTo()
+    let [file, lnum, col] = s:jump_table[line('.') - 1]
+
+    if empty(file) || empty(lnum)
+        return
+    endif
+
+    if g:ctrlsf_auto_close
+        call s:CloseWindow()
+    endif
+
+    call s:FocusTargetWindow(file)
+
+    exec 'normal ' . lnum . 'z.'
+    call cursor(lnum, col)
+endf
+" }}}
+" }}}
+
+" Window Operations {{{1
+" s:InitWindow() {{{2
+func! s:InitWindow()
+    setl filetype=ctrlsf
+    setl noreadonly
+    setl buftype=nofile
+    setl bufhidden=hide
+    setl noswapfile
+    setl nobuflisted
+    setl nomodifiable
+    setl nolist
+    setl nonumber
+    setl nowrap
+    setl winfixwidth
+    setl textwidth=0
+    setl nospell
+    setl nofoldenable
+
+    " default map
+    nnoremap <silent><buffer> <CR> :call <SID>JumpTo()<CR>
+    nnoremap <silent><buffer> q    :call <SID>CloseWindow()<CR>
+endf
+" }}}
+
+" s:FocusCtrlsfWindow() {{{2
+func! s:FocusCtrlsfWindow()
+    let ctrlsf_winnr = bufwinnr('__CtrlSF__')
+    if ctrlsf_winnr == -1
+        return -1
+    else
+        exec ctrlsf_winnr . 'wincm w'
+        return ctrlsf_winnr
+    endif
+endf
+" }}}
+
+" s:FocusTargetWindow(file) {{{2
+func! s:FocusTargetWindow(file)
+    let target_winnr = bufwinnr(a:file)
+
+    if target_winnr == -1
+        let target_winnr = winnr('#')
+        let need_open_file = 1
+    endif
+
+    exec target_winnr . 'wincmd w'
+
+    if exists('need_open_file')
+        if &modified
+            exec 'silent split ' . a:file
+        else
+            exec 'edit ' . a:file
+        endif
+    endif
+endf
+" }}}
+
+" s:HighlightMatch() {{{2
+func! s:HighlightMatch()
+    if !exists('b:current_syntax') || b:current_syntax != 'ctrlsf'
+        return -1
+    endif
+
+    if !has_key(s:ackprg_options, 'pattern')
+        return -2
+    endif
+
+    let case    = get(s:ackprg_options, 'ignorecase') ? '\c' : ''
+    let pattern = printf("/%s%s/", case, escape(s:ackprg_options['pattern'], '/'))
+    exec 'match ctrlsfMatch ' . pattern
+endf
+" }}}
+" }}}
+
+" Input {{{1
+" s:ParseAckprgOptions(args) {{{2
 " A primitive approach. *CAN NOT* guarantee to parse correctly in the worst
 " situation.
 func! s:ParseAckprgOptions(args)
@@ -219,109 +303,9 @@ func! s:ParseAckprgOptions(args)
     let s:ackprg_options['pattern']    = s:ackprg_options['--match'][0]
     let s:ackprg_options['ignorecase'] = has_key(s:ackprg_options, '--ignore-case') ? 1 : 0
 endf
+" }}}
 
-func! s:BuildCommand(args)
-    let prg      = g:ctrlsf_ackprg
-    let uargs    = escape(a:args, '%#!')
-    let prg_args = {
-        \ 'ack' : '--heading --group --nocolor --nobreak',
-        \ 'ag'  : '--heading --group --nocolor --nobreak --column',
-        \ }
-    return printf('%s %s %s %s', prg, prg_args[prg], g:ctrlsf_context, uargs)
-endf
-
-func! s:OpenWindow()
-    if s:FocusCtrlsfWindow() == -1
-        let openpos = g:ctrlsf_open_left ? 'topleft vertical ' : 'botright vertical '
-        exec 'silent keepalt ' . openpos . 'split ' . '__CtrlSF__'
-
-        call s:InitWindow()
-    endif
-
-    " resize other windows
-    wincmd =
-
-    call s:HighlightMatch()
-endf
-
-func! s:InitWindow()
-    setl filetype=ctrlsf
-    setl noreadonly
-    setl buftype=nofile
-    setl bufhidden=hide
-    setl noswapfile
-    setl nobuflisted
-    setl nomodifiable
-    setl nolist
-    setl nonumber
-    setl nowrap
-    setl winfixwidth
-    setl textwidth=0
-    setl nospell
-    setl nofoldenable
-
-    let &winwidth = exists('g:ctrlsf_width') ? g:ctrlsf_width : &columns/2
-
-    " default map
-    map <silent><buffer> <CR> :call <SID>JumpTo()<CR>
-    map <silent><buffer> q    :call <SID>CloseWindow()<CR>
-endf
-
-func! s:CloseWindow()
-    if s:FocusCtrlsfWindow() == -1
-        return
-    endif
-
-    " Surely we are in CtrlSF window
-    close
-endf
-
-func! s:JumpTo()
-    let [file, lnum, col] = s:jump_table[line('.') - 1]
-
-    if empty(file) || empty(lnum)
-        return
-    endif
-
-    if g:ctrlsf_auto_close
-        call s:CloseWindow()
-    endif
-
-    call s:FocusTargetWindow(file)
-
-    exec 'normal ' . lnum . 'z.'
-    call cursor(lnum, col)
-endf
-
-func! s:FocusCtrlsfWindow()
-    let ctrlsf_winnr = bufwinnr('__CtrlSF__')
-    if ctrlsf_winnr == -1
-        return -1
-    else
-        exec ctrlsf_winnr . 'wincm w'
-        return ctrlsf_winnr
-    endif
-endf
-
-func! s:FocusTargetWindow(file)
-    let target_winnr = bufwinnr(a:file)
-
-    if target_winnr == -1
-        let target_winnr = winnr('#')
-        let need_open_file = 1
-    endif
-
-    exec target_winnr . 'wincmd w'
-
-    if exists('need_open_file')
-        if &modified
-            exec 'silent split ' . a:file
-        else
-            exec 'edit ' . a:file
-        endif
-    endif
-endf
-
+" s:ParseAckprgOutput(raw_output) {{{2
 func! s:ParseAckprgOutput(raw_output)
     let s:match_table = []
 
@@ -359,11 +343,15 @@ func! s:ParseAckprgOutput(raw_output)
         endif
     endfo
 endf
+" }}}
+" }}}
 
+" Output {{{1
+" s:RenderContent() {{{2
 func! s:RenderContent()
     let s:jump_table = []
+    let output       = ''
 
-    let output = ''
     for file in s:match_table
         " Filename
         let output .= s:FormatAndSetJmp('filename', file.filename)
@@ -389,7 +377,9 @@ func! s:RenderContent()
 
     return output
 endf
+" }}}
 
+" s:FormatAndSetJmp(type, ...) {{{2
 func! s:FormatAndSetJmp(type, ...)
     let line    = exists('a:1') ? a:1 : ''
     let jmpinfo = exists('a:2') ? a:2 : {}
@@ -404,7 +394,9 @@ func! s:FormatAndSetJmp(type, ...)
 
     return output
 endf
+" }}}
 
+" s:FormatLine(type, line) {{{2
 func! s:FormatLine(type, line)
     let output = ''
     let line   = a:line
@@ -422,26 +414,99 @@ func! s:FormatLine(type, line)
 
     return output
 endf
+" }}}
 
+" s:SetJmp(file, line, col) {{{2
 func! s:SetJmp(file, line, col)
     call add(s:jump_table, [a:file, a:line, a:col])
 endf
+" }}}
+" }}}
 
-func! s:HighlightMatch()
-    if !exists('b:current_syntax') || b:current_syntax != 'ctrlsf'
+" Utils {{{1
+" s:DetectAckprg() {{{2
+func! s:DetectAckprg()
+    if executable('ag')
+        return 'ag'
+    endif
+
+    if executable('ack')
+        return 'ack'
+    endif
+
+    return ''
+endf
+" }}}
+
+" s:CheckAckprg() {{{2
+func! s:CheckAckprg()
+    if !exists('g:ctrlsf_ackprg')
+        echoerr 'g:ctrlsf_ackprg is not defined!'
+        return -99
+    endif
+
+    if empty('g:ctrlsf_ackprg')
+        echoerr 'ack/ag is not found in the system!'
+        return -99
+    endif
+
+    let prg = g:ctrlsf_ackprg
+
+    if !has_key(s:ARGLIST, prg)
+        echoerr printf('%s is not supported by ctrlsf.vim!', prg)
         return -1
     endif
 
-    if !has_key(s:ackprg_options, 'pattern')
+    if !executable(prg)
+        echoerr printf('%s does not seem installed!', prg)
         return -2
     endif
-
-    let case    = get(s:ackprg_options, 'ignorecase') ? '\c' : ''
-    let pattern = printf("/%s%s/", case, escape(s:ackprg_options['pattern'], '/'))
-    exec 'match ctrlsfMatch ' . pattern
 endf
+" }}}
+
+" s:BuildCommand(args) {{{2
+func! s:BuildCommand(args)
+    let prg      = g:ctrlsf_ackprg
+    let uargs    = escape(a:args, '%#!')
+    let prg_args = {
+        \ 'ack' : '--heading --group --nocolor --nobreak',
+        \ 'ag'  : '--heading --group --nocolor --nobreak --column',
+        \ }
+    return printf('%s %s %s %s', prg, prg_args[prg], g:ctrlsf_context, uargs)
+endf
+" }}}
+" }}}
+
+" Initialization {{{1
+" s:Init() {{{2
+func! s:Init()
+    if !exists('g:ctrlsf_open_left')
+        let g:ctrlsf_open_left = 1
+    endif
+
+    if !exists('g:ctrlsf_ackprg')
+        let g:ctrlsf_ackprg = s:DetectAckprg()
+    endif
+
+    if !exists('g:ctrlsf_auto_close')
+        let g:ctrlsf_auto_close = 1
+    endif
+
+    if !exists('g:ctrlsf_context')
+        let g:ctrlsf_context = '-C 3'
+    endif
+
+    if !exists('g:ctrlsf_width')
+        let g:ctrlsf_width = 'auto'
+    endif
+
+    call s:CheckAckprg()
+endf
+" }}}
+" }}}
 
 " Initialize once loaded
 call s:Init()
 
+" modeline {{{1
 " vim: set foldmarker={{{,}}} foldlevel=0 foldmethod=marker spell:
