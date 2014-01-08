@@ -446,7 +446,7 @@ func! s:CheckAckprg()
         return -99
     endif
 
-    if empty('g:ctrlsf_ackprg')
+    if empty(g:ctrlsf_ackprg)
         echoerr 'ack/ag is not found in the system!'
         return -99
     endif
