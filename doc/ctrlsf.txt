@@ -1,5 +1,4 @@
-*ctrlsf.txt* A code search and view tool.
-*CtrlSF* *'ctrlsf'*
+*ctrlsf.txt* A code search and view tool.                  *CtrlSF* *'ctrlsf'*
 
 Author:  Ye Ding <dygvirus@gmail.com>
 Licence: Vim licence, see |license|
@@ -15,7 +14,7 @@ Contents                                                     *ctrlsf-contents*
         3. Commands ........................ |ctrlsf-commands|
         4. Key Maps ........................ |ctrlsf-keymaps|
         5. Options ......................... |ctrlsf-options|
-        6. About ........................... |ctrlsf-credits|
+        6. About ........................... |ctrlsf-about|
 
 ==============================================================================
 1. Intro                                                        *ctrlsf-intro*
