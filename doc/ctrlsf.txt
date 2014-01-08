@@ -1,11 +1,12 @@
 *ctrlsf.txt* A code search and view tool.
+*CtrlSF* *'ctrlsf'*
 
 Author:  Ye Ding <dygvirus@gmail.com>
 Licence: Vim licence, see |license|
 Version: 0.01
 
 ==============================================================================
-Contents                                            *ctrlsf* *ctrlsf-contents*
+Contents                                                     *ctrlsf-contents*
 
         1. Intro ........................... |ctrlsf-intro|
         2. Usage ........................... |ctrlsf-usage|
@@ -135,16 +136,18 @@ can also explicitly set it by
 <
 g:ctrlsf_auto_close                                    *'g:ctrlsf_auto_close'*
 Default: 1
-When you jump to source file from a CtrlSF window, by default the CtrlSF window
-will be closed automatically. Set 'g:ctrlsf_auto_close' to 0 to prevent it.
+When you jump to source file from a CtrlSF window, by default the CtrlSF
+window will be closed automatically. Set 'g:ctrlsf_auto_close' to 0 to prevent
+it.
 >
     let g:ctrlsf_auto_close = '0'
 
 g:ctrlsf_context                                          *'g:ctrlsf_context'*
 Default: '-C 3'
-Determine how to print lines around the matches. Actually this option is passed
-literally to backend as command argument, therefore shares same format as it in
-ack/ag. Refer to their manual for more information. An example:
+Determine how to print lines around the matches. Actually this option is
+passed literally to backend as command argument, therefore shares same format
+as it in ack/ag. Refer to their manual for more information.
+Example:
 >
     let g:ctrlsf_context = '-B 5 -A 3'
 <
