@@ -6,7 +6,6 @@
 " Version: 0.01
 " ============================================================================
 
-let g:ctrlsf_ackprg = 'ag'
 if exists('b:current_syntax')
     finish
 endif
