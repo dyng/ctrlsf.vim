@@ -11,10 +11,55 @@ if !exists('g:ctrlsf_debug') && exists('g:ctrlsf_loaded')
 endif
 let g:ctrlsf_loaded = 1
 
+" Utils {{{1
+" s:DetectAckprg() {{{2
+func! s:DetectAckprg()
+    if executable('ag')
+        return 'ag'
+    endif
+
+    if executable('ack-grep')
+        return 'ack-grep'
+    endif
+
+    if executable('ack')
+        return 'ack'
+    endif
+
+    return ''
+endf
+" }}}
+" }}}
+
+" Options {{{1
+if !exists('g:ctrlsf_open_left')
+    let g:ctrlsf_open_left = 1
+endif
+
+if !exists('g:ctrlsf_ackprg')
+    let g:ctrlsf_ackprg = s:DetectAckprg()
+endif
+
+if !exists('g:ctrlsf_auto_close')
+    let g:ctrlsf_auto_close = 1
+endif
+
+if !exists('g:ctrlsf_context')
+    let g:ctrlsf_context = '-C 3'
+endif
+
+if !exists('g:ctrlsf_width')
+    let g:ctrlsf_width = 'auto'
+endif
+" }}}
+
+" Commands {{{1
 com! -n=+ -comp=customlist,s:PathnameComp CtrlSF      call ctrlsf#Search(<q-args>)
 com! -n=0                                 CtrlSFOpen  call ctrlsf#OpenWindow()
 com! -n=0                                 CtrlSFClose call ctrlsf#CloseWindow()
+" }}}
 
+" Completion Func {{{1
 " We need a custom completion function because if we use '-comp=file' then vim
 " regards CtrlSF expecting file arguments and expand '%' to current file, '#'
 " to alternate file and so on automatically, which is not what we want.
@@ -41,3 +86,7 @@ func! s:PathnameComp(arglead, cmdline, cursorpos)
 
     return candidate
 endf
+" }}}
+
+" modeline {{{1
+" vim: set foldmarker={{{,}}} foldlevel=0 foldmethod=marker spell:

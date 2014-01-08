@@ -426,24 +426,6 @@ endf
 " }}}
 
 " Utils {{{1
-" s:DetectAckprg() {{{2
-func! s:DetectAckprg()
-    if executable('ag')
-        return 'ag'
-    endif
-
-    if executable('ack-grep')
-        return 'ack-grep'
-    endif
-
-    if executable('ack')
-        return 'ack'
-    endif
-
-    return ''
-endf
-" }}}
-
 " s:CheckAckprg() {{{2
 func! s:CheckAckprg()
     if !exists('g:ctrlsf_ackprg')
@@ -483,37 +465,6 @@ func! s:BuildCommand(args)
 endf
 " }}}
 " }}}
-
-" Initialization {{{1
-" s:Init() {{{2
-func! s:Init()
-    if !exists('g:ctrlsf_open_left')
-        let g:ctrlsf_open_left = 1
-    endif
-
-    if !exists('g:ctrlsf_ackprg')
-        let g:ctrlsf_ackprg = s:DetectAckprg()
-    endif
-
-    if !exists('g:ctrlsf_auto_close')
-        let g:ctrlsf_auto_close = 1
-    endif
-
-    if !exists('g:ctrlsf_context')
-        let g:ctrlsf_context = '-C 3'
-    endif
-
-    if !exists('g:ctrlsf_width')
-        let g:ctrlsf_width = 'auto'
-    endif
-
-    call s:CheckAckprg()
-endf
-" }}}
-" }}}
-
-" Initialize once loaded
-call s:Init()
 
 " modeline {{{1
 " vim: set foldmarker={{{,}}} foldlevel=0 foldmethod=marker spell:
