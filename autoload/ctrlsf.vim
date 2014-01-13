@@ -238,7 +238,7 @@ func! s:HighlightMatch()
     endif
 
     let case    = get(s:ackprg_options, 'ignorecase') ? '\c' : ''
-    let pattern = printf("/%s%s/", case, escape(s:ackprg_options['pattern'], '/'))
+    let pattern = printf('/\v%s%s/', case, escape(s:ackprg_options['pattern'], '/'))
     exec 'match ctrlsfMatch ' . pattern
 endf
 " }}}
