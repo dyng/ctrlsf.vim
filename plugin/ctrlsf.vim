@@ -54,7 +54,7 @@ endif
 " }}}
 
 " Commands {{{1
-com! -n=+ -comp=customlist,s:PathnameComp CtrlSF      call ctrlsf#Search(<q-args>)
+com! -n=* -comp=customlist,s:PathnameComp CtrlSF      call ctrlsf#Search(<q-args>)
 com! -n=0                                 CtrlSFOpen  call ctrlsf#OpenWindow()
 com! -n=0                                 CtrlSFClose call ctrlsf#CloseWindow()
 " }}}

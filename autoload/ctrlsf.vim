@@ -61,13 +61,20 @@ let s:ARGLIST = {
 " Public Functions {{{1
 " ctrlsf#Search(args) {{{2
 func! ctrlsf#Search(args) abort
-    call s:ParseAckprgOptions(a:args)
+    let args = a:args
+
+    " If no pattern is given, use word under the cursor
+    if empty(args)
+        let args = expand('<cword>')
+    endif
+
+    call s:ParseAckprgOptions(args)
 
     if s:CheckAckprg() < 0
         return -1
     endif
 
-    let command = s:BuildCommand(a:args)
+    let command = s:BuildCommand(args)
     let ackprg_output = system(command)
     if v:shell_error
         echoerr printf('CtrlSF: Some error occurs in %s execution!', g:ctrlsf_ackprg)
