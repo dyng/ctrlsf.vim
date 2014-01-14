@@ -249,7 +249,7 @@ func! s:FindTargetWindow(file)
         let target_winnr = s:previous.winnr
     endif
 
-    if winbufnr(target_winnr) == s:previous.bufnr
+    if winbufnr(target_winnr) == s:previous.bufnr && empty(getwinvar(target_winnr, '&buftype'))
         return target_winnr
     endif
 
