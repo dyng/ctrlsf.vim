@@ -154,6 +154,8 @@ func! s:CloseWindow()
 
     " Surely we are in CtrlSF window
     close
+
+    call s:FocusPreviousWindow()
 endf
 " }}}
 
@@ -241,7 +243,7 @@ func! s:FindTargetWindow(file)
 
     " case: window where ctrlsf window was opened
     let ctrlsf_winnr = s:FindCtrlsfWindow()
-    if ctrlsf_winnr <= s:previous.winnr
+    if ctrlsf_winnr > 0 && ctrlsf_winnr <= s:previous.winnr
         let target_winnr = s:previous.winnr + 1
     else
         let target_winnr = s:previous.winnr
@@ -285,6 +287,23 @@ func! s:OpenTargetWindow(winnr, file, lnum, col)
 
     exec 'normal ' . a:lnum . 'z.'
     call cursor(a:lnum, a:col)
+endf
+" }}}
+
+" s:FocusPreviousWindow() {{{2
+func! s:FocusPreviousWindow()
+    let ctrlsf_winnr = s:FindCtrlsfWindow()
+    if ctrlsf_winnr > 0 && ctrlsf_winnr <= s:previous.winnr
+        let pre_winnr = s:previous.winnr + 1
+    else
+        let pre_winnr = s:previous.winnr
+    endif
+
+    if winbufnr(pre_winnr) != -1
+        exec pre_winnr . 'wincmd w'
+    else
+        wincmd p
+    endif
 endf
 " }}}
 
