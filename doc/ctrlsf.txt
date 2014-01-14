@@ -117,9 +117,13 @@ A typical workflow using CtrlSF is like this:
 
   The following keys are mapped by default in CtrlSF window:
 
-    <Enter>   Open source file containing the line under cursor.
+    <o>, <Enter> Open source file containing the line under cursor.
 
-    <q>       Quit CtrlSF window.
+    <q>          Quit CtrlSF window.
+
+    <p>          Preview. Like <o> but keeps the CtrlSF window open and cursor
+                 in it.
+
 
 ==============================================================================
 5. Options                                                    *ctrlsf-options*
@@ -127,9 +131,9 @@ A typical workflow using CtrlSF is like this:
 g:ctrlsf_ackprg                                            *'g:ctrlsf_ackprg'*
 Default: auto
 'g:ctrlsf_ackprg' defines the backend which CtrlSF will use. By default,
-CtrlSF will check 'ag' whether it is available and use it as best choice,
-, otherwise fallback to 'ack'. CtrlSF will handle this option properly but you
-can also explicitly set it by
+CtrlSF will check 'ag' program whether it is available and use it as the best
+choice, otherwise fallback to 'ack'. CtrlSF can handle this option properly
+but you can also explicitly set it by
 >
     let g:ctrlsf_ackprg = 'ag'
 <
@@ -173,8 +177,9 @@ Example:
 6. About                                                        *ctrlsf-about*
 
 CtrlSF was initially written by Ye Ding <dygvirus@gmail.com> and released
-under the Vim licence, see |licence|. The original author learned many things
-from reading Tagbar's source code, thanks to Jan Larres the author of Tagbar.
+under the Vim licence, see |licence|. The original author learned a lot of
+things from reading Tagbar's source code, thanks to Jan Larres the author of
+Tagbar.
 
 ==============================================================================
  vim: tw=78 ts=8 sw=4 sts=4 et ft=help
