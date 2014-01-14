@@ -283,10 +283,10 @@ func! s:OpenTargetWindow(winnr, file, lnum, col)
         endif
     endif
 
-    normal zR
-
     exec 'normal ' . a:lnum . 'z.'
     call cursor(a:lnum, a:col)
+
+    normal zv
 endf
 " }}}
 
