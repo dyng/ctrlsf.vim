@@ -48,7 +48,7 @@ An ack/ag powered code search and view tool, in an intuitive way with fairly mor
     let g:ctrlsf_context = '-B 5 -A 3'
     ```
 
-A full document about options can be found in `:help ctrlsf-options`. (Coming later)
+A full document about options can be found in `:help ctrlsf-options`.
 
 ## Why not ack.vim or ag.vim ?
 1. ack.vim depends on vim's builtin `:grep` command, which you can not change the output format. What makes me to write this plugin is that I found reading lines with no highlight and no context is totally a pain. (Use of `:cnext` and `:cprevious` can relieve it, yes.)
