@@ -10,6 +10,7 @@
 let s:match_table    = []
 let s:jump_table     = []
 let s:ackprg_options = {}
+let s:previous       = {}
 " }}}
 
 " Static Constants {{{1
@@ -117,6 +118,12 @@ endf
 " Actions {{{1
 " s:OpenWindow() {{{2
 func! s:OpenWindow()
+    " backup current bufnr and winnr
+    let s:previous = {
+        \ 'bufnr' : bufnr('%'),
+        \ 'winnr' : winnr(),
+        \ }
+
     if s:FocusCtrlsfWindow() == -1
         if g:ctrlsf_width =~ '\d\{1,2}%'
             let width = &columns * str2nr(g:ctrlsf_width) / 100
@@ -151,21 +158,30 @@ endf
 " }}}
 
 " s:JumpTo() {{{2
-func! s:JumpTo()
+func! s:JumpTo(mode)
     let [file, lnum, col] = s:jump_table[line('.') - 1]
 
     if empty(file) || empty(lnum)
         return
     endif
 
-    if g:ctrlsf_auto_close
+    let target_winnr = s:FindTargetWindow(file)
+
+    if a:mode == 'o' && g:ctrlsf_auto_close
+        let ctrlsf_winnr = s:FindCtrlsfWindow()
+
+        if ctrlsf_winnr <= target_winnr
+            let target_winnr -= 1
+        endif
+
         call s:CloseWindow()
     endif
 
-    call s:FocusTargetWindow(file)
+    call s:OpenTargetWindow(target_winnr, file, lnum, col)
 
-    exec 'normal ' . lnum . 'z.'
-    call cursor(lnum, col)
+    if a:mode == 'p'
+        exec s:FindCtrlsfWindow() . 'wincmd w'
+    endif
 endf
 " }}}
 " }}}
@@ -189,14 +205,22 @@ func! s:InitWindow()
     setl nofoldenable
 
     " default map
-    nnoremap <silent><buffer> <CR> :call <SID>JumpTo()<CR>
+    nnoremap <silent><buffer> <CR> :call <SID>JumpTo('o')<CR>
+    nnoremap <silent><buffer> o    :call <SID>JumpTo('o')<CR>
+    nnoremap <silent><buffer> p    :call <SID>JumpTo('p')<CR>
     nnoremap <silent><buffer> q    :call <SID>CloseWindow()<CR>
+endf
+" }}}
+
+" s:FindCtrlsfWindow() {{{2
+func! s:FindCtrlsfWindow()
+    return bufwinnr('__CtrlSF__')
 endf
 " }}}
 
 " s:FocusCtrlsfWindow() {{{2
 func! s:FocusCtrlsfWindow()
-    let ctrlsf_winnr = bufwinnr('__CtrlSF__')
+    let ctrlsf_winnr = s:FindCtrlsfWindow()
     if ctrlsf_winnr == -1
         return -1
     else
@@ -206,24 +230,61 @@ func! s:FocusCtrlsfWindow()
 endf
 " }}}
 
-" s:FocusTargetWindow(file) {{{2
-func! s:FocusTargetWindow(file)
+" s:FindTargetWindow(file) {{{2
+func! s:FindTargetWindow(file)
     let target_winnr = bufwinnr(a:file)
 
-    if target_winnr == -1
-        let target_winnr = winnr('#')
-        let need_open_file = 1
+    " case: window containing target file
+    if target_winnr > 0
+        return target_winnr
     endif
 
-    exec target_winnr . 'wincmd w'
+    " case: window where ctrlsf window was opened
+    let ctrlsf_winnr = s:FindCtrlsfWindow()
+    if ctrlsf_winnr <= s:previous.winnr
+        let target_winnr = s:previous.winnr + 1
+    else
+        let target_winnr = s:previous.winnr
+    endif
 
-    if exists('need_open_file')
-        if &modified
-            exec 'silent split ' . a:file
-        else
-            exec 'edit ' . a:file
+    if winbufnr(target_winnr) == s:previous.bufnr
+        return target_winnr
+    endif
+
+    " case: pick up the first window containing regular file
+    let nr = 1
+    while nr <= winnr('$')
+        if empty(getwinvar(nr, '&buftype'))
+            return nr
+        endif
+        let nr += 1
+    endwh
+
+    " case: can't find any valid window, tell front to open a new window
+    return 0
+endf
+" }}}
+
+" s:OpenTargetWindow(file) {{{2
+func! s:OpenTargetWindow(winnr, file, lnum, col)
+    if a:winnr == 0
+        exec 'silent split ' . a:file
+    else
+        exec a:winnr . 'wincmd w'
+
+        if bufname('%') !~# a:file
+            if &modified
+                exec 'silent split ' . a:file
+            else
+                exec 'edit ' . a:file
+            endif
         endif
     endif
+
+    normal zR
+
+    exec 'normal ' . a:lnum . 'z.'
+    call cursor(a:lnum, a:col)
 endf
 " }}}
 
