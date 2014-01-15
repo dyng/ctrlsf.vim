@@ -113,6 +113,11 @@ func! ctrlsf#CloseWindow() abort
     call s:CloseWindow()
 endf
 " }}}
+" ctrlsf#ClearHighlight() {{{2
+func! ctrlsf#ClearHighlight() abort
+    call s:ClearHighlight()
+endf
+" }}}
 " }}}
 
 " Actions {{{1
@@ -156,6 +161,12 @@ func! s:CloseWindow()
     close
 
     call s:FocusPreviousWindow()
+endf
+" }}}
+
+" s:ClearHighlight() {{{2
+func! s:ClearHighlight()
+    match none
 endf
 " }}}
 
@@ -285,6 +296,11 @@ func! s:OpenTargetWindow(winnr, file, lnum, col)
 
     exec 'normal ' . a:lnum . 'z.'
     call cursor(a:lnum, a:col)
+    " From
+    " http://vim.wikia.com/wiki/Highlight_current_line#Highlighting_that_stays_after_cursor_moves
+    if g:ctrlsf_current_line_hl
+        exec 'match Search /\%' . line('.') . 'l.*/'
+    endif
 
     normal zv
 endf

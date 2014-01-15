@@ -51,12 +51,25 @@ endif
 if !exists('g:ctrlsf_width')
     let g:ctrlsf_width = 'auto'
 endif
+
+if !exists('g:ctrlsf_current_line_hl')
+    let g:ctrlsf_current_line_hl = 0
+endif
+
+if !exists('g:ctrlsf_current_line_mark')
+    let g:ctrlsf_current_line_mark = 0
+endif
+
+if !exists('g:ctrlsf_current_line_mark_reg')
+    let g:ctrlsf_current_line_mark_reg = 'l'
+endif
 " }}}
 
 " Commands {{{1
-com! -n=* -comp=customlist,s:PathnameComp CtrlSF      call ctrlsf#Search(<q-args>)
-com! -n=0                                 CtrlSFOpen  call ctrlsf#OpenWindow()
-com! -n=0                                 CtrlSFClose call ctrlsf#CloseWindow()
+com! -n=* -comp=customlist,s:PathnameComp CtrlSF               call ctrlsf#Search(<q-args>)
+com! -n=0                                 CtrlSFOpen           call ctrlsf#OpenWindow()
+com! -n=0                                 CtrlSFClose          call ctrlsf#CloseWindow()
+com! -n=0                                 CtrlSFClearHighlight call ctrlsf#ClearHighlight()
 " }}}
 
 " Completion Func {{{1
