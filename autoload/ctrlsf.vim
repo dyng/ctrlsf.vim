@@ -182,7 +182,7 @@ func! s:JumpTo(mode)
     call s:OpenTargetWindow(target_winnr, file, lnum, col)
 
     if a:mode == 'p'
-        exec s:FindCtrlsfWindow() . 'wincmd w'
+        call s:FocusCtrlsfWindow()
     endif
 endf
 " }}}
