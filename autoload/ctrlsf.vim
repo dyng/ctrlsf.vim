@@ -285,6 +285,10 @@ func! s:OpenTargetWindow(winnr, file, lnum, col)
 
     exec 'normal ' . a:lnum . 'z.'
     call cursor(a:lnum, a:col)
+    " From
+    " http://vim.wikia.com/wiki/Highlight_current_line#Highlighting_that_stays_after_cursor_moves
+    mark l
+    exec 'match Search /\%' . line('.') . 'l.*/'
 
     normal zv
 endf
