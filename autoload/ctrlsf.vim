@@ -116,6 +116,17 @@ endf
 " }}}
 
 " Actions {{{1
+" s:CalcWidth() {{{2
+func! s:CalcWidth()
+    if g:ctrlsf_width =~ '\d\{1,2}%'
+        return &columns * str2nr(g:ctrlsf_width) / 100
+    elseif g:ctrlsf_width =~ '\d\+'
+        return str2nr(g:ctrlsf_width)
+    else
+        return &columns / 2
+    endif
+endfunc
+" }}}
 " s:OpenWindow() {{{2
 func! s:OpenWindow()
     " backup current bufnr and winnr
@@ -125,13 +136,7 @@ func! s:OpenWindow()
         \ }
 
     if s:FocusCtrlsfWindow() == -1
-        if g:ctrlsf_width =~ '\d\{1,2}%'
-            let width = &columns * str2nr(g:ctrlsf_width) / 100
-        elseif g:ctrlsf_width =~ '\d\+'
-            let width = str2nr(g:ctrlsf_width)
-        else
-            let width = &columns / 2
-        endif
+        let width = s:CalcWidth()
 
         let openpos = g:ctrlsf_open_left ? 'topleft vertical ' : 'botright vertical '
         exec 'silent keepalt ' . openpos . width . 'split ' . '__CtrlSF__'
@@ -154,6 +159,7 @@ func! s:CloseWindow()
 
     " Surely we are in CtrlSF window
     close
+    pclose!
 
     call s:FocusPreviousWindow()
 endf
@@ -170,6 +176,7 @@ func! s:JumpTo(mode)
     let target_winnr = s:FindTargetWindow(file)
 
     if a:mode == 'o' && g:ctrlsf_auto_close
+        pclose!
         let ctrlsf_winnr = s:FindCtrlsfWindow()
 
         if ctrlsf_winnr <= target_winnr
@@ -179,10 +186,12 @@ func! s:JumpTo(mode)
         call s:CloseWindow()
     endif
 
-    call s:OpenTargetWindow(target_winnr, file, lnum, col)
 
     if a:mode == 'p'
+        call s:OpenTargetWindow(target_winnr, file, lnum, col, 1)
         exec s:FindCtrlsfWindow() . 'wincmd w'
+    else
+        call s:OpenTargetWindow(target_winnr, file, lnum, col, 0)
     endif
 endf
 " }}}
@@ -268,21 +277,30 @@ endf
 " }}}
 
 " s:OpenTargetWindow(file) {{{2
-func! s:OpenTargetWindow(winnr, file, lnum, col)
-    if a:winnr == 0
-        exec 'silent split ' . a:file
+func! s:OpenTargetWindow(winnr, file, lnum, col, prvmode)
+    if a:prvmode
+        exec 'silent pedit! ' . a:file
+        wincmd P
+        let &previewheight = s:CalcWidth() / 4
+        setlocal buftype=nofile
+        setlocal noswapfile
+        setlocal bufhidden=delete
+        nnoremap <buffer><silent> q :<C-u>close<CR>
     else
-        exec a:winnr . 'wincmd w'
+        if a:winnr == 0
+            exec 'silent split ' . a:file
+        else
+            exec a:winnr . 'wincmd w'
 
-        if bufname('%') !~# a:file
-            if &modified
-                exec 'silent split ' . a:file
-            else
-                exec 'edit ' . a:file
+            if bufname('%') !~# a:file
+                if &modified
+                    exec 'silent split ' . a:file
+                else
+                    exec 'edit ' . a:file
+                endif
             endif
         endif
     endif
-
     exec 'normal ' . a:lnum . 'z.'
     call cursor(a:lnum, a:col)
 
