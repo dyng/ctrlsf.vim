@@ -109,8 +109,12 @@ A typical workflow using CtrlSF is like this:
 
 :CtrlSFClose                                                    *:CtrlSFClose*
 
-  Close a existing CtrlSF window. If there is no active CtrlSF window, do
+  Close an existing CtrlSF window. If there is no active CtrlSF window, do
   nothing.
+
+:CtrlSFClearHighlight                                  *:CtrlSFClearHighlight*
+  If you are using |g:ctrlsf_current_line_hl|, you can use this command to
+  clear the highlight on the selected line.
 
 ==============================================================================
 4. Key Maps                                                   *ctrlsf-keymaps*
@@ -172,6 +176,13 @@ of argument:
 Example:
 >
     let g:ctrlsf_width = '30%'
+
+g:ctrlsf_current_line_hl                          *'g:ctrlsf_current_line_hl'*
+Default: 0
+If you want highlight what you selected line in CtrlSF window in the target
+window:
+>
+    let g:ctrlsf_current_line_hl = 1
 <
 ==============================================================================
 6. About                                                        *ctrlsf-about*
