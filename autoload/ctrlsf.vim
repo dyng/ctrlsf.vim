@@ -349,7 +349,7 @@ func! s:HighlightSelectedLine()
     call s:ClearSelectedLine()
 
     let pattern = '\%' . line('.') . 'l.*'
-    let b:ctrlsf_highlight_id = matchadd('Visual', pattern)
+    let b:ctrlsf_highlight_id = matchadd('Visual', pattern, -1)
 endf
 " }}}
 " }}}
