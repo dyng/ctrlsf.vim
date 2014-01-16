@@ -109,8 +109,13 @@ A typical workflow using CtrlSF is like this:
 
 :CtrlSFClose                                                    *:CtrlSFClose*
 
-  Close a existing CtrlSF window. If there is no active CtrlSF window, do
+  Close an existing CtrlSF window. If there is no active CtrlSF window, do
   nothing.
+
+:CtrlSFClearHL                                                *:CtrlSFClearHL*
+
+  If you have turned on |g:ctrlsf_selected_line_hl|, use this command to clear
+  a highlight on the selected line.
 
 ==============================================================================
 4. Key Maps                                                   *ctrlsf-keymaps*
@@ -143,7 +148,7 @@ When you jump to source file from a CtrlSF window, by default the CtrlSF
 window will be closed automatically. Set 'g:ctrlsf_auto_close' to 0 to prevent
 it.
 >
-    let g:ctrlsf_auto_close = '0'
+    let g:ctrlsf_auto_close = 0
 
 g:ctrlsf_context                                          *'g:ctrlsf_context'*
 Default: '-C 3'
@@ -172,6 +177,13 @@ of argument:
 Example:
 >
     let g:ctrlsf_width = '30%'
+
+g:ctrlsf_selected_line_hl                        *'g:ctrlsf_selected_line_hl'*
+Default: 0
+If you want to highlight the line you selected after jumping into some file,
+you can turn on this feature by
+>
+    let g:ctrlsf_selected_line_hl = 1
 <
 ==============================================================================
 6. About                                                        *ctrlsf-about*

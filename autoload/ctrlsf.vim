@@ -113,6 +113,12 @@ func! ctrlsf#CloseWindow() abort
     call s:CloseWindow()
 endf
 " }}}
+
+" ctrlsf#ClearSelectedLine() {{{2
+func! ctrlsf#ClearSelectedLine() abort
+    call s:ClearSelectedLine()
+endf
+" }}}
 " }}}
 
 " Actions {{{1
@@ -156,6 +162,12 @@ func! s:CloseWindow()
     close
 
     call s:FocusPreviousWindow()
+endf
+" }}}
+
+" s:ClearHighlight() {{{2
+func! s:ClearSelectedLine()
+    silent! call matchdelete(b:ctrlsf_highlight_id)
 endf
 " }}}
 
@@ -283,10 +295,18 @@ func! s:OpenTargetWindow(winnr, file, lnum, col)
         endif
     endif
 
+    " Move cursor to matched line
     exec 'normal ' . a:lnum . 'z.'
     call cursor(a:lnum, a:col)
 
+    " Open fold
     normal zv
+
+    " Highlight selected line.
+    " http://vim.wikia.com/wiki/Highlight_current_line#Highlighting_that_stays_after_cursor_moves
+    if g:ctrlsf_selected_line_hl
+        call s:HighlightSelectedLine()
+    endif
 endf
 " }}}
 
@@ -320,6 +340,16 @@ func! s:HighlightMatch()
     let case    = get(s:ackprg_options, 'ignorecase') ? '\c' : ''
     let pattern = printf('/\v%s%s/', case, escape(s:ackprg_options['pattern'], '/'))
     exec 'match ctrlsfMatch ' . pattern
+endf
+" }}}
+
+" s:HighlightSelectedLine() {{{2
+func! s:HighlightSelectedLine()
+    " Clear previous highlight
+    call s:ClearSelectedLine()
+
+    let pattern = '\%' . line('.') . 'l.*'
+    let b:ctrlsf_highlight_id = matchadd('Visual', pattern)
 endf
 " }}}
 " }}}
