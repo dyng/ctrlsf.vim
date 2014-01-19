@@ -123,13 +123,15 @@ endf
 
 " Actions {{{1
 " s:OpenWindow() {{{2
-func! s:OpenWindow()
+func! s:OpenWindow() abort
     " backup current bufnr and winnr
     let s:previous = {
         \ 'bufnr' : bufnr('%'),
         \ 'winnr' : winnr(),
         \ }
 
+    " focus an existing ctrlsf window
+    " if failed, initialize a new one
     if s:FocusCtrlsfWindow() == -1
         if g:ctrlsf_width =~ '\d\{1,2}%'
             let width = &columns * str2nr(g:ctrlsf_width) / 100
@@ -153,10 +155,12 @@ endf
 " }}}
 
 " s:CloseWindow() {{{2
-func! s:CloseWindow()
+func! s:CloseWindow() abort
     if s:FocusCtrlsfWindow() == -1
         return
     endif
+
+    call s:ClosePreviewWindow()
 
     " Surely we are in CtrlSF window
     close
@@ -165,36 +169,126 @@ func! s:CloseWindow()
 endf
 " }}}
 
-" s:ClearHighlight() {{{2
-func! s:ClearSelectedLine()
+" s:ClearSelectedLine() {{{2
+func! s:ClearSelectedLine() abort
     silent! call matchdelete(b:ctrlsf_highlight_id)
 endf
 " }}}
 
 " s:JumpTo() {{{2
-func! s:JumpTo(mode)
+func! s:JumpTo(mode) abort
     let [file, lnum, col] = s:jump_table[line('.') - 1]
 
     if empty(file) || empty(lnum)
         return
     endif
 
-    let target_winnr = s:FindTargetWindow(file)
+    if a:mode == 'o'
+        let target_winnr = s:FindTargetWindow(file)
 
-    if a:mode == 'o' && g:ctrlsf_auto_close
-        let ctrlsf_winnr = s:FindCtrlsfWindow()
-
-        if ctrlsf_winnr <= target_winnr
-            let target_winnr -= 1
+        if g:ctrlsf_auto_close
+            let ctrlsf_winnr = s:FindCtrlsfWindow()
+            if ctrlsf_winnr <= target_winnr
+                let target_winnr -= 1
+            endif
+            call s:CloseWindow()
         endif
 
-        call s:CloseWindow()
+        call s:OpenFileInWindow(target_winnr, file, lnum, col)
+    elseif a:mode == 'p'
+        call s:PreviewFile(file, lnum, col)
+    endif
+endf
+" }}}
+
+" s:OpenFileInWindow() {{{2
+func! s:OpenFileInWindow(winnr, file, lnum, col) abort
+    if a:winnr == 0
+        exec 'silent split ' . a:file
+    else
+        exec a:winnr . 'wincmd w'
+
+        if bufname('%') !~# a:file
+            if &modified
+                exec 'silent split ' . a:file
+            else
+                exec 'edit ' . a:file
+            endif
+        endif
     endif
 
-    call s:OpenTargetWindow(target_winnr, file, lnum, col)
+    call s:AfterOpenFile(a:file, a:lnum, a:col)
+endf
+" }}}
 
-    if a:mode == 'p'
-        call s:FocusCtrlsfWindow()
+" s:PreviewFile() {{{2
+func! s:PreviewFile(file, lnum, col) abort
+    if (s:FocusPreviewWindow() == -1)
+        call s:OpenPreviewWindow()
+    endif
+
+    if !exists('b:ctrlsf_file') || b:ctrlsf_file !=# a:file
+        setl modifiable
+        silent %delete _
+        exec 'silent 0read ' . a:file
+        setl nomodifiable
+
+        " trigger filetypedetect (syntax highlight)
+        exec 'doau filetypedetect BufRead ' . a:file
+
+        let b:ctrlsf_file = a:file
+    endif
+
+    call s:AfterOpenFile(a:file, a:lnum, a:col)
+
+    call s:FocusCtrlsfWindow()
+endf
+" }}}
+
+" s:OpenPreviewWindow() {{{2
+func! s:OpenPreviewWindow() abort
+    let ctrlsf_width  = winwidth(0)
+    let width = min([&columns-ctrlsf_width, ctrlsf_width])
+
+    let openpos = g:ctrlsf_open_left ? 'rightbelow vertical ' : 'leftabove vertical '
+    exec 'silent keepalt ' . openpos . width . 'split ' . '__CtrlSFPreview__'
+
+    setl buftype=nofile
+    setl bufhidden=delete
+    setl noswapfile
+    setl nobuflisted
+    setl nomodifiable
+    setl winfixwidth
+
+    map q :call <SID>ClosePreviewWindow()<CR>
+endf
+" }}}
+
+" s:ClosePreviewWindow() {{{2
+func! s:ClosePreviewWindow() abort
+    if s:FocusPreviewWindow() == -1
+        return
+    endif
+
+    close
+
+    call s:FocusCtrlsfWindow()
+endf
+" }}}
+
+" s:AfterOpenFile() {{{2
+func! s:AfterOpenFile(file, lnum, col) abort
+    " Move cursor to matched line
+    exec 'normal ' . a:lnum . 'z.'
+    call cursor(a:lnum, a:col)
+
+    " Open fold
+    normal zv
+
+    " Highlight selected line.
+    " http://vim.wikia.com/wiki/Highlight_current_line#Highlighting_that_stays_after_cursor_moves
+    if g:ctrlsf_selected_line_hl
+        call s:HighlightSelectedLine()
     endif
 endf
 " }}}
@@ -202,7 +296,7 @@ endf
 
 " Window Operations {{{1
 " s:InitWindow() {{{2
-func! s:InitWindow()
+func! s:InitWindow() abort
     setl filetype=ctrlsf
     setl noreadonly
     setl buftype=nofile
@@ -227,33 +321,51 @@ endf
 " }}}
 
 " s:FindCtrlsfWindow() {{{2
-func! s:FindCtrlsfWindow()
+func! s:FindCtrlsfWindow() abort
     return bufwinnr('__CtrlSF__')
 endf
 " }}}
 
+" s:FindPreviewWindow() {{{2
+func! s:FindPreviewWindow() abort
+    return bufwinnr('__CtrlSFPreview__')
+endf
+" }}}
+
 " s:FocusCtrlsfWindow() {{{2
-func! s:FocusCtrlsfWindow()
+func! s:FocusCtrlsfWindow() abort
     let ctrlsf_winnr = s:FindCtrlsfWindow()
     if ctrlsf_winnr == -1
         return -1
     else
-        exec ctrlsf_winnr . 'wincm w'
+        exec ctrlsf_winnr . 'wincmd w'
         return ctrlsf_winnr
     endif
 endf
 " }}}
 
-" s:FindTargetWindow(file) {{{2
-func! s:FindTargetWindow(file)
+" s:FocusPreviewWindow() {{{2
+func! s:FocusPreviewWindow() abort
+    let preview_winnr = s:FindPreviewWindow()
+    if preview_winnr == -1
+        return -1
+    else
+        exec preview_winnr . 'wincmd w'
+        return preview_winnr
+    endif
+endf
+" }}}
+
+" s:FindTargetWindow() {{{2
+func! s:FindTargetWindow(file) abort
     let target_winnr = bufwinnr(a:file)
 
-    " case: window containing target file
+    " case: there is a window containing the target file
     if target_winnr > 0
         return target_winnr
     endif
 
-    " case: window where ctrlsf window was opened
+    " case: previous window where ctrlsf was triggered
     let ctrlsf_winnr = s:FindCtrlsfWindow()
     if ctrlsf_winnr > 0 && ctrlsf_winnr <= s:previous.winnr
         let target_winnr = s:previous.winnr + 1
@@ -279,39 +391,8 @@ func! s:FindTargetWindow(file)
 endf
 " }}}
 
-" s:OpenTargetWindow(file) {{{2
-func! s:OpenTargetWindow(winnr, file, lnum, col)
-    if a:winnr == 0
-        exec 'silent split ' . a:file
-    else
-        exec a:winnr . 'wincmd w'
-
-        if bufname('%') !~# a:file
-            if &modified
-                exec 'silent split ' . a:file
-            else
-                exec 'edit ' . a:file
-            endif
-        endif
-    endif
-
-    " Move cursor to matched line
-    exec 'normal ' . a:lnum . 'z.'
-    call cursor(a:lnum, a:col)
-
-    " Open fold
-    normal zv
-
-    " Highlight selected line.
-    " http://vim.wikia.com/wiki/Highlight_current_line#Highlighting_that_stays_after_cursor_moves
-    if g:ctrlsf_selected_line_hl
-        call s:HighlightSelectedLine()
-    endif
-endf
-" }}}
-
 " s:FocusPreviousWindow() {{{2
-func! s:FocusPreviousWindow()
+func! s:FocusPreviousWindow() abort
     let ctrlsf_winnr = s:FindCtrlsfWindow()
     if ctrlsf_winnr > 0 && ctrlsf_winnr <= s:previous.winnr
         let pre_winnr = s:previous.winnr + 1
@@ -328,7 +409,7 @@ endf
 " }}}
 
 " s:HighlightMatch() {{{2
-func! s:HighlightMatch()
+func! s:HighlightMatch() abort
     if !exists('b:current_syntax') || b:current_syntax != 'ctrlsf'
         return -1
     endif
@@ -344,7 +425,7 @@ endf
 " }}}
 
 " s:HighlightSelectedLine() {{{2
-func! s:HighlightSelectedLine()
+func! s:HighlightSelectedLine() abort
     " Clear previous highlight
     call s:ClearSelectedLine()
 
@@ -358,7 +439,7 @@ endf
 " s:ParseAckprgOptions(args) {{{2
 " A primitive approach. *CAN NOT* guarantee to parse correctly in the worst
 " situation.
-func! s:ParseAckprgOptions(args)
+func! s:ParseAckprgOptions(args) abort
     let s:ackprg_options = {}
 
     let args = a:args
@@ -424,7 +505,7 @@ endf
 " }}}
 
 " s:ParseAckprgOutput(raw_output) {{{2
-func! s:ParseAckprgOutput(raw_output)
+func! s:ParseAckprgOutput(raw_output) abort
     let s:match_table = []
 
     if len(s:ackprg_options.path) == 1
@@ -466,7 +547,7 @@ endf
 
 " Output {{{1
 " s:RenderContent() {{{2
-func! s:RenderContent()
+func! s:RenderContent() abort
     let s:jump_table = []
     let output       = ''
 
@@ -498,7 +579,7 @@ endf
 " }}}
 
 " s:FormatAndSetJmp(type, ...) {{{2
-func! s:FormatAndSetJmp(type, ...)
+func! s:FormatAndSetJmp(type, ...) abort
     let line    = exists('a:1') ? a:1 : ''
     let jmpinfo = exists('a:2') ? a:2 : {}
 
@@ -515,7 +596,7 @@ endf
 " }}}
 
 " s:FormatLine(type, line) {{{2
-func! s:FormatLine(type, line)
+func! s:FormatLine(type, line) abort
     let output = ''
     let line   = a:line
 
@@ -535,7 +616,7 @@ endf
 " }}}
 
 " s:SetJmp(file, line, col) {{{2
-func! s:SetJmp(file, line, col)
+func! s:SetJmp(file, line, col) abort
     call add(s:jump_table, [a:file, a:line, a:col])
 endf
 " }}}
@@ -543,7 +624,7 @@ endf
 
 " Utils {{{1
 " s:CheckAckprg() {{{2
-func! s:CheckAckprg()
+func! s:CheckAckprg() abort
     if !exists('g:ctrlsf_ackprg')
         echoerr 'g:ctrlsf_ackprg is not defined!'
         return -99
@@ -569,7 +650,7 @@ endf
 " }}}
 
 " s:BuildCommand(args) {{{2
-func! s:BuildCommand(args)
+func! s:BuildCommand(args) abort
     let prg      = g:ctrlsf_ackprg
     let uargs    = escape(a:args, '%#!')
     let prg_args = {
