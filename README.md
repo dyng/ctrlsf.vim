@@ -34,9 +34,7 @@ An ack/ag powered code search and view tool, in an intuitive way with fairly mor
 In CtrlSF window:
 
 - `o`, `Enter` - Jump to file that contains the current matching line.
-
 - `p` - Like `o` but open file in a seperate preview window.
-
 - `q` - Close CtrlSF window.
 
 In preview window:
