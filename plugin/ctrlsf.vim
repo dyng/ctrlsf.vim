@@ -53,7 +53,7 @@ if !exists('g:ctrlsf_width')
 endif
 
 if !exists('g:ctrlsf_selected_line_hl')
-    let g:ctrlsf_selected_line_hl = 0
+    let g:ctrlsf_selected_line_hl = 'p'
 endif
 " }}}
 

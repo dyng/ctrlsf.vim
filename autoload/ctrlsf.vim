@@ -184,17 +184,7 @@ func! s:JumpTo(mode) abort
     endif
 
     if a:mode == 'o'
-        let target_winnr = s:FindTargetWindow(file)
-
-        if g:ctrlsf_auto_close
-            let ctrlsf_winnr = s:FindCtrlsfWindow()
-            if ctrlsf_winnr <= target_winnr
-                let target_winnr -= 1
-            endif
-            call s:CloseWindow()
-        endif
-
-        call s:OpenFileInWindow(target_winnr, file, lnum, col)
+        call s:OpenFileInWindow(file, lnum, col)
     elseif a:mode == 'p'
         call s:PreviewFile(file, lnum, col)
     endif
@@ -202,11 +192,21 @@ endf
 " }}}
 
 " s:OpenFileInWindow() {{{2
-func! s:OpenFileInWindow(winnr, file, lnum, col) abort
-    if a:winnr == 0
+func! s:OpenFileInWindow(file, lnum, col) abort
+    let target_winnr = s:FindTargetWindow(a:file)
+
+    if g:ctrlsf_auto_close
+        let ctrlsf_winnr = s:FindCtrlsfWindow()
+        if ctrlsf_winnr <= target_winnr
+            let target_winnr -= 1
+        endif
+        call s:CloseWindow()
+    endif
+
+    if target_winnr == 0
         exec 'silent split ' . a:file
     else
-        exec a:winnr . 'wincmd w'
+        exec target_winnr . 'wincmd w'
 
         if bufname('%') !~# a:file
             if &modified
@@ -217,7 +217,11 @@ func! s:OpenFileInWindow(winnr, file, lnum, col) abort
         endif
     endif
 
-    call s:AfterOpenFile(a:file, a:lnum, a:col)
+    call s:MoveCursor(a:file, a:lnum, a:col)
+
+    if g:ctrlsf_selected_line_hl =~ 'o'
+        call s:HighlightSelectedLine()
+    endif
 endf
 " }}}
 
@@ -239,7 +243,11 @@ func! s:PreviewFile(file, lnum, col) abort
         let b:ctrlsf_file = a:file
     endif
 
-    call s:AfterOpenFile(a:file, a:lnum, a:col)
+    call s:MoveCursor(a:file, a:lnum, a:col)
+
+    if g:ctrlsf_selected_line_hl =~ 'p'
+        call s:HighlightSelectedLine()
+    endif
 
     call s:FocusCtrlsfWindow()
 endf
@@ -276,20 +284,14 @@ func! s:ClosePreviewWindow() abort
 endf
 " }}}
 
-" s:AfterOpenFile() {{{2
-func! s:AfterOpenFile(file, lnum, col) abort
+" s:MoveCursor() {{{2
+func! s:MoveCursor(file, lnum, col) abort
     " Move cursor to matched line
     exec 'normal ' . a:lnum . 'z.'
     call cursor(a:lnum, a:col)
 
     " Open fold
     normal zv
-
-    " Highlight selected line.
-    " http://vim.wikia.com/wiki/Highlight_current_line#Highlighting_that_stays_after_cursor_moves
-    if g:ctrlsf_selected_line_hl
-        call s:HighlightSelectedLine()
-    endif
 endf
 " }}}
 " }}}
