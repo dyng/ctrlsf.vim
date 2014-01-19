@@ -503,6 +503,12 @@ func! s:ParseAckprgOptions(args) abort
     let s:ackprg_options['path']       = path
     let s:ackprg_options['pattern']    = s:ackprg_options['--match'][0]
     let s:ackprg_options['ignorecase'] = has_key(s:ackprg_options, '--ignore-case') ? 1 : 0
+    let s:ackprg_options['context']    = 0
+    for opt in ['--after', '--before', '--after-context', '--before-context', '--context']
+        if has_key(s:ackprg_options, opt)
+            let s:ackprg_options['context'] = 1
+        endif
+    endfo
 endf
 " }}}
 
@@ -654,13 +660,14 @@ endf
 " s:BuildCommand(args) {{{2
 func! s:BuildCommand(args) abort
     let prg      = g:ctrlsf_ackprg
-    let uargs    = escape(a:args, '%#!')
+    let u_args   = escape(a:args, '%#!')
+    let context  = s:ackprg_options['context'] ? '' : g:ctrlsf_context
     let prg_args = {
         \ 'ag'       : '--heading --group --nocolor --nobreak --column',
         \ 'ack'      : '--heading --group --nocolor --nobreak',
         \ 'ack-grep' : '--heading --group --nocolor --nobreak',
         \ }
-    return printf('%s %s %s %s', prg, prg_args[prg], g:ctrlsf_context, uargs)
+    return printf('%s %s %s %s', prg, prg_args[prg], context, u_args)
 endf
 " }}}
 " }}}
