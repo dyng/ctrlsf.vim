@@ -57,13 +57,16 @@ A typical workflow using CtrlSF is like this:
   3. Press <Enter> if you want to jump to the file containing the searching
   pattern.
 
-  4. Or press <q> to quit.
+  4. Or you just need more context, press <p> to open that file in a seperate
+  preview window.
 
-  5. After you closed CtrlSF window whether by jumping to some file or quit
-  with doing nothing, |:CtrlSFOpen| can always reopen CtrlSF window. It is
+  5. Or press <q> to quit.
+
+  6. After you have closed CtrlSF window whether by jumping to some file or
+  quit with doing nothing, |:CtrlSFOpen| can always reopen CtrlSF window. It is
   inexpensive as it will not invoke a same but new search.
 
-  6. You can pass arguments like '-i', '-C' or path directly to ack/ag backend
+  7. You can pass arguments like '-i', '-C' or path directly to ack/ag backend
   in |:CtrlSF| command.
 >
     :CtrlSF -i -C 2 {pattern} /restrict/to/some/path
@@ -122,13 +125,16 @@ A typical workflow using CtrlSF is like this:
 
   The following keys are mapped by default in CtrlSF window:
 
-    <o>, <Enter> Open source file containing the line under cursor.
-
-    <q>          Quit CtrlSF window.
+    <o>, <Enter> Open source file containing the matching line under cursor.
 
     <p>          Preview. Like <o> but keeps the CtrlSF window open and cursor
                  in it.
 
+    <q>          Quit CtrlSF. (Also close preview window if opened)
+
+  And in preview window, following keys are mapped:
+
+    <q>          Quit preview.
 
 ==============================================================================
 5. Options                                                    *ctrlsf-options*
@@ -179,11 +185,18 @@ Example:
     let g:ctrlsf_width = '30%'
 
 g:ctrlsf_selected_line_hl                        *'g:ctrlsf_selected_line_hl'*
-Default: 0
-If you want to highlight the line you selected after jumping into some file,
-you can turn on this feature by
+Default: 'p'
+Highlight matching line in the target file. It is useful especially in the
+preview. The value of this option is a flag-map including following valid
+flags:
 >
-    let g:ctrlsf_selected_line_hl = 1
+    'o' : highlight matching line in the target file after jumping.
+    'p' : highlight matching line in preview window.
+<
+If you want to enable this feature both in preview window and actual file, you
+can config it as
+>
+    let g:ctrlsf_selected_line_hl = 'op'
 <
 ==============================================================================
 6. About                                                        *ctrlsf-about*

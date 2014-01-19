@@ -21,12 +21,27 @@ An ack/ag powered code search and view tool, in an intuitive way with fairly mor
 
 1. Run `:CtrlSF [pattern]`, it will split a new window to show search result.
 2. Press `Enter` if you wanna jump to that file, or press `q` to quit.
+3. Press `p` to explore file in a preview window if you only want a glance.
 3. Run `:CtrlSFOpen` can reopen CtrlSF window if you are interested in other matches. It is costless because it won't invoke a same but new search.
 4. You can pass arguments like `-i`, `-C` or path directly to ack/ag backend in `:CtrlSF` command.
 
     ```vim
     CtrlSF -i -C 1 [pattern] /restrict/to/some/path
     ```
+
+## Key Maps
+
+In CtrlSF window:
+
+- `o`, `Enter` - Jump to file that contains the current matching line.
+
+- `p` - Like `o` but open file in a seperate preview window.
+
+- `q` - Close CtrlSF window.
+
+In preview window:
+
+- `q` - Close preview window.
 
 ## Configuration
 
