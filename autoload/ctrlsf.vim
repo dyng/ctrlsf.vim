@@ -62,6 +62,32 @@ let s:ARGLIST = {
 " Public Functions {{{1
 " ctrlsf#Search(args) {{{2
 func! ctrlsf#Search(args) abort
+    call s:Search(a:args)
+endf
+" }}}
+
+" ctrlsf#OpenWindow() {{{2
+func! ctrlsf#OpenWindow() abort
+    call s:OpenWindow()
+endf
+" }}}
+
+" ctrlsf#CloseWindow() {{{2
+func! ctrlsf#CloseWindow() abort
+    call s:CloseWindow()
+endf
+" }}}
+
+" ctrlsf#ClearSelectedLine() {{{2
+func! ctrlsf#ClearSelectedLine() abort
+    call s:ClearSelectedLine()
+endf
+" }}}
+" }}}
+
+" Actions {{{1
+" s:Search() {{{2
+func! s:Search(args) abort
     let args = a:args
 
     " If no pattern is given, use word under the cursor
@@ -102,26 +128,22 @@ func! ctrlsf#Search(args) abort
 endf
 " }}}
 
-" ctrlsf#OpenWindow() {{{2
-func! ctrlsf#OpenWindow() abort
-    call s:OpenWindow()
+" s:JumpTo() {{{2
+func! s:JumpTo(mode) abort
+    let [file, lnum, col] = s:jump_table[line('.') - 1]
+
+    if empty(file) || empty(lnum)
+        return
+    endif
+
+    if a:mode == 'o'
+        call s:OpenFileInWindow(file, lnum, col)
+    elseif a:mode == 'p'
+        call s:PreviewFile(file, lnum, col)
+    endif
 endf
 " }}}
 
-" ctrlsf#CloseWindow() {{{2
-func! ctrlsf#CloseWindow() abort
-    call s:CloseWindow()
-endf
-" }}}
-
-" ctrlsf#ClearSelectedLine() {{{2
-func! ctrlsf#ClearSelectedLine() abort
-    call s:ClearSelectedLine()
-endf
-" }}}
-" }}}
-
-" Actions {{{1
 " s:OpenWindow() {{{2
 func! s:OpenWindow() abort
     " backup current bufnr and winnr
@@ -172,22 +194,6 @@ endf
 " s:ClearSelectedLine() {{{2
 func! s:ClearSelectedLine() abort
     silent! call matchdelete(b:ctrlsf_highlight_id)
-endf
-" }}}
-
-" s:JumpTo() {{{2
-func! s:JumpTo(mode) abort
-    let [file, lnum, col] = s:jump_table[line('.') - 1]
-
-    if empty(file) || empty(lnum)
-        return
-    endif
-
-    if a:mode == 'o'
-        call s:OpenFileInWindow(file, lnum, col)
-    elseif a:mode == 'p'
-        call s:PreviewFile(file, lnum, col)
-    endif
 endf
 " }}}
 
@@ -432,7 +438,7 @@ func! s:HighlightSelectedLine() abort
     call s:ClearSelectedLine()
 
     let pattern = '\%' . line('.') . 'l.*'
-    let b:ctrlsf_highlight_id = matchadd('Visual', pattern, -1)
+    let b:ctrlsf_highlight_id = matchadd('ctrlsfSelectedLine', pattern, -1)
 endf
 " }}}
 " }}}

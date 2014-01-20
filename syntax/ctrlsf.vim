@@ -15,9 +15,10 @@ syntax match ctrlsfFilename    /^.*\ze:$/
 syntax match ctrlsfLnumMatch   /^\d\+:/
 syntax match ctrlsfLnumUnmatch /^\d\+-/
 
-hi link ctrlsfFilename    Title
-hi link ctrlsfMatch       Search
-hi link ctrlsfLnumMatch   Visual
-hi link ctrlsfLnumUnmatch Comment
+hi def link ctrlsfFilename     Title
+hi def link ctrlsfMatch        Search
+hi def link ctrlsfLnumMatch    Visual
+hi def link ctrlsfLnumUnmatch  Comment
+hi def link ctrlsfSelectedLine Visual
 
 let b:current_syntax = 'ctrlsf'
