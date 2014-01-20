@@ -96,8 +96,8 @@ func! ctrlsf#Search(args) abort
     setl modifiable
     silent %delete _
     silent 0put =s:RenderContent()
+    silent $delete _ " delete trailing empty line
     setl nomodifiable
-
     call cursor(1, 1)
 endf
 " }}}
