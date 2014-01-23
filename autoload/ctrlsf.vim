@@ -624,7 +624,7 @@ endf
 " s:FormatLine(type, line) {{{2
 func! s:FormatLine(type, arg) abort
     if a:type == 'summary'
-        let output = printf("%s matched lines accross %s files\n", a:arg.matches, a:arg.files)
+        let output = printf("%s matched lines across %s files\n", a:arg.matches, a:arg.files)
     elseif a:type == 'filename'
         let output = a:arg . ":\n"
     elseif a:type == 'normal'
