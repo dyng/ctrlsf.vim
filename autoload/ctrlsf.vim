@@ -11,7 +11,7 @@ let s:ackprg_result  = []
 let s:match_list     = []
 let s:jump_table     = []
 let s:ackprg_options = {}
-let s:previous       = {}
+let s:launch_win     = {}
 " }}}
 
 " Static Constants {{{1
@@ -61,7 +61,7 @@ let s:ARGLIST = {
 " }}}
 
 " Public Functions {{{1
-" ctrlsf#Search(args) {{{2
+" ctrlsf#Search() {{{2
 func! ctrlsf#Search(args) abort
     call s:Search(a:args)
 endf
@@ -148,7 +148,7 @@ endf
 " s:OpenWindow() {{{2
 func! s:OpenWindow() abort
     " backup current bufnr and winnr
-    let s:previous = {
+    let s:launch_win = {
         \ 'bufnr' : bufnr('%'),
         \ 'winnr' : winnr(),
         \ }
@@ -376,13 +376,13 @@ func! s:FindTargetWindow(file) abort
 
     " case: previous window where ctrlsf was triggered
     let ctrlsf_winnr = s:FindCtrlsfWindow()
-    if ctrlsf_winnr > 0 && ctrlsf_winnr <= s:previous.winnr
-        let target_winnr = s:previous.winnr + 1
+    if ctrlsf_winnr > 0 && ctrlsf_winnr <= s:launch_win.winnr
+        let target_winnr = s:launch_win.winnr + 1
     else
-        let target_winnr = s:previous.winnr
+        let target_winnr = s:launch_win.winnr
     endif
 
-    if winbufnr(target_winnr) == s:previous.bufnr && empty(getwinvar(target_winnr, '&buftype'))
+    if winbufnr(target_winnr) == s:launch_win.bufnr && empty(getwinvar(target_winnr, '&buftype'))
         return target_winnr
     endif
 
@@ -403,10 +403,10 @@ endf
 " s:FocusPreviousWindow() {{{2
 func! s:FocusPreviousWindow() abort
     let ctrlsf_winnr = s:FindCtrlsfWindow()
-    if ctrlsf_winnr > 0 && ctrlsf_winnr <= s:previous.winnr
-        let pre_winnr = s:previous.winnr + 1
+    if ctrlsf_winnr > 0 && ctrlsf_winnr <= s:launch_win.winnr
+        let pre_winnr = s:launch_win.winnr + 1
     else
-        let pre_winnr = s:previous.winnr
+        let pre_winnr = s:launch_win.winnr
     endif
 
     if winbufnr(pre_winnr) != -1
@@ -445,7 +445,7 @@ endf
 " }}}
 
 " Input {{{1
-" s:ParseAckprgOptions(args) {{{2
+" s:ParseAckprgOptions() {{{2
 " A primitive approach. *CAN NOT* guarantee to parse correctly in the worst
 " situation.
 func! s:ParseAckprgOptions(args) abort
@@ -519,7 +519,7 @@ func! s:ParseAckprgOptions(args) abort
 endf
 " }}}
 
-" s:ParseAckprgOutput(raw_output) {{{2
+" s:ParseAckprgOutput() {{{2
 func! s:ParseAckprgOutput(raw_output) abort
     let s:ackprg_result = []
     let s:match_list    = []
@@ -604,7 +604,7 @@ func! s:RenderContent() abort
 endf
 " }}}
 
-" s:FormatAndSetJmp(type, ...) {{{2
+" s:FormatAndSetJmp() {{{2
 func! s:FormatAndSetJmp(type, ...) abort
     let arg     = exists('a:1') ? a:1 : ''
     let jmpinfo = exists('a:2') ? a:2 : {}
@@ -621,7 +621,7 @@ func! s:FormatAndSetJmp(type, ...) abort
 endf
 " }}}
 
-" s:FormatLine(type, line) {{{2
+" s:FormatLine() {{{2
 func! s:FormatLine(type, arg) abort
     if a:type == 'summary'
         let output = printf("%s matched lines across %s files\n", a:arg.matches, a:arg.files)
@@ -639,7 +639,7 @@ func! s:FormatLine(type, arg) abort
 endf
 " }}}
 
-" s:SetJmp(file, line, col) {{{2
+" s:SetJmp() {{{2
 func! s:SetJmp(file, line, col) abort
     call add(s:jump_table, [a:file, a:line, a:col])
 endf
@@ -673,7 +673,7 @@ func! s:CheckAckprg() abort
 endf
 " }}}
 
-" s:BuildCommand(args) {{{2
+" s:BuildCommand() {{{2
 func! s:BuildCommand(args) abort
     let prg      = g:ctrlsf_ackprg
     let u_args   = escape(a:args, '%#!')
