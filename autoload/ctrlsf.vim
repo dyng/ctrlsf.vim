@@ -554,7 +554,7 @@ func! s:ParseAckprgOutput(raw_output) abort
             endif
             call add(s:ackprg_result[-1]['lines'], {
                 \ 'lnum'    : matched[1],
-                \ 'matched' : matched[2],
+                \ 'symbol'  : matched[2],
                 \ 'col'     : matched[3],
                 \ 'content' : matched[5],
                 \ })
@@ -568,80 +568,92 @@ endf
 " s:RenderContent() {{{2
 func! s:RenderContent() abort
     let s:jump_table = []
-    let output       = ''
+    let content      = []
+
+    let match_count  = len(s:match_list)
+    let s:match_list = []
 
     " Summary
-    let output .= s:FormatAndSetJmp('summary', {
+    call s:InsertLineAndSetJmp(content, 'summary', {
         \ 'files'   : len(s:ackprg_result),
-        \ 'matches' : len(s:match_list),
+        \ 'matches' : match_count,
         \ })
-    let output .= s:FormatAndSetJmp('blank')
+    call s:InsertLineAndSetJmp(content, 'blank')
 
     for file in s:ackprg_result
         " Filename
-        let output .= s:FormatAndSetJmp('filename', file.filename)
+        call s:InsertLineAndSetJmp(content, 'filename', file.filename)
 
         " Result
         for line in file.lines
             if !empty(line.lnum)
-                let output .= s:FormatAndSetJmp('normal', line, {
+                call s:InsertLineAndSetJmp(content, 'normal', line, {
                     \ 'file' : file.filename,
                     \ 'lnum' : line.lnum,
                     \ 'col'  : line.col,
                     \ })
             else
-                let output .= s:FormatAndSetJmp('ellipsis')
+                call s:InsertLineAndSetJmp(content, 'ellipsis')
             endif
         endfo
 
         " Insert empty line between files
         if file isnot s:ackprg_result[-1]
-            let output .= s:FormatAndSetJmp('blank')
+            call s:InsertLineAndSetJmp(content, 'blank')
         endif
     endfo
 
-    return output
+    return join(content, "\n")
 endf
 " }}}
 
-" s:FormatAndSetJmp() {{{2
-func! s:FormatAndSetJmp(type, ...) abort
+" s:InsertLineAndSetJmp() {{{2
+func! s:InsertLineAndSetJmp(buffer, type, ...) abort
     let arg     = exists('a:1') ? a:1 : ''
     let jmpinfo = exists('a:2') ? a:2 : {}
 
-    let output = s:FormatLine(a:type, arg)
+    let content = s:FormatLine(a:type, arg)
+    call add(a:buffer, content)
 
     if !empty(jmpinfo)
-        call s:SetJmp(jmpinfo.file, jmpinfo.lnum, jmpinfo.col)
+        call s:SetJmpTable(jmpinfo.file, jmpinfo.lnum, jmpinfo.col)
     else
-        call s:SetJmp('', '', '')
+        call s:SetJmpTable('', '', '')
     endif
 
-    return output
+    if a:type == 'normal' && arg.symbol == ':'
+        call s:SetMatchList(len(a:buffer))
+    endif
 endf
 " }}}
 
 " s:FormatLine() {{{2
 func! s:FormatLine(type, arg) abort
     if a:type == 'summary'
-        let output = printf("%s matched lines across %s files\n", a:arg.matches, a:arg.files)
+        let output = printf("%s matched lines across %s files", a:arg.matches, a:arg.files)
     elseif a:type == 'filename'
-        let output = a:arg . ":\n"
+        let output = a:arg . ":"
     elseif a:type == 'normal'
-        let output = a:arg.lnum . a:arg.matched
-        let output .= repeat(' ', 12 - len(output)) . a:arg.content . "\n"
+        let output = a:arg.lnum . a:arg.symbol
+        let output .= repeat(' ', 12 - len(output)) . a:arg.content
     elseif a:type == 'ellipsis'
-        let output = repeat('.', 4) . "\n"
+        let output = repeat('.', 4)
     elseif a:type == 'blank'
-        let output = "\n"
+        let output = ""
     endif
     return output
 endf
 " }}}
 
-" s:SetJmp() {{{2
-func! s:SetJmp(file, line, col) abort
+" s:SetJmpTable() {{{2
+func! s:SetJmpTable(file, line, col) abort
     call add(s:jump_table, [a:file, a:line, a:col])
+endf
+" }}}
+
+" s:SetMatchList() {{{2
+func! s:SetMatchList(linenr) abort
+    call add(s:match_list, a:linenr)
 endf
 " }}}
 " }}}
