@@ -145,6 +145,14 @@ func! s:JumpTo(mode) abort
 endf
 " }}}
 
+" s:NextMatch() {{{2
+func! s:NextMatch(forward) abort
+    let current = line('.')
+    let next = s:FindNextMatchLnum(current, a:forward)
+    call cursor(next, 12 + s:jump_table[next-1][2])
+endf
+" }}}
+
 " s:OpenWindow() {{{2
 func! s:OpenWindow() abort
     " backup current bufnr and winnr
@@ -224,7 +232,7 @@ func! s:OpenFileInWindow(file, lnum, col) abort
         endif
     endif
 
-    call s:MoveCursor(a:file, a:lnum, a:col)
+    call s:MoveCursor(a:lnum, a:col)
 
     if g:ctrlsf_selected_line_hl =~ 'o'
         call s:HighlightSelectedLine()
@@ -250,7 +258,7 @@ func! s:PreviewFile(file, lnum, col) abort
         let b:ctrlsf_file = a:file
     endif
 
-    call s:MoveCursor(a:file, a:lnum, a:col)
+    call s:MoveCursor(a:lnum, a:col)
 
     if g:ctrlsf_selected_line_hl =~ 'p'
         call s:HighlightSelectedLine()
@@ -292,7 +300,7 @@ endf
 " }}}
 
 " s:MoveCursor() {{{2
-func! s:MoveCursor(file, lnum, col) abort
+func! s:MoveCursor(lnum, col) abort
     " Move cursor to matched line
     exec 'normal ' . a:lnum . 'z.'
     call cursor(a:lnum, a:col)
@@ -322,10 +330,12 @@ func! s:InitWindow() abort
     setl nofoldenable
 
     " default map
-    nnoremap <silent><buffer> <CR> :call <SID>JumpTo('o')<CR>
-    nnoremap <silent><buffer> o    :call <SID>JumpTo('o')<CR>
-    nnoremap <silent><buffer> p    :call <SID>JumpTo('p')<CR>
-    nnoremap <silent><buffer> q    :call <SID>CloseWindow()<CR>
+    nnoremap <silent><buffer> <CR>  :call <SID>JumpTo('o')<CR>
+    nnoremap <silent><buffer> o     :call <SID>JumpTo('o')<CR>
+    nnoremap <silent><buffer> p     :call <SID>JumpTo('p')<CR>
+    nnoremap <silent><buffer> <C-J> :call <SID>NextMatch(1)<CR>
+    nnoremap <silent><buffer> <C-K> :call <SID>NextMatch(0)<CR>
+    nnoremap <silent><buffer> q     :call <SID>CloseWindow()<CR>
 endf
 " }}}
 
@@ -440,6 +450,30 @@ func! s:HighlightSelectedLine() abort
 
     let pattern = '\%' . line('.') . 'l.*'
     let b:ctrlsf_highlight_id = matchadd('ctrlsfSelectedLine', pattern, -1)
+endf
+" }}}
+
+" s:FindNextMatchLnum() {{{2
+func! s:FindNextMatchLnum(current, forward)
+    let mlist_len = len(s:match_list)
+
+    let i_le = s:BinarySearch(s:match_list, 0, mlist_len - 1, a:current)
+
+    if a:forward
+        let i_next = i_le + 1
+    else
+        if s:match_list[i_le] == a:current
+            let i_next = i_le - 1
+        else
+            let i_next = i_le
+        endif
+    endif
+
+    if i_next >= mlist_len || i_next < 0
+        return a:current
+    else
+        return s:match_list[i_next]
+    endif
 endf
 " }}}
 " }}}
@@ -696,6 +730,30 @@ func! s:BuildCommand(args) abort
         \ 'ack-grep' : '--heading --group --nocolor --nobreak',
         \ }
     return printf('%s %s %s %s', prg, prg_args[prg], context, u_args)
+endf
+" }}}
+
+" s:BinarySearch() {{{
+" Search for the maximum number in 'array' that less or equal to 'key'
+func! s:BinarySearch(array, imin, imax, key)
+    let array = a:array | let key  = a:key
+    let imax  = a:imax  | let imin = a:imin
+
+    let ret = -1
+    while (imax >= imin)
+        let imid = (imax + imin) / 2
+
+        if array[imid] < key
+            let ret = imid
+            let imin = imid + 1
+        elseif array[imid] > key
+            let imax = imid - 1
+        else
+            let ret = imid | break
+        endif
+    endwh
+
+    return ret
 endf
 " }}}
 " }}}
