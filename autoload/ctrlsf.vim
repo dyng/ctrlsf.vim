@@ -84,6 +84,38 @@ func! ctrlsf#ClearSelectedLine() abort
     call s:ClearSelectedLine()
 endf
 " }}}
+
+" ctrlsf#StatusLine() {{{2
+func! ctrlsf#StatusLine(...)
+    if &filetype == 'ctrlsf'
+        let w:airline_section_a = 'CtrlSF'
+        let w:airline_section_b = '%{ctrlsf#SectionB()}'
+        let w:airline_section_c = '%{ctrlsf#SectionC()}'
+        let w:airline_section_x = '%{ctrlsf#SectionX()}'
+        let w:airline_section_y = ''
+    endif
+endf
+" }}}
+
+" ctrlsf#SectionB() {{{2
+func! ctrlsf#SectionB()
+    return 'Search: ' . get(s:ackprg_options, 'pattern', '')
+endf
+" }}}
+
+" ctrlsf#SectionC() {{{2
+func! ctrlsf#SectionC()
+    return get(s:jump_table[line('.')-1], 'filename', '')
+endf
+" }}}
+
+" ctrlsf#SectionX() {{{2
+func! ctrlsf#SectionX()
+     let total_matches = len(s:match_list)
+     let passed_matches = 1 + s:BinarySearch(s:match_list, 0, total_matches-1, line('.'))
+     return passed_matches . '/' . total_matches
+endf
+" }}}
 " }}}
 
 " Actions {{{1
@@ -627,7 +659,11 @@ func! s:RenderContent() abort
                     \ 'col'  : line.col,
                     \ })
             else
-                call s:InsertLineAndSetJmp(content, 'ellipsis')
+                call s:InsertLineAndSetJmp(content, 'ellipsis', '', {
+                    \ 'file' : file.filename,
+                    \ 'lnum' : 0,
+                    \ 'col'  : 0,
+                    \ })
             endif
         endfo
 
