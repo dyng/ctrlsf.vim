@@ -98,6 +98,7 @@ endf
 " Airline support {{{1
 if exists('*airline#add_statusline_func')
     call airline#add_statusline_func('ctrlsf#StatusLine')
+    call airline#add_statusline_func('ctrlsf#PreviewStatusLine')
 endif
 " }}}
 

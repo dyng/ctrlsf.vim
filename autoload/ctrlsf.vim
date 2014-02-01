@@ -87,7 +87,7 @@ endf
 
 " ctrlsf#StatusLine() {{{2
 func! ctrlsf#StatusLine(...)
-    if &filetype == 'ctrlsf'
+    if bufname('%') == '__CtrlSF__'
         let w:airline_section_a = 'CtrlSF'
         let w:airline_section_b = '%{ctrlsf#SectionB()}'
         let w:airline_section_c = '%{ctrlsf#SectionC()}'
@@ -96,6 +96,14 @@ func! ctrlsf#StatusLine(...)
     endif
 endf
 " }}}
+
+" ctrlsf#PreviewStatusLine(...)
+func! ctrlsf#PreviewStatusLine(...)
+    if bufname('%') == '__CtrlSFPreview__'
+        let w:airline_section_a = 'Preview'
+        let w:airline_section_c = '%{get(b:, "ctrlsf_file", "")}'
+    endif
+endf
 
 " ctrlsf#SectionB() {{{2
 func! ctrlsf#SectionB()
