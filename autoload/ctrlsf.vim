@@ -309,7 +309,7 @@ func! s:OpenPreviewWindow() abort
     exec 'silent keepalt ' . openpos . width . 'split ' . '__CtrlSFPreview__'
 
     setl buftype=nofile
-    setl bufhidden=delete
+    setl bufhidden=hide
     setl noswapfile
     setl nobuflisted
     setl nomodifiable
