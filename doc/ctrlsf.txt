@@ -45,14 +45,15 @@ An example of CtrlSF search result is like this:
 
 A typical workflow using CtrlSF is like this:
 
-  1. Run |:CtrlSF| to invoke a search, the mostly used is searching a literal
-  string:
+  1. Run |:CtrlSF| to invoke a search. Most of the time you may want to search
+   literal string, it is easy like
 >
     :CtrlSF {string}
 <
   This command will split out a seperate window to display search results.
 
-  2. Use <h><j><k><l> and other keys to explore in CtrlSF window.
+  2. Use <h><j><k><l> and other keys to explore in CtrlSF window, also there
+  are two handy mappes <C-J> and <C-K> can jump among matches.
 
   3. Press <Enter> if you want to jump to the file containing the searching
   pattern.
@@ -63,7 +64,7 @@ A typical workflow using CtrlSF is like this:
   5. Or press <q> to quit.
 
   6. After you have closed CtrlSF window whether by jumping to some file or
-  quit with doing nothing, |:CtrlSFOpen| can always reopen CtrlSF window. It is
+  just a plain quit, |:CtrlSFOpen| can always reopen CtrlSF window. It is
   inexpensive as it will not invoke a same but new search.
 
   7. You can pass arguments like '-i', '-C' or path directly to ack/ag backend
@@ -130,7 +131,11 @@ A typical workflow using CtrlSF is like this:
     <p>          Preview. Like <o> but keeps the CtrlSF window open and cursor
                  in it.
 
-    <q>          Quit CtrlSF. (Also close preview window if opened)
+    <q>          Quit CtrlSF. Also close preview window if it is opened.
+
+    <C-J>        Jump to next match.
+
+    <C-K>        Jump to previous match.
 
   And in preview window, following keys are mapped:
 
