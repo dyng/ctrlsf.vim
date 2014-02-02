@@ -95,12 +95,5 @@ func! s:PathnameComp(arglead, cmdline, cursorpos)
 endf
 " }}}
 
-" Airline support {{{1
-if exists('*airline#add_statusline_func')
-    call airline#add_statusline_func('ctrlsf#StatusLine')
-    call airline#add_statusline_func('ctrlsf#PreviewStatusLine')
-endif
-" }}}
-
 " modeline {{{1
 " vim: set foldmarker={{{,}}} foldlevel=0 foldmethod=marker spell:

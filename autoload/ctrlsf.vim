@@ -85,44 +85,32 @@ func! ctrlsf#ClearSelectedLine() abort
 endf
 " }}}
 
-" ctrlsf#StatusLine() {{{2
-func! ctrlsf#StatusLine(...)
-    if bufname('%') == '__CtrlSF__'
-        let w:airline_section_a = 'CtrlSF'
-        let w:airline_section_b = '%{ctrlsf#SectionB()}'
-        let w:airline_section_c = '%{ctrlsf#SectionC()}'
-        let w:airline_section_x = '%{ctrlsf#SectionX()}'
-        let w:airline_section_y = ''
-    endif
-endf
-" }}}
-
-" ctrlsf#PreviewStatusLine(...)
-func! ctrlsf#PreviewStatusLine(...)
-    if bufname('%') == '__CtrlSFPreview__'
-        let w:airline_section_a = 'Preview'
-        let w:airline_section_c = '%{get(b:, "ctrlsf_file", "")}'
-    endif
-endf
-
-" ctrlsf#SectionB() {{{2
+" Airline Support {{{2
+" ctrlsf#SectionB() {{{3
 func! ctrlsf#SectionB()
     return 'Search: ' . get(s:ackprg_options, 'pattern', '')
 endf
 " }}}
 
-" ctrlsf#SectionC() {{{2
+" ctrlsf#SectionC() {{{3
 func! ctrlsf#SectionC()
     return get(s:jump_table[line('.')-1], 'filename', '')
 endf
 " }}}
 
-" ctrlsf#SectionX() {{{2
+" ctrlsf#SectionX() {{{3
 func! ctrlsf#SectionX()
      let total_matches = len(s:match_list)
      let passed_matches = 1 + s:BinarySearch(s:match_list, 0, total_matches-1, line('.'))
      return passed_matches . '/' . total_matches
 endf
+" }}}
+
+" ctrlsf#PreviewSectionC() {{{3
+func! ctrlsf#PreviewSectionC()
+    return get(b:, 'ctrlsf_file', '')
+endf
+" }}}
 " }}}
 " }}}
 
