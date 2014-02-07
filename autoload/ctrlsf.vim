@@ -94,7 +94,7 @@ endf
 
 " ctrlsf#SectionC() {{{3
 func! ctrlsf#SectionC()
-    return get(s:jump_table[line('.')-1], 'filename', '')
+    return get(get(s:jump_table, line('.')-1, {}), 'filename', '')
 endf
 " }}}
 
