@@ -183,7 +183,7 @@ endf
 func! s:NextMatch(forward) abort
     let current = line('.')
     let next = s:FindNextMatchLnum(current, a:forward)
-    call cursor(next, 12 + s:jump_table[next-1][2])
+    call cursor(next, g:ctrlsf_leading_space + s:jump_table[next-1][2])
 endf
 " }}}
 
@@ -746,7 +746,7 @@ func! s:FormatLine(type, arg) abort
         let output = a:arg . ":"
     elseif a:type == 'normal'
         let output = a:arg.lnum . a:arg.symbol
-        let output .= repeat(' ', 12 - len(output)) . a:arg.content
+        let output .= repeat(' ', g:ctrlsf_leading_space - len(output)) . a:arg.content
     elseif a:type == 'ellipsis'
         let output = repeat('.', 4)
     elseif a:type == 'blank'

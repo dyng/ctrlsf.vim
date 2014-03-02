@@ -57,6 +57,10 @@ endif
 if !exists('g:ctrlsf_selected_line_hl')
     let g:ctrlsf_selected_line_hl = 'p'
 endif
+
+if !exists('g:ctrlsf_leading_space')
+    let g:ctrlsf_leading_space = 12
+endif
 " }}}
 
 " Commands {{{1
