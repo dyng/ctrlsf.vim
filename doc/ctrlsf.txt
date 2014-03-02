@@ -131,6 +131,10 @@ A typical workflow using CtrlSF is like this:
     <p>          Preview. Like <o> but keeps the CtrlSF window open and cursor
                  in it.
 
+    <O>          Like <o>, but always leave CtrlSF window opening.
+
+    <T>          Like <t>, but focus CtrlSF window instead of opened new tab.
+
     <q>          Quit CtrlSF. Also close preview window if it is opened.
 
     <C-J>        Jump to next match.
@@ -176,19 +180,6 @@ By default CtrlSF window will be opened at left, change it to right by
 >
     let g:ctrlsf_open_left = 0
 <
-g:ctrlsf_width                                              *'g:ctrlsf_width'*
-Default: 'auto'
-Width of CtrlSF window. It accepts string as its value and there are 3 types
-of argument:
->
-    'auto' : half of current vim window size.
-    'xx%'  : xx percent of current vim window size.
-    'xx'   : absolute size in characters.
-<
-Example:
->
-    let g:ctrlsf_width = '30%'
-
 g:ctrlsf_selected_line_hl                        *'g:ctrlsf_selected_line_hl'*
 Default: 'p'
 Highlight matching line in the target file. It is useful especially in the
@@ -203,6 +194,19 @@ can config it as
 >
     let g:ctrlsf_selected_line_hl = 'op'
 <
+g:ctrlsf_width                                              *'g:ctrlsf_width'*
+Default: 'auto'
+Width of CtrlSF window. It accepts string as its value and there are 3 types
+of argument:
+>
+    'auto' : half of current vim window size.
+    'xx%'  : xx percent of current vim window size.
+    'xx'   : absolute size in characters.
+<
+Example:
+>
+    let g:ctrlsf_width = '30%'
+
 ==============================================================================
 6. About                                                        *ctrlsf-about*
 

@@ -165,9 +165,15 @@ func! s:JumpTo(mode) abort
         return
     endif
 
-    if a:mode == 'o'
-        call s:OpenFileInWindow(file, lnum, col)
-    elseif a:mode == 'p'
+    if a:mode ==# 'o'
+        call s:OpenFileInWindow(file, lnum, col, 1)
+    elseif a:mode ==# 'O'
+        call s:OpenFileInWindow(file, lnum, col, 2)
+    elseif a:mode ==# 't'
+        call s:OpenFileInTab(file, lnum, col, 1)
+    elseif a:mode ==# 'T'
+        call s:OpenFileInTab(file, lnum, col, 2)
+    elseif a:mode ==# 'p'
         call s:PreviewFile(file, lnum, col)
     endif
 endf
@@ -228,17 +234,19 @@ func! s:CloseWindow() abort
 endf
 " }}}
 
-" s:ClearSelectedLine() {{{2
-func! s:ClearSelectedLine() abort
-    silent! call matchdelete(b:ctrlsf_highlight_id)
-endf
-" }}}
-
 " s:OpenFileInWindow() {{{2
-func! s:OpenFileInWindow(file, lnum, col) abort
+" s:OpenFileInWindow has 2 modes:
+"
+" 1. Open file in a window (usually the window where CtrlSF was launched), then
+" close CtrlSF window depending on the value of 'g:ctrlsf_auto_close'.
+"
+" 2. Open file in a window like mode 1, but don't close CtrlSF no matter what
+" 'g:ctrlsf_auto_close' is.
+"
+func! s:OpenFileInWindow(file, lnum, col, mode) abort
     let target_winnr = s:FindTargetWindow(a:file)
 
-    if g:ctrlsf_auto_close
+    if a:mode == 1 && g:ctrlsf_auto_close
         let ctrlsf_winnr = s:FindCtrlsfWindow()
         if ctrlsf_winnr <= target_winnr
             let target_winnr -= 1
@@ -264,6 +272,34 @@ func! s:OpenFileInWindow(file, lnum, col) abort
 
     if g:ctrlsf_selected_line_hl =~ 'o'
         call s:HighlightSelectedLine()
+    endif
+endf
+" }}}
+
+" s:OpenFileInTab() {{{2
+" s:OpenFileInTab has 2 modes:
+"
+" 1. Open file in a new tab, close or leave CtrlSF window depending on value
+" of 'g:ctrlsf_auto_close', and place cursor in the new tab.
+"
+" 2. Open file in a new tab like mode 1, but focus CtrlSF window instead,
+" and never close CtrlSF window.
+"
+func! s:OpenFileInTab(file, lnum, col, mode) abort
+    if a:mode == 1 && g:ctrlsf_auto_close
+        call s:CloseWindow()
+    endif
+
+    exec 'tabedit ' . a:file
+
+    call s:MoveCursor(a:lnum, a:col)
+
+    if g:ctrlsf_selected_line_hl =~ 'o'
+        call s:HighlightSelectedLine()
+    endif
+
+    if a:mode == 2
+        tabprevious
     endif
 endf
 " }}}
@@ -337,6 +373,12 @@ func! s:MoveCursor(lnum, col) abort
     normal zv
 endf
 " }}}
+
+" s:ClearSelectedLine() {{{2
+func! s:ClearSelectedLine() abort
+    silent! call matchdelete(b:ctrlsf_highlight_id)
+endf
+" }}}
 " }}}
 
 " Window Operations {{{1
@@ -360,6 +402,9 @@ func! s:InitWindow() abort
     " default map
     nnoremap <silent><buffer> <CR>  :call <SID>JumpTo('o')<CR>
     nnoremap <silent><buffer> o     :call <SID>JumpTo('o')<CR>
+    nnoremap <silent><buffer> O     :call <SID>JumpTo('O')<CR>
+    nnoremap <silent><buffer> t     :call <SID>JumpTo('t')<CR>
+    nnoremap <silent><buffer> T     :call <SID>JumpTo('T')<CR>
     nnoremap <silent><buffer> p     :call <SID>JumpTo('p')<CR>
     nnoremap <silent><buffer> <C-J> :call <SID>NextMatch(1)<CR>
     nnoremap <silent><buffer> <C-K> :call <SID>NextMatch(0)<CR>

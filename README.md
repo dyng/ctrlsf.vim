@@ -26,7 +26,7 @@ An ack/ag powered code search and view tool, in an intuitive way with fairly mor
 
 3. Press `p` to explore file in a preview window if you only want a glance.
 
-4. Run `:CtrlSFOpen` can reopen CtrlSF window if you are interested in other matches. It is costless because it won't invoke a same but new search.
+4. Running `:CtrlSFOpen` can reopen CtrlSF window if you are interested in other matches. It is free because it won't invoke a same but new search.
 
 5. You can pass arguments like `-i`, `-C` or path directly to ack/ag backend in `:CtrlSF` command.
 
@@ -39,7 +39,10 @@ An ack/ag powered code search and view tool, in an intuitive way with fairly mor
 In CtrlSF window:
 
 - `o`, `Enter` - Jump to file that contains the line under cursor.
-- `p` - Like `o` but open file in a seperate preview window.
+- `t` - Like `o` but open file in a new tab.
+- `p` - Like `o` but open file in a preview window.
+- `O` - Like `o` but always leave CtrlSF window opening.
+- `T` - Lkie `t` but focus CtrlSF window instead of opened new tab.
 - `q` - Quit CtrlSF window.
 - `<C-J>` - Move cursor to next match.
 - `<C-K>` - Move cursor to previous match.
