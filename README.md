@@ -2,7 +2,7 @@
 
 An ack/ag powered code search and view tool, in an intuitive way with fairly more context.
 
-![ctrlsf demo](http://i.imgur.com/Z5gGztR.gif)
+![ctrlsf demo](http://i.imgur.com/mlWj3mz.gif)
 
 ## Installation
 
