@@ -132,15 +132,13 @@ func! s:Search(args) abort
 
     let command = s:BuildCommand(args)
     let ackprg_output = system(command)
-    if v:shell_error
+    if v:shell_error && !empty(ackprg_output)
         echoerr printf('CtrlSF: Some error occurs in %s execution!', g:ctrlsf_ackprg)
         echomsg printf('Executed command: "%s".', command)
-        if !empty(ackprg_output)
-            echomsg 'Command output:'
-            for line in split(ackprg_output, '\n')
-                echomsg line
-            endfo
-        endif
+        echomsg 'Command output:'
+        for line in split(ackprg_output, '\n')
+            echomsg line
+        endfo
         return -1
     endif
 
