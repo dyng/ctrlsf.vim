@@ -130,7 +130,17 @@ func! s:Search(args) abort
         return -1
     endif
 
-    let command = s:BuildCommand(args)
+    " ensure 'set shelltemp' on windows
+    let s:is_windows = (has('win16') || has('win32') || has('win64'))
+    if s:is_windows
+        let oldst = &shelltemp
+        set shelltemp
+    endif
+
+    let ackprg_output = system(command)
+
+    let &shelltemp = oldst
+
     let ackprg_output = system(command)
     if v:shell_error && !empty(ackprg_output)
         echoerr printf('CtrlSF: Some error occurs in %s execution!', g:ctrlsf_ackprg)
