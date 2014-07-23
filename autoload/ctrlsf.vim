@@ -141,8 +141,10 @@ func! s:Search(args) abort
 
     let ackprg_output = system(command)
 
-    let &shelltemp = oldst
-
+    if s:is_windows
+      let &shelltemp = oldst
+    endif
+    
     let ackprg_output = system(command)
     if v:shell_error && !empty(ackprg_output)
         echoerr printf('CtrlSF: Some error occurs in %s execution!', g:ctrlsf_ackprg)
@@ -847,3 +849,4 @@ endf
 
 " modeline {{{1
 " vim: set foldmarker={{{,}}} foldlevel=0 foldmethod=marker spell:
+argc
