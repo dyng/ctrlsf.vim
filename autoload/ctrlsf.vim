@@ -130,6 +130,8 @@ func! s:Search(args) abort
         return -1
     endif
 
+    let command = s:BuildCommand(args)
+ 
     " ensure 'set shelltemp' on windows
     let s:is_windows = (has('win16') || has('win32') || has('win64'))
     if s:is_windows
