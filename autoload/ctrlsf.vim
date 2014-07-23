@@ -131,7 +131,15 @@ func! s:Search(args) abort
     endif
 
     let command = s:BuildCommand(args)
+
+    " A windows user report CtrlSF doesn't work well when 'shelltemp' is
+    " turned off. Although I can't reproduce it, I think forcing 'shelltemp'
+    " would not do something really bad.
+    let stmp_bak = &shelltemp
+    set shelltemp
     let ackprg_output = system(command)
+    let &shelltemp = stmp_bak
+
     if v:shell_error && !empty(ackprg_output)
         echoerr printf('CtrlSF: Some error occurs in %s execution!', g:ctrlsf_ackprg)
         echomsg printf('Executed command: "%s".', command)
