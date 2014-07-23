@@ -131,6 +131,20 @@ func! s:Search(args) abort
     endif
 
     let command = s:BuildCommand(args)
+ 
+    " ensure 'set shelltemp' on windows
+    let s:is_windows = (has('win16') || has('win32') || has('win64'))
+    if s:is_windows
+        let oldst = &shelltemp
+        set shelltemp
+    endif
+
+    let ackprg_output = system(command)
+
+    if s:is_windows
+      let &shelltemp = oldst
+    endif
+    
     let ackprg_output = system(command)
     if v:shell_error && !empty(ackprg_output)
         echoerr printf('CtrlSF: Some error occurs in %s execution!', g:ctrlsf_ackprg)
@@ -835,3 +849,4 @@ endf
 
 " modeline {{{1
 " vim: set foldmarker={{{,}}} foldlevel=0 foldmethod=marker spell:
+argc
