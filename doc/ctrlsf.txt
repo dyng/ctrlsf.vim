@@ -131,12 +131,17 @@ A typical workflow using CtrlSF is like this:
     <Plug>CtrlSFVwordPath   Search current visual selected word, waitting for
                             any extra path arguments.
 
-    <Plug>CtrlSFVwordExec   Immediately search current visual selected word.
+    <Plug>CtrlSFVwordExec   Similar to above, but execute immediately.
 
     <Plug>CtrlSFCwordPath   Search word under cursor, waitting for any extra
                             path arguments.
 
-    <Plug>CtrlSFCwordExec   Immediately search word under cursor.
+    <Plug>CtrlSFCwordExec   Similar to above, but execute immediately.
+
+    <Plug>CtrlSFPwordPath   Use the last search term of vim as searching
+                            target.
+
+    <Plug>CtrlSFPwordExec   Similar to above, but execute immediately.
 
   The following keys are mapped by default in CtrlSF window:
 

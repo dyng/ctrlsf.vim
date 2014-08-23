@@ -64,6 +64,15 @@ func! s:SearchVwordCmd(to_exec)
     return cmd
 endf
 " }}}
+
+" s:SearchPwordCmd() {{{2
+func! s:SearchPwordCmd(to_exec)
+    let cmd = ":\<C-U>CtrlSF " . @/
+    let cmd .= a:to_exec ? "\r" : " "
+    return cmd
+endf
+" }}}
+
 " }}}
 
 " Options {{{1
@@ -109,6 +118,8 @@ nnoremap <expr> <Plug>CtrlSFCwordPath <SID>SearchCwordCmd(0)
 nnoremap <expr> <Plug>CtrlSFCwordExec <SID>SearchCwordCmd(1)
 vnoremap <expr> <Plug>CtrlSFVwordPath <SID>SearchVwordCmd(0)
 vnoremap <expr> <Plug>CtrlSFVwordExec <SID>SearchVwordCmd(1)
+nnoremap <expr> <Plug>CtrlSFPwordPath <SID>SearchPwordCmd(0)
+nnoremap <expr> <Plug>CtrlSFPwordExec <SID>SearchPwordCmd(1)
 " }}}
 
 " Completion Func {{{1
