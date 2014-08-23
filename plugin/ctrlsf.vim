@@ -31,6 +31,39 @@ func! s:DetectAckprg()
     return ''
 endf
 " }}}
+
+" g:CtrlSFGetVisualSelection() {{{2
+" Thanks to xolox!
+" http://stackoverflow.com/questions/1533565/how-to-get-visually-selected-text-in-vimscript
+func! g:CtrlSFGetVisualSelection()
+    " Why is this not a built-in Vim script function?!
+    let [lnum1, col1] = getpos("'<")[1:2]
+    let [lnum2, col2] = getpos("'>")[1:2]
+    let lines = getline(lnum1, lnum2)
+    let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
+    let lines[0] = lines[0][col1 - 1:]
+    return join(lines, "\n")
+endf
+" }}}
+
+" s:SearchCwordCmd() {{{2
+func! s:SearchCwordCmd(to_exec)
+    let cmd = ":\<C-U>CtrlSF " . expand('<cword>')
+    let cmd .= a:to_exec ? "\r" : " "
+    return cmd
+endf
+" }}}
+
+" s:SearchVwordCmd() {{{2
+" Within evaluation of a expression typed visual map, we can not get
+" current visual selection normally, so I need to workaround it.
+func! s:SearchVwordCmd(to_exec)
+    let keys = '":\<C-U>CtrlSF " . g:CtrlSFGetVisualSelection()'
+    let keys .= a:to_exec ? '."\r"' : '." "'
+    let cmd = ":\<C-U>call feedkeys(" . keys . ")\r"
+    return cmd
+endf
+" }}}
 " }}}
 
 " Options {{{1
@@ -68,6 +101,14 @@ com! -n=* -comp=customlist,s:PathnameComp CtrlSF        call ctrlsf#Search(<q-ar
 com! -n=0                                 CtrlSFOpen    call ctrlsf#OpenWindow()
 com! -n=0                                 CtrlSFClose   call ctrlsf#CloseWindow()
 com! -n=0                                 CtrlSFClearHL call ctrlsf#ClearSelectedLine()
+" }}}
+
+" Maps {{{1
+nnoremap        <Plug>CtrlSFPrompt    :CtrlSF<Space>
+nnoremap <expr> <Plug>CtrlSFCwordPath <SID>SearchCwordCmd(0)
+nnoremap <expr> <Plug>CtrlSFCwordExec <SID>SearchCwordCmd(1)
+vnoremap <expr> <Plug>CtrlSFVwordPath <SID>SearchVwordCmd(0)
+vnoremap <expr> <Plug>CtrlSFVwordExec <SID>SearchVwordCmd(1)
 " }}}
 
 " Completion Func {{{1

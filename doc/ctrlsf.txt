@@ -124,6 +124,20 @@ A typical workflow using CtrlSF is like this:
 ==============================================================================
 4. Key Maps                                                   *ctrlsf-keymaps*
 
+  Maps for launching CtrlSF:
+
+    <Plug>CtrlSFPrompt      Launch ctrlsf in command line, just alias to :CtrlSF.
+
+    <Plug>CtrlSFVwordPath   Search current visual selected word, waitting for
+                            any extra path arguments.
+
+    <Plug>CtrlSFVwordExec   Immediately search current visual selected word.
+
+    <Plug>CtrlSFCwordPath   Search word under cursor, waitting for any extra
+                            path arguments.
+
+    <Plug>CtrlSFCwordExec   Immediately search word under cursor.
+
   The following keys are mapped by default in CtrlSF window:
 
     <o>, <Enter> Open source file containing the matching line under cursor.
@@ -141,7 +155,7 @@ A typical workflow using CtrlSF is like this:
 
     <C-K>        Jump to previous match.
 
-  And in preview window, following keys are mapped:
+  Following keys are mapped in preview window:
 
     <q>          Quit preview.
 

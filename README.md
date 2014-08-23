@@ -51,6 +51,29 @@ In preview window:
 
 - `q` - Close preview window.
 
+## Use Your Own Map
+
+Besides the commands, there are also some maps for accessing CtrlSF.
+
+- `<Plug>CtrlSFPrompt`    - Command line looks like `:CtrlSF `.
+- `<Plug>CtrlSFVwordPath` - Command line looks like `:CtrlSF foo `, where `foo` is the current visual selected word.
+- `<Plug>CtrlSFVwordExec` - same as `<Plug>CtrlSFVwordPath`, but execute it for you.
+- `<Plug>CtrlSFCwordPath` - Command line looks like `:CtrlSF foo `, where `foo` is the word under cursor.
+- `<Plug>CtrlSFCwordExec` - same as `<Plug>CtrlSFCwordPath`, but execute it for you.
+
+I strongly recommend you should do some maps for a nicer user experience, because 8 keystrokes(`:CtrlSF `) for every single search is really a boring even pain experience. Another reason is that **one of the most useful feature 'Search Current Visual Selection' can be accessed by map only.**
+
+Example:
+
+```
+nmap     <C-F>f <Plug>CtrlSFPrompt
+vmap     <C-F>f <Plug>CtrlSFVwordPath
+vmap     <C-F>F <Plug>CtrlSFVwordExec
+nmap     <C-F>n <Plug>CtrlSFCwordPath
+nnoremap <C-F>o :CtrlSFOpen<CR>
+nnoremap <C-F>c :CtrlSFClose<CR>
+```
+
 ## Configuration
 
 - `g:ctrlsf_ackprg` defines the external ack-like program which CtrlSF uses as source. If nothing is specified, CtrlSF will try *ag* first and fallback to *ack* if *ag* is not available. You can also explicitly define it by
