@@ -53,17 +53,31 @@ In preview window:
 
 ## Use Your Own Map
 
-Besides the commands, there are also some maps for accessing CtrlSF.
+Besides the commands, there are also some useful maps.
 
-- `<Plug>CtrlSFPrompt`    - Command `:CtrlSF `.
-- `<Plug>CtrlSFVwordPath` - Command `:CtrlSF foo `, where `foo` is the current visual selected word.
-- `<Plug>CtrlSFVwordExec` - similar to above, but execute it for you.
-- `<Plug>CtrlSFCwordPath` - Command `:CtrlSF foo `, where `foo` is the word under cursor.
-- `<Plug>CtrlSFCwordExec` - similar to above, but execute it for you.
-- `<Plug>CtrlSFPwordPath` - Command `:CtrlSF foo `, where `foo` is the last search pattern of vim.
-- `<Plug>CtrlSFPwordExec` - similar to above, but execute it for you.
+- `<Plug>CtrlSFPrompt`
 
-I strongly recommend you should do some maps for a nicer user experience, because 8 keystrokes(`:CtrlSF `) for every single search is really a boring even pain experience. Another reason is that **one of the most useful feature 'Search Current Visual Selection' can be accessed by map only.**
+    Input `:CtrlSF ` in command line for you, just a handy alias.
+
+- `<Plug>CtrlSFVwordPath`
+
+    Input `:CtrlSF foo ` in command line where `foo` is the current visual selected word, waiting for further input.
+
+- `<Plug>CtrlSFVwordExec`
+
+    Similar to above, but execute it for you.
+
+- `<Plug>CtrlSFCwordPath`
+
+    Input `:CtrlSF foo ` in command line where `foo` is the word under cursor.
+
+- `<Plug>CtrlSFPwordPath`
+
+    Input `:CtrlSF foo ` in command line where `foo` is the last search pattern of vim.
+
+For a detail list of all maps, please refer to the document file.
+
+I strongly recommend you should do some maps for a nicer user experience, because 8 keystrokes for every single search are really boring even pain experience. Another reason is that **one of the most useful feature 'Search Current Visual Selection' can be accessed by map only.**
 
 Example:
 
@@ -74,7 +88,6 @@ vmap     <C-F>F <Plug>CtrlSFVwordExec
 nmap     <C-F>n <Plug>CtrlSFCwordPath
 nmap     <C-F>p <Plug>CtrlSFPwordPath
 nnoremap <C-F>o :CtrlSFOpen<CR>
-nnoremap <C-F>c :CtrlSFClose<CR>
 ```
 
 ## Configuration
