@@ -516,8 +516,12 @@ func! s:HighlightMatch() abort
         return -2
     endif
 
-    let case    = get(s:ackprg_options, 'ignorecase') ? '\c' : ''
+    let case = ''
+    if (g:ctrlsf_ackprg == 'ag' || get(s:ackprg_options, 'ignorecase'))
+        let case = '\c'
+    endif
     let pattern = printf('/\v%s%s/', case, escape(s:ackprg_options['pattern'], '/'))
+
     exec 'match ctrlsfMatch ' . pattern
 endf
 " }}}
