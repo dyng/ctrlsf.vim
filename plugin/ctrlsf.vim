@@ -76,8 +76,16 @@ endf
 " }}}
 
 " Options {{{1
-if !exists('g:ctrlsf_open_left')
-    let g:ctrlsf_open_left = 1
+if !exists('g:ctrlsf_position')
+    " [left], right, top, bottom
+    if exists('g:ctrlsf_open_left')
+        if g:ctrlsf_open_left = 1
+            let g:ctrlsf_position = 'left'
+        else
+            let g:ctrlsf_position = 'right'
+        endif
+    endif
+    let g:ctrlsf_position = 'left'
 endif
 
 if !exists('g:ctrlsf_ackprg')
@@ -92,8 +100,11 @@ if !exists('g:ctrlsf_context')
     let g:ctrlsf_context = '-C 3'
 endif
 
-if !exists('g:ctrlsf_width')
-    let g:ctrlsf_width = 'auto'
+if !exists('g:ctrlsf_winsize')
+    if exists('g:ctrlsf_open_width')
+        let g:ctrlsf_winsize = g:ctrlsf_open_width
+    endif
+    let g:ctrlsf_winsize = 'auto'
 endif
 
 if !exists('g:ctrlsf_selected_line_hl')
