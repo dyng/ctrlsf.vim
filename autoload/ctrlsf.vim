@@ -371,6 +371,7 @@ func! s:OpenPreviewWindow() abort
     setl nobuflisted
     setl nomodifiable
     setl winfixwidth
+    setl winfixheight
 
     map q :call <SID>ClosePreviewWindow()<CR>
 endf
@@ -420,6 +421,7 @@ func! s:InitWindow() abort
     setl nonumber
     setl nowrap
     setl winfixwidth
+    setl winfixheight
     setl textwidth=0
     setl nospell
     setl nofoldenable
