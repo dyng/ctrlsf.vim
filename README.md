@@ -98,6 +98,20 @@ nnoremap <C-F>o :CtrlSFOpen<CR>
     let g:ctrlsf_ackprg = 'ag'
     ```
 
+- `g:ctrlsf_position` defines where CtrlSf places its window. Possible values are `left`, `right`, `top` and `bottom`. If nothing specified, the default value is `left`.
+
+    ```vim
+    let g:ctrlsf_position = 'bottom'
+    ```
+
+- `g:ctrlsf_winsize` defines the width (if CtrlSF opens vertically) or height (if CtrlSF opens horizontally) of CtrlSF main window. You can specify it with percent value or absolute value.
+
+    ```vim
+    let g:ctrlsf_winsize = '30%'
+    " or
+    let g:ctrlsf_winsize = '100'
+    ```
+
 - `g:ctrlsf_auto_close` defines the behavior of CtrlSF window after you press the `Enter`. By default CtrlSF window will automatically be closed if you jump to some file, you can prevent it by setting `g:ctrlsf_auto_close` to 0.
 
     ```vim
@@ -113,6 +127,7 @@ nnoremap <C-F>o :CtrlSFOpen<CR>
 A full doc about options can be found in `:help ctrlsf-options`.
 
 ## Why not ack.vim or ag.vim ?
+
 1. ack.vim depends on vim's builtin `:grep` command, so you can't custom output format. What makes me to write this plugin is that I find reading lines with no highlight and no context is totally a pain. (Using `:cnext` and `:cprevious` can relieve it, yes.)
 2. Fix a misescape bug in ack.vim (and also ag.vim), it lets you can use literal '#' and '%' without annoying escape now. For more information, check [manual][7] of ack.vim.
 3. ag.vim is actually a fork of ack.vim with minor change.
