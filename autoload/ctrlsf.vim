@@ -220,7 +220,6 @@ func! s:OpenWindow() abort
             endif
         endif
 
-        " let openpos = g:ctrlsf_open_left ? 'topleft vertical ' : 'botright vertical '
         let openpos = {
               \ 'top'    : 'topleft',  'left'  : 'topleft vertical',
               \ 'bottom' : 'botright', 'right' : 'botright vertical'}
@@ -360,10 +359,9 @@ func! s:OpenPreviewWindow() abort
         let winsize = min([&lines-ctrlsf_height, ctrlsf_height])
     endif
 
-    " let openpos = g:ctrlsf_open_left ? 'rightbelow vertical ' : 'leftabove vertical '
     let openpos = {
             \ 'bottom': 'leftabove',       'right'  : 'leftabove vertical',
-            \ 'top'   : 'rightabove',       'left' : 'rightbelow vertical'}
+            \ 'top'   : 'rightbelow',       'left' : 'rightbelow vertical'}
             \[g:ctrlsf_position] . ' '
     exec 'silent keepalt ' . openpos . winsize . 'split ' . '__CtrlSFPreview__'
 

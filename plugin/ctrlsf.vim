@@ -101,8 +101,8 @@ if !exists('g:ctrlsf_context')
 endif
 
 if !exists('g:ctrlsf_winsize')
-    if exists('g:ctrlsf_open_width')
-        let g:ctrlsf_winsize = g:ctrlsf_open_width
+    if exists('g:ctrlsf_width')
+        let g:ctrlsf_winsize = g:ctrlsf_width
     endif
     let g:ctrlsf_winsize = 'auto'
 endif
