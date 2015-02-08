@@ -204,16 +204,27 @@ func! s:OpenWindow() abort
     " focus an existing ctrlsf window
     " if failed, initialize a new one
     if s:FocusCtrlsfWindow() == -1
-        if g:ctrlsf_width =~ '\d\{1,2}%'
-            let width = &columns * str2nr(g:ctrlsf_width) / 100
-        elseif g:ctrlsf_width =~ '\d\+'
-            let width = str2nr(g:ctrlsf_width)
+        if g:ctrlsf_winsize =~ '\d\{1,2}%'
+            if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
+                let winsize = &columns * str2nr(g:ctrlsf_winsize) / 100
+            else
+                let winsize = &lines * str2nr(g:ctrlsf_winsize) / 100
+            endif
+        elseif g:ctrlsf_winsize =~ '\d\+'
+            let winsize = str2nr(g:ctrlsf_winsize)
         else
-            let width = &columns / 2
+            if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
+                let winsize = &columns / 2
+            else
+                let winsize = &lines / 2
+            endif
         endif
 
-        let openpos = g:ctrlsf_open_left ? 'topleft vertical ' : 'botright vertical '
-        exec 'silent keepalt ' . openpos . width . 'split ' . '__CtrlSF__'
+        let openpos = {
+              \ 'top'    : 'topleft',  'left'  : 'topleft vertical',
+              \ 'bottom' : 'botright', 'right' : 'botright vertical'}
+              \[g:ctrlsf_position] . ' '
+        exec 'silent keepalt ' . openpos . winsize . 'split ' . '__CtrlSF__'
 
         call s:InitWindow()
     endif
@@ -340,11 +351,19 @@ endf
 
 " s:OpenPreviewWindow() {{{2
 func! s:OpenPreviewWindow() abort
-    let ctrlsf_width  = winwidth(0)
-    let width = min([&columns-ctrlsf_width, ctrlsf_width])
+    if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
+        let ctrlsf_width  = winwidth(0)
+        let winsize = min([&columns-ctrlsf_width, ctrlsf_width])
+    else
+        let ctrlsf_height  = winheight(0)
+        let winsize = min([&lines-ctrlsf_height, ctrlsf_height])
+    endif
 
-    let openpos = g:ctrlsf_open_left ? 'rightbelow vertical ' : 'leftabove vertical '
-    exec 'silent keepalt ' . openpos . width . 'split ' . '__CtrlSFPreview__'
+    let openpos = {
+            \ 'bottom': 'leftabove',       'right'  : 'leftabove vertical',
+            \ 'top'   : 'rightbelow',       'left' : 'rightbelow vertical'}
+            \[g:ctrlsf_position] . ' '
+    exec 'silent keepalt ' . openpos . winsize . 'split ' . '__CtrlSFPreview__'
 
     setl buftype=nofile
     setl bufhidden=hide

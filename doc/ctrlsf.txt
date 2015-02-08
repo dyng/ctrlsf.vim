@@ -204,11 +204,12 @@ Example:
 >
     let g:ctrlsf_leading_space = 8
 <
-g:ctrlsf_open_left
-Default: '1'
-By default CtrlSF window will be opened at left, change it to right by
+g:ctrlsf_position
+Default: 'left'
+By default CtrlSF window will be opened at left. You can also specify for it to
+be opened 'above', 'right', or 'below'. E.g.:
 >
-    let g:ctrlsf_open_left = 0
+    let g:ctrlsf_position = 'below'
 <
 g:ctrlsf_selected_line_hl                        *'g:ctrlsf_selected_line_hl'*
 Default: 'p'
@@ -224,10 +225,11 @@ can config it as
 >
     let g:ctrlsf_selected_line_hl = 'op'
 <
-g:ctrlsf_width                                              *'g:ctrlsf_width'*
+g:ctrlsf_winsize                                              *'g:ctrlsf_width'*
 Default: 'auto'
-Width of CtrlSF window. It accepts string as its value and there are 3 types
-of argument:
+Size of CtrlSF window. This is its width if the window opens vertically (to the
+left or right), or height if it opens horizontally (above or below). It accepts
+string as its value and there are 3 types of argument:
 >
     'auto' : half of current vim window size.
     'xx%'  : xx percent of current vim window size.
@@ -235,7 +237,7 @@ of argument:
 <
 Example:
 >
-    let g:ctrlsf_width = '30%'
+    let g:ctrlsf_winsize = '30%'
 
 ==============================================================================
 6. About                                                        *ctrlsf-about*
