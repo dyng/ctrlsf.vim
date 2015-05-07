@@ -11,7 +11,6 @@ let s:ackprg_result  = []
 let s:match_list     = []
 let s:jump_table     = []
 let s:ackprg_options = {}
-let s:launch_win     = {}
 " }}}
 
 " Static Constants {{{1
@@ -69,13 +68,13 @@ endf
 
 " ctrlsf#OpenWindow() {{{2
 func! ctrlsf#OpenWindow() abort
-    call s:OpenWindow()
+    call ctrlsf#win#OpenWindow()
 endf
 " }}}
 
 " ctrlsf#CloseWindow() {{{2
 func! ctrlsf#CloseWindow() abort
-    call s:CloseWindow()
+    call ctrlsf#win#CloseWindow()
 endf
 " }}}
 
@@ -101,7 +100,7 @@ endf
 " ctrlsf#SectionX() {{{3
 func! ctrlsf#SectionX()
      let total_matches = len(s:match_list)
-     let passed_matches = 1 + s:BinarySearch(s:match_list, 0, total_matches-1, line('.'))
+     let passed_matches = 1 + ctrlsf#utils#BinarySearch(s:match_list, 0, total_matches-1, line('.'))
      return passed_matches . '/' . total_matches
 endf
 " }}}
@@ -152,7 +151,9 @@ func! s:Search(args) abort
 
     call s:ParseAckprgOutput(ackprg_output)
 
-    call s:OpenWindow()
+    call ctrlsf#win#OpenWindow()
+
+    call s:HighlightMatch()
 
     setl modifiable
     silent %delete _
@@ -164,7 +165,7 @@ endf
 " }}}
 
 " s:JumpTo() {{{2
-func! s:JumpTo(mode) abort
+func! ctrlsf#JumpTo(mode) abort
     let [file, lnum, col] = s:jump_table[line('.') - 1]
 
     if empty(file) || empty(lnum)
@@ -186,68 +187,10 @@ endf
 " }}}
 
 " s:NextMatch() {{{2
-func! s:NextMatch(forward) abort
+func! ctrlsf#NextMatch(forward) abort
     let current = line('.')
     let next = s:FindNextMatchLnum(current, a:forward)
     call cursor(next, g:ctrlsf_leading_space + s:jump_table[next-1][2])
-endf
-" }}}
-
-" s:OpenWindow() {{{2
-func! s:OpenWindow() abort
-    " backup current bufnr and winnr
-    let s:launch_win = {
-        \ 'bufnr' : bufnr('%'),
-        \ 'winnr' : winnr(),
-        \ }
-
-    " focus an existing ctrlsf window
-    " if failed, initialize a new one
-    if s:FocusCtrlsfWindow() == -1
-        if g:ctrlsf_winsize =~ '\d\{1,2}%'
-            if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
-                let winsize = &columns * str2nr(g:ctrlsf_winsize) / 100
-            else
-                let winsize = &lines * str2nr(g:ctrlsf_winsize) / 100
-            endif
-        elseif g:ctrlsf_winsize =~ '\d\+'
-            let winsize = str2nr(g:ctrlsf_winsize)
-        else
-            if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
-                let winsize = &columns / 2
-            else
-                let winsize = &lines / 2
-            endif
-        endif
-
-        let openpos = {
-              \ 'top'    : 'topleft',  'left'  : 'topleft vertical',
-              \ 'bottom' : 'botright', 'right' : 'botright vertical'}
-              \[g:ctrlsf_position] . ' '
-        exec 'silent keepalt ' . openpos . winsize . 'split ' . '__CtrlSF__'
-
-        call s:InitWindow()
-    endif
-
-    " resize other windows
-    wincmd =
-
-    call s:HighlightMatch()
-endf
-" }}}
-
-" s:CloseWindow() {{{2
-func! s:CloseWindow() abort
-    if s:FocusCtrlsfWindow() == -1
-        return
-    endif
-
-    call s:ClosePreviewWindow()
-
-    " Surely we are in CtrlSF window
-    close
-
-    call s:FocusPreviousWindow()
 endf
 " }}}
 
@@ -349,45 +292,6 @@ func! s:PreviewFile(file, lnum, col) abort
 endf
 " }}}
 
-" s:OpenPreviewWindow() {{{2
-func! s:OpenPreviewWindow() abort
-    if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
-        let ctrlsf_width  = winwidth(0)
-        let winsize = min([&columns-ctrlsf_width, ctrlsf_width])
-    else
-        let ctrlsf_height  = winheight(0)
-        let winsize = min([&lines-ctrlsf_height, ctrlsf_height])
-    endif
-
-    let openpos = {
-            \ 'bottom': 'leftabove',       'right'  : 'leftabove vertical',
-            \ 'top'   : 'rightbelow',       'left' : 'rightbelow vertical'}
-            \[g:ctrlsf_position] . ' '
-    exec 'silent keepalt ' . openpos . winsize . 'split ' . '__CtrlSFPreview__'
-
-    setl buftype=nofile
-    setl bufhidden=hide
-    setl noswapfile
-    setl nobuflisted
-    setl nomodifiable
-    setl winfixwidth
-
-    map q :call <SID>ClosePreviewWindow()<CR>
-endf
-" }}}
-
-" s:ClosePreviewWindow() {{{2
-func! s:ClosePreviewWindow() abort
-    if s:FocusPreviewWindow() == -1
-        return
-    endif
-
-    close
-
-    call s:FocusCtrlsfWindow()
-endf
-" }}}
-
 " s:MoveCursor() {{{2
 func! s:MoveCursor(lnum, col) abort
     " Move cursor to matched line
@@ -407,124 +311,6 @@ endf
 " }}}
 
 " Window Operations {{{1
-" s:InitWindow() {{{2
-func! s:InitWindow() abort
-    setl filetype=ctrlsf
-    setl noreadonly
-    setl buftype=nofile
-    setl bufhidden=hide
-    setl noswapfile
-    setl nobuflisted
-    setl nomodifiable
-    setl nolist
-    setl nonumber
-    setl nowrap
-    setl winfixwidth
-    setl textwidth=0
-    setl nospell
-    setl nofoldenable
-
-    " default map
-    nnoremap <silent><buffer> <CR>  :call <SID>JumpTo('o')<CR>
-    nnoremap <silent><buffer> o     :call <SID>JumpTo('o')<CR>
-    nnoremap <silent><buffer> O     :call <SID>JumpTo('O')<CR>
-    nnoremap <silent><buffer> t     :call <SID>JumpTo('t')<CR>
-    nnoremap <silent><buffer> T     :call <SID>JumpTo('T')<CR>
-    nnoremap <silent><buffer> p     :call <SID>JumpTo('p')<CR>
-    nnoremap <silent><buffer> <C-J> :call <SID>NextMatch(1)<CR>
-    nnoremap <silent><buffer> <C-K> :call <SID>NextMatch(0)<CR>
-    nnoremap <silent><buffer> q     :call <SID>CloseWindow()<CR>
-endf
-" }}}
-
-" s:FindCtrlsfWindow() {{{2
-func! s:FindCtrlsfWindow() abort
-    return bufwinnr('__CtrlSF__')
-endf
-" }}}
-
-" s:FindPreviewWindow() {{{2
-func! s:FindPreviewWindow() abort
-    return bufwinnr('__CtrlSFPreview__')
-endf
-" }}}
-
-" s:FocusCtrlsfWindow() {{{2
-func! s:FocusCtrlsfWindow() abort
-    let ctrlsf_winnr = s:FindCtrlsfWindow()
-    if ctrlsf_winnr == -1
-        return -1
-    else
-        exec ctrlsf_winnr . 'wincmd w'
-        return ctrlsf_winnr
-    endif
-endf
-" }}}
-
-" s:FocusPreviewWindow() {{{2
-func! s:FocusPreviewWindow() abort
-    let preview_winnr = s:FindPreviewWindow()
-    if preview_winnr == -1
-        return -1
-    else
-        exec preview_winnr . 'wincmd w'
-        return preview_winnr
-    endif
-endf
-" }}}
-
-" s:FindTargetWindow() {{{2
-func! s:FindTargetWindow(file) abort
-    let target_winnr = bufwinnr(a:file)
-
-    " case: there is a window containing the target file
-    if target_winnr > 0
-        return target_winnr
-    endif
-
-    " case: previous window where ctrlsf was triggered
-    let ctrlsf_winnr = s:FindCtrlsfWindow()
-    if ctrlsf_winnr > 0 && ctrlsf_winnr <= s:launch_win.winnr
-        let target_winnr = s:launch_win.winnr + 1
-    else
-        let target_winnr = s:launch_win.winnr
-    endif
-
-    if winbufnr(target_winnr) == s:launch_win.bufnr && empty(getwinvar(target_winnr, '&buftype'))
-        return target_winnr
-    endif
-
-    " case: pick up the first window containing regular file
-    let nr = 1
-    while nr <= winnr('$')
-        if empty(getwinvar(nr, '&buftype'))
-            return nr
-        endif
-        let nr += 1
-    endwh
-
-    " case: can't find any valid window, tell front to open a new window
-    return 0
-endf
-" }}}
-
-" s:FocusPreviousWindow() {{{2
-func! s:FocusPreviousWindow() abort
-    let ctrlsf_winnr = s:FindCtrlsfWindow()
-    if ctrlsf_winnr > 0 && ctrlsf_winnr <= s:launch_win.winnr
-        let pre_winnr = s:launch_win.winnr + 1
-    else
-        let pre_winnr = s:launch_win.winnr
-    endif
-
-    if winbufnr(pre_winnr) != -1
-        exec pre_winnr . 'wincmd w'
-    else
-        wincmd p
-    endif
-endf
-" }}}
-
 " s:HighlightMatch() {{{2
 func! s:HighlightMatch() abort
     if !exists('b:current_syntax') || b:current_syntax != 'ctrlsf'
@@ -559,7 +345,7 @@ endf
 func! s:FindNextMatchLnum(current, forward)
     let mlist_len = len(s:match_list)
 
-    let i_le = s:BinarySearch(s:match_list, 0, mlist_len - 1, a:current)
+    let i_le = ctrlsf#utils#BinarySearch(s:match_list, 0, mlist_len - 1, a:current)
 
     if a:forward
         let i_next = i_le + 1
@@ -839,29 +625,6 @@ func! s:BuildCommand(args) abort
 endf
 " }}}
 
-" s:BinarySearch() {{{
-" Search for the maximum number in 'array' that less or equal to 'key'
-func! s:BinarySearch(array, imin, imax, key)
-    let array = a:array | let key  = a:key
-    let imax  = a:imax  | let imin = a:imin
-
-    let ret = -1
-    while (imax >= imin)
-        let imid = (imax + imin) / 2
-
-        if array[imid] < key
-            let ret = imid
-            let imin = imid + 1
-        elseif array[imid] > key
-            let imax = imid - 1
-        else
-            let ret = imid | break
-        endif
-    endwh
-
-    return ret
-endf
-" }}}
 " }}}
 
 " modeline {{{1
