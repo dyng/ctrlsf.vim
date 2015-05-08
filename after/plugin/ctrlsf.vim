@@ -6,6 +6,13 @@
 " Version: 0.01
 " ============================================================================
 
+" Loading Guard {{{1
+if !exists('g:ctrlsf_debug') && exists('g:ctrlsf_aftplugin_loaded')
+    finish
+endif
+let g:ctrlsf_aftplugin_loaded = 1
+" }}}
+
 " Airline support {{{1
 func! CtrlSFStatusLine(...)
     " main window
