@@ -60,7 +60,7 @@ endf
 func! s:SearchVwordCmd(to_exec)
     let keys = '":\<C-U>CtrlSF " . g:CtrlSFGetVisualSelection()'
     let keys .= a:to_exec ? '."\r"' : '." "'
-    let cmd = ":\<C-U>call feedkeys(" . keys . ")\r"
+    let cmd = ":\<C-U>call feedkeys(" . keys . ", 'n')\r"
     return cmd
 endf
 " }}}
