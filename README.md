@@ -4,6 +4,47 @@ An ack/ag powered code search and view tool, in an intuitive way with fairly mor
 
 ![ctrlsf demo](http://i.imgur.com/mlWj3mz.gif)
 
+## About upcoming v1.0
+
+There will be several features and changes introduced in v1.0, and the most important one is **v1.0 will break backward compatibility**.
+
+### Where and why backward compatibility is given up?
+
+CtrlSF is at first designed as an wrapper of ag/ack within vim, and the principle of interface design is *keeping same interface with ag/ack running on shell*. This fact lets user get access to all features of ag/ack, and it's easier to implement too. However I found it is not as useful as I thought, what's worse, this principle limits features I can add to CtrlSF and makes CtrlSF counter-intuitive sometimes.
+
+So I want to change it.
+
+Case-insensitive searching in pre-v1.0 CtrlSF is like this
+
+```vim
+CtrlSF -i foo
+```
+
+In v1.0, that will be replaced by
+
+```vim
+CtrlSF -ignorecase foo
+```
+
+For those most frequently used arguments, an upper case short version is also available
+
+```vim
+CtrlSF -I foo
+```
+
+### Major features in v1.0
+
+- New interface (new argument, new completion, etc.)
+- Literal string search by default
+- Auto detect VCS directory(.git, .hg) and use it as search root
+- Search restrict to files of specific type
+- Debug mode
+- Somthing more...
+
+----
+
+**Notice: This guide is about usage in pre-v1.0, something may change after v1.0 release. Please read above section for what will change.**
+
 ## Installation
 
 1. Make sure you have [ack][1] or [ag][2] installed.
