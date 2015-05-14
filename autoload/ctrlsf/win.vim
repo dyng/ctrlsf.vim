@@ -230,14 +230,15 @@ func! ctrlsf#win#FindTargetWindow(file) abort
     endif
 
     " case: previous window where ctrlsf was triggered
-    let ctrlsf_winnr = s:FindCtrlsfWindow()
+    let ctrlsf_winnr = ctrlsf#win#FindMainWindow()
     if ctrlsf_winnr > 0 && ctrlsf_winnr <= s:caller_win.winnr
         let target_winnr = s:caller_win.winnr + 1
     else
         let target_winnr = s:caller_win.winnr
     endif
 
-    if winbufnr(target_winnr) == s:caller_win.bufnr && empty(getwinvar(target_winnr, '&buftype'))
+    if winbufnr(target_winnr) == s:caller_win.bufnr
+        \ && empty(getwinvar(target_winnr, '&buftype'))
         return target_winnr
     endif
 

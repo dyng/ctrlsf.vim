@@ -149,7 +149,7 @@ func! s:Search(args) abort
         return -1
     endif
 
-    call s:ParseAckprgOutput(ackprg_output)
+    call ctrlsf#db#ParseAckprgResult(ackprg_output)
 
     call ctrlsf#win#OpenWindow()
 
@@ -157,7 +157,7 @@ func! s:Search(args) abort
 
     setl modifiable
     silent %delete _
-    silent 0put =s:RenderContent()
+    silent 0put =ctrlsf#view#Render()
     silent $delete _ " delete trailing empty line
     setl nomodifiable
     call cursor(1, 1)
@@ -166,11 +166,14 @@ endf
 
 " s:JumpTo() {{{2
 func! ctrlsf#JumpTo(mode) abort
-    let [file, lnum, col] = s:jump_table[line('.') - 1]
+    let [file, line, match] = ctrlsf#view#Reflect(line('.'))
 
-    if empty(file) || empty(lnum)
+    if empty(file) || empty(line)
         return
     endif
+
+    let lnum = line.lnum
+    let col = empty(match)? 0 : match.col
 
     if a:mode ==# 'o'
         call s:OpenFileInWindow(file, lnum, col, 1)
@@ -204,14 +207,14 @@ endf
 " 'g:ctrlsf_auto_close' is.
 "
 func! s:OpenFileInWindow(file, lnum, col, mode) abort
-    let target_winnr = s:FindTargetWindow(a:file)
+    let target_winnr = ctrlsf#win#FindTargetWindow(a:file)
 
     if a:mode == 1 && g:ctrlsf_auto_close
-        let ctrlsf_winnr = s:FindCtrlsfWindow()
+        let ctrlsf_winnr = ctrlsf#win#FindMainWindow()
         if ctrlsf_winnr <= target_winnr
             let target_winnr -= 1
         endif
-        call s:CloseWindow()
+        call ctrlsf#win#CloseWindow()
     endif
 
     if target_winnr == 0
@@ -247,7 +250,7 @@ endf
 "
 func! s:OpenFileInTab(file, lnum, col, mode) abort
     if a:mode == 1 && g:ctrlsf_auto_close
-        call s:CloseWindow()
+        call ctrlsf#win#CloseWindow()
     endif
 
     exec 'tabedit ' . a:file
@@ -266,8 +269,8 @@ endf
 
 " s:PreviewFile() {{{2
 func! s:PreviewFile(file, lnum, col) abort
-    if (s:FocusPreviewWindow() == -1)
-        call s:OpenPreviewWindow()
+    if (ctrlsf#win#FocusPreviewWindow() == -1)
+        call ctrlsf#win#OpenPreviewWindow()
     endif
 
     if !exists('b:ctrlsf_file') || b:ctrlsf_file !=# a:file
@@ -288,7 +291,7 @@ func! s:PreviewFile(file, lnum, col) abort
         call s:HighlightSelectedLine()
     endif
 
-    call s:FocusCtrlsfWindow()
+    call ctrlsf#win#FocusMainWindow()
 endf
 " }}}
 
@@ -440,148 +443,6 @@ func! s:ParseAckprgOptions(args) abort
     endfo
 endf
 " }}}
-
-" s:ParseAckprgOutput() {{{2
-func! s:ParseAckprgOutput(raw_output) abort
-    let s:ackprg_result = []
-    let s:match_list    = []
-
-    if len(s:ackprg_options.path) == 1
-        let single_file = s:ackprg_options.path[0]
-        if getftype(single_file) == 'file'
-            call add(s:ackprg_result, {
-                \ 'filename' : single_file,
-                \ 'lines'    : [],
-                \ })
-        endif
-    endif
-
-    for line in split(a:raw_output, '\n')
-        " ignore blank line
-        if line =~ '^$'
-            continue
-        endif
-
-        let matched = matchlist(line, '\v^(\d*)([-:])(\d*)([-:])?(.*)$')
-
-        " if line doesn't match, consider it as filename
-        if empty(matched)
-            call add(s:ackprg_result, {
-                \ 'filename' : line,
-                \ 'lines'    : [],
-                \ })
-        else
-            if matched[2] == ':'
-                call add(s:match_list, 0) " insert 0 as placeholder
-            endif
-            call add(s:ackprg_result[-1]['lines'], {
-                \ 'lnum'    : matched[1],
-                \ 'symbol'  : matched[2],
-                \ 'col'     : matched[3],
-                \ 'content' : matched[5],
-                \ })
-        endif
-    endfo
-endf
-" }}}
-" }}}
-
-" Output {{{1
-" s:RenderContent() {{{2
-func! s:RenderContent() abort
-    let s:jump_table = []
-    let content      = []
-
-    let match_count  = len(s:match_list)
-    let s:match_list = []
-
-    " Summary
-    call s:InsertLineAndSetJmp(content, 'summary', {
-        \ 'files'   : len(s:ackprg_result),
-        \ 'matches' : match_count,
-        \ })
-    call s:InsertLineAndSetJmp(content, 'blank')
-
-    for file in s:ackprg_result
-        " Filename
-        call s:InsertLineAndSetJmp(content, 'filename', file.filename)
-
-        " Result
-        for line in file.lines
-            if !empty(line.lnum)
-                call s:InsertLineAndSetJmp(content, 'normal', line, {
-                    \ 'file' : file.filename,
-                    \ 'lnum' : line.lnum,
-                    \ 'col'  : line.col,
-                    \ })
-            else
-                call s:InsertLineAndSetJmp(content, 'ellipsis', '', {
-                    \ 'file' : file.filename,
-                    \ 'lnum' : 0,
-                    \ 'col'  : 0,
-                    \ })
-            endif
-        endfo
-
-        " Insert empty line between files
-        if file isnot s:ackprg_result[-1]
-            call s:InsertLineAndSetJmp(content, 'blank')
-        endif
-    endfo
-
-    return join(content, "\n")
-endf
-" }}}
-
-" s:InsertLineAndSetJmp() {{{2
-func! s:InsertLineAndSetJmp(buffer, type, ...) abort
-    let arg     = exists('a:1') ? a:1 : ''
-    let jmpinfo = exists('a:2') ? a:2 : {}
-
-    let content = s:FormatLine(a:type, arg)
-    call add(a:buffer, content)
-
-    if !empty(jmpinfo)
-        call s:SetJmpTable(jmpinfo.file, jmpinfo.lnum, jmpinfo.col)
-    else
-        call s:SetJmpTable('', '', '')
-    endif
-
-    if a:type == 'normal' && arg.symbol == ':'
-        call s:SetMatchList(len(a:buffer))
-    endif
-endf
-" }}}
-
-" s:FormatLine() {{{2
-func! s:FormatLine(type, arg) abort
-    if a:type == 'summary'
-        let output = printf("%s matched lines across %s files", a:arg.matches, a:arg.files)
-    elseif a:type == 'filename'
-        let output = a:arg . ":"
-    elseif a:type == 'normal'
-        let output = a:arg.lnum . a:arg.symbol
-        let output .= repeat(' ', g:ctrlsf_leading_space - len(output)) . a:arg.content
-    elseif a:type == 'ellipsis'
-        let output = repeat('.', 4)
-    elseif a:type == 'blank'
-        let output = ""
-    endif
-    return output
-endf
-" }}}
-
-" s:SetJmpTable() {{{2
-func! s:SetJmpTable(file, line, col) abort
-    call add(s:jump_table, [a:file, a:line, a:col])
-endf
-" }}}
-
-" s:SetMatchList() {{{2
-func! s:SetMatchList(linenr) abort
-    call add(s:match_list, a:linenr)
-endf
-" }}}
 " }}}
 
 " Utils {{{1
@@ -624,7 +485,6 @@ func! s:BuildCommand(args) abort
     return printf('%s %s %s %s', prg, prg_args[prg], context, u_args)
 endf
 " }}}
-
 " }}}
 
 " modeline {{{1

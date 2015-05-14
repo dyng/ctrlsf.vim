@@ -1,14 +1,89 @@
-" Data structure storing query result
-"
+" Data structure storing parsed query result
 let s:resultset = []
 
-let s:matches = []
+func! ctrlsf#db#ResultSet() abort
+    return s:resultset
+endf
 
+func! ctrlsf#db#FileSet() abort
+    let fileset  = []
+    let cur_file = ''
+    for par in s:resultset
+        if cur_file !=# par.file
+            let cur_file = par.file
+            call add(fileset, {
+                \ "file": cur_file,
+                \ "paragraphs": [],
+                \ })
+        endif
+        call add(fileset[-1].paragraphs, par)
+    endfo
+    return fileset
+endf
+
+func! ctrlsf#db#Matchlist() abort
+    let matchlist = []
+    for par in s:resultset
+        call extend(matchlist, par.matches)
+    endfo
+    return matchlist
+endf
+
+" s:ParseParagraph()
+"
+func! s:ParseParagraph(buffer, file) abort
+    let paragraph = {
+        \ 'file'    : a:file,
+        \ 'lnum'    : -1,
+        \ 'vlnum'   : -1,
+        \ 'range'   : len(a:buffer),
+        \ 'lines'   : [],
+        \ 'matches' : [],
+        \ }
+
+    " parse first line for starting line number
+    let paragraph.lnum = matchlist(a:buffer[0], '\v^(\d+)([-:])(\d*)')[1]
+
+    " fields with -1 as placeholder will be populated after rendering
+    for line in a:buffer
+        let matched = matchlist(line, '\v^(\d+)([-:])(\d*)([-:])?(.*)$')
+
+        " add matched line to match list
+        let match = {}
+        if matched[2] == ':'
+            let match = {
+                \ 'lnum'  : matched[1],
+                \ 'vlnum' : -1,
+                \ 'col'   : matched[3],
+                \ 'vcol'  : -1
+                \ }
+            call add(paragraph.matches, match)
+        endif
+
+        " add line content
+        call add(paragraph.lines, {
+            \ 'matched' : !empty(match),
+            \ 'match'   : match,
+            \ 'lnum'    : matched[1],
+            \ 'vlnum'   : -1,
+            \ 'content' : matched[5],
+            \ })
+    endfo
+
+    return paragraph
+endf
+
+" ParseAckprgOutput()
+"
 func! ctrlsf#db#ParseAckprgResult(result) abort
-    let current_file = ""
+    " reset resultset
+    let s:resultset = []
 
-    if len(ctrlsf#opt#options.path) == 1
-        let path = ctrlsf#opt#options.path[0]
+    let current_file = ""
+    let next_file    = ""
+
+    if len(ctrlsf#opt#getopt("path")) == 1
+        let path = ctrlsf#opt#getopt("path")[0]
         if getftype(path) == 'file'
             let current_file = path
         endif
@@ -24,52 +99,23 @@ func! ctrlsf#db#ParseAckprgResult(result) abort
             let line = result_lines[cur]
             let cur += 1
 
-            " if come across a blank line, end loop and start parsing
-            if line =~ '^$'
+            " if come across a division line, end loop and start parsing
+            if line =~ '^--$'
                 break
             " if line doesn't match [lnum:col] pattern, assume it is filename
             elseif line !~ '\v^\d+[-:]\d*'
-                let current_file = line
+                let next_file = line
+                break
             else
-                call add(buffer, result_lines[cur])
+                call add(buffer, line)
             endif
         endwh
 
         if len(buffer) > 0
-            call add(s:resultset, {
-                \ 'file' : current_file,
-                \ 'olnum' : 0,
-                \ 'range' : 0,
-                \ })
-            for line in buffer
-                let matched = matchlist(line, '\v^(\d+)([-:])(\d*)([-:])?(.*)$')
-
-                call add(s:resultset)
-            endfo
+            let paragraph = s:ParseParagraph(buffer, current_file)
+            call add(s:resultset, paragraph)
         endif
+
+        let current_file = next_file
     endwh
-
-    for line in split(a:result, '\n')
-        " ignore blank line
-        if line =~ '^$'
-            continue
-        endif
-
-        let matched = matchlist(line, '\v^(\d*)([-:])(\d*)([-:])?(.*)$')
-
-        " if line doesn't match, assume it is filename
-        if empty(matched)
-            let current_file = line
-        else
-            if matched[2] == ':'
-                call add(s:match_list, 0) " insert 0 as placeholder
-            endif
-            call add(s:ackprg_result[-1]['lines'], {
-                \ 'lnum'    : matched[1],
-                \ 'symbol'  : matched[2],
-                \ 'col'     : matched[3],
-                \ 'content' : matched[5],
-                \ })
-        endif
-    endfo
 endf
