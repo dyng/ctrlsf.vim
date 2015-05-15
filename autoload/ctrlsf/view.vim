@@ -15,8 +15,12 @@ endf
 
 func! s:Line(line) abort
     let out = a:line.lnum . (a:line.matched ? ':' : '-')
-    let out .= repeat(' ', g:ctrlsf_leading_space - len(out)) . a:line.content
+    let out .= repeat(' ', g:ctrlsf_leading_space - strlen(out)) . a:line.content
     return [out]
+endf
+
+func! s:HorizOffset(line) abort
+    return max([strlen(a:line.lnum) + 1, g:ctrlsf_leading_space])
 endf
 
 " Render()
@@ -43,7 +47,13 @@ func! ctrlsf#view#Render() abort
 
         for line in par.lines
             call extend(view, s:Line(line))
+
             let line.vlnum = len(view)
+
+            if line.matched
+                let line.match.vlnum = len(view)
+                let line.match.vcol  = line.match.col + s:HorizOffset(line)
+            endif
         endfo
     endfo
 
@@ -59,12 +69,13 @@ endf
 "
 " Returns
 " [file, line, match] if corresponding line contains one or more matches
-" [file, line, {}]    if corresponding line does not contains match
+" [file, line, {}]    if corresponding line doesn't contains any match
 " [{}, {}, {}]        if no corresponding line is found
 "
 func! ctrlsf#view#Reflect(vlnum) abort
     let resultset = ctrlsf#db#ResultSet()
 
+    " TODO: use binary search for better performance
     let ret = [{}, {}, {}]
     for par in resultset
         if a:vlnum < par.vlnum
@@ -90,4 +101,54 @@ func! ctrlsf#view#Reflect(vlnum) abort
     endfo
 
     return ret
+endf
+
+" FindNextMatch()
+"
+" Find next match.
+"
+" Parameters
+" {vlnum}   the line number of search base
+" {forward} true or false
+"
+" Returns
+" [vlnum, vcol] line number and column number of next match
+"
+func! ctrlsf#view#FindNextMatch(vlnum, forward) abort
+    let matchlist = ctrlsf#db#MatchList()
+
+    let [lp, rp] = [0, len(matchlist) - 1]
+
+    " when vlnum is out of range [0, len]
+    if a:vlnum < matchlist[lp].vlnum
+        let rp = lp
+        let lp = -1
+    elseif a:vlnum > matchlist[rp].vlnum
+        let lp = rp
+        let rp = -1
+    else
+        " main binary search
+        while rp - lp > 1
+            let mp    = (lp + rp) / 2
+            let pivot = matchlist[mp]
+
+            if matchlist[mp].vlnum == a:vlnum
+                let lp = (mp == 0) ? -1 : mp - 1
+                let rp = (mp == len(matchlist) - 1) ? -1 : mp + 1
+                break
+            elseif matchlist[mp].vlnum < a:vlnum
+                let lp = mp
+            else
+                let rp = mp
+            endif
+        endwh
+    endif
+
+    let nextp = a:forward ? rp : lp
+
+    if nextp == -1
+        return [-1, -1]
+    else
+        return [matchlist[nextp].vlnum, matchlist[nextp].vcol]
+    endif
 endf

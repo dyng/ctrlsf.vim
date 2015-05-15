@@ -173,7 +173,7 @@ func! ctrlsf#JumpTo(mode) abort
     endif
 
     let lnum = line.lnum
-    let col = empty(match)? 0 : match.col
+    let col  = empty(match)? 0 : match.col
 
     if a:mode ==# 'o'
         call s:OpenFileInWindow(file, lnum, col, 1)
@@ -191,9 +191,8 @@ endf
 
 " s:NextMatch() {{{2
 func! ctrlsf#NextMatch(forward) abort
-    let current = line('.')
-    let next = s:FindNextMatchLnum(current, a:forward)
-    call cursor(next, g:ctrlsf_leading_space + s:jump_table[next-1][2])
+    let [vlnum, vcol] = ctrlsf#view#FindNextMatch(line('.'), a:forward)
+    call cursor(vlnum, vcol)
 endf
 " }}}
 
@@ -341,30 +340,6 @@ func! s:HighlightSelectedLine() abort
 
     let pattern = '\%' . line('.') . 'l.*'
     let b:ctrlsf_highlight_id = matchadd('ctrlsfSelectedLine', pattern, -1)
-endf
-" }}}
-
-" s:FindNextMatchLnum() {{{2
-func! s:FindNextMatchLnum(current, forward)
-    let mlist_len = len(s:match_list)
-
-    let i_le = ctrlsf#utils#BinarySearch(s:match_list, 0, mlist_len - 1, a:current)
-
-    if a:forward
-        let i_next = i_le + 1
-    else
-        if s:match_list[i_le] == a:current
-            let i_next = i_le - 1
-        else
-            let i_next = i_le
-        endif
-    endif
-
-    if i_next >= mlist_len || i_next < 0
-        return a:current
-    else
-        return s:match_list[i_next]
-    endif
 endf
 " }}}
 " }}}

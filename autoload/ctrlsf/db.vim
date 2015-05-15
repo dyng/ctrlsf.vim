@@ -21,7 +21,7 @@ func! ctrlsf#db#FileSet() abort
     return fileset
 endf
 
-func! ctrlsf#db#Matchlist() abort
+func! ctrlsf#db#MatchList() abort
     let matchlist = []
     for par in s:resultset
         call extend(matchlist, par.matches)
@@ -31,6 +31,8 @@ endf
 
 " s:ParseParagraph()
 "
+" Notice that some fields are initialized with -1, which will be populated
+" in render processing.
 func! s:ParseParagraph(buffer, file) abort
     let paragraph = {
         \ 'file'    : a:file,
@@ -44,7 +46,6 @@ func! s:ParseParagraph(buffer, file) abort
     " parse first line for starting line number
     let paragraph.lnum = matchlist(a:buffer[0], '\v^(\d+)([-:])(\d*)')[1]
 
-    " fields with -1 as placeholder will be populated after rendering
     for line in a:buffer
         let matched = matchlist(line, '\v^(\d+)([-:])(\d*)([-:])?(.*)$')
 
