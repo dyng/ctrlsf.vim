@@ -70,13 +70,13 @@ endf
 " Returns
 " [file, line, match] if corresponding line contains one or more matches
 " [file, line, {}]    if corresponding line doesn't contains any match
-" [{}, {}, {}]        if no corresponding line is found
+" ['', {}, {}]        if no corresponding line is found
 "
 func! ctrlsf#view#Reflect(vlnum) abort
     let resultset = ctrlsf#db#ResultSet()
 
     " TODO: use binary search for better performance
-    let ret = [{}, {}, {}]
+    let ret = ['', {}, {}]
     for par in resultset
         if a:vlnum < par.vlnum
             break

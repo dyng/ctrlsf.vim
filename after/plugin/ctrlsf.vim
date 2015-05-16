@@ -11,16 +11,16 @@ func! CtrlSFStatusLine(...)
     " main window
     if bufname('%') == '__CtrlSF__'
         let w:airline_section_a = 'CtrlSF'
-        let w:airline_section_b = '%{ctrlsf#SectionB()}'
-        let w:airline_section_c = '%{ctrlsf#SectionC()}'
-        let w:airline_section_x = '%{ctrlsf#SectionX()}'
+        let w:airline_section_b = '%{ctrlsf#utils#SectionB()}'
+        let w:airline_section_c = '%{ctrlsf#utils#SectionC()}'
+        let w:airline_section_x = '%{ctrlsf#utils#SectionX()}'
         let w:airline_section_y = ''
     endif
 
     " preview window
     if bufname('%') == '__CtrlSFPreview__'
         let w:airline_section_a = 'Preview'
-        let w:airline_section_c = '%{ctrlsf#PreviewSectionC()}'
+        let w:airline_section_c = '%{ctrlsf#utils#PreviewSectionC()}'
     endif
 endf
 

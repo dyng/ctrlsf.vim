@@ -1,24 +1,44 @@
-" BinarySearch()
+""
+"" Airline Support
 "
-" Search for the maximum number in 'array' that less or equal to 'key'.
+
+" SectionB()
 "
-func! ctrlsf#utils#BinarySearch(array, imin, imax, key)
-    let array = a:array | let key  = a:key
-    let imax  = a:imax  | let imin = a:imin
+" Show current search pattern
+"
+func! ctrlsf#utils#SectionB()
+    return 'Pattern: ' . ctrlsf#opt#GetOpt('pattern')
+endf
 
-    let ret = -1
-    while (imax >= imin)
-        let imid = (imax + imin) / 2
+" SectionC()
+"
+" Show filename in which cursor is currently placed
+"
+func! ctrlsf#utils#SectionC()
+    let [file, _, _] = ctrlsf#view#Reflect(line('.'))
+    return empty(file) ? '' : file
+endf
 
-        if array[imid] < key
-            let ret = imid
-            let imin = imid + 1
-        elseif array[imid] > key
-            let imax = imid - 1
-        else
-            let ret = imid | break
-        endif
-    endwh
+" SectionX()
+"
+" Show total number of matches and current matching
+"
+func! ctrlsf#utils#SectionX()
+    let [file, line, match] = ctrlsf#view#Reflect(line('.'))
+    if !empty(match)
+        let matchlist = ctrlsf#db#MatchList()
+        let total     = len(matchlist)
+        let current   = index(matchlist, match) + 1
+        return current . '/' . total
+    else
+        return ''
+    endif
+endf
 
-    return ret
+" PreviewSectionC()
+"
+" Show previewing file's name
+"
+func! ctrlsf#utils#PreviewSectionC()
+    return get(b:, 'ctrlsf_file', '')
 endf

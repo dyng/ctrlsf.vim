@@ -6,59 +6,6 @@
 " Version: 0.01
 " ============================================================================
 
-" Global Variables {{{1
-let s:ackprg_result  = []
-let s:match_list     = []
-let s:jump_table     = []
-let s:ackprg_options = {}
-" }}}
-
-" Static Constants {{{1
-let s:ACK_ARGLIST = {
-    \ '-A' : { 'argt': 'space',  'argc': 1, 'alias': '--after-context' },
-    \ '-B' : { 'argt': 'space',  'argc': 1, 'alias': '--before-context' },
-    \ '-C' : { 'argt': 'space',  'argc': 1, 'alias': '--context' },
-    \ '-g' : { 'argt': 'space',  'argc': 1 },
-    \ '-i' : { 'argt': 'none',   'argc': 0, 'alias': '--ignore-case' },
-    \ '-m' : { 'argt': 'equals', 'argc': 1, 'alias': '--max-count' },
-    \ '--ignore-case'    : { 'argt': 'none',   'argc': 0 },
-    \ '--match'          : { 'argt': 'space',  'argc': 1 },
-    \ '--max-count'      : { 'argt': 'equals', 'argc': 1 },
-    \ '--pager'          : { 'argt': 'equals', 'argc': 1 },
-    \ '--context'        : { 'argt': 'equals', 'argc': 1 },
-    \ '--after-context'  : { 'argt': 'equals', 'argc': 1 },
-    \ '--before-context' : { 'argt': 'equals', 'argc': 1 },
-    \ '--file-from'      : { 'argt': 'equals', 'argc': 1 },
-    \ }
-let s:AG_ARGLIST = {
-    \ '-A' : { 'argt': 'space', 'argc': 1, 'alias': '--after' },
-    \ '-B' : { 'argt': 'space', 'argc': 1, 'alias': '--before' },
-    \ '-C' : { 'argt': 'space', 'argc': 1, 'alias': '--context' },
-    \ '-g' : { 'argt': 'space', 'argc': 1 },
-    \ '-G' : { 'argt': 'space', 'argc': 1, 'alias': '--file-search-regex' },
-    \ '-i' : { 'argt': 'none',  'argc': 0, 'alias': '--ignore-case' },
-    \ '-m' : { 'argt': 'space', 'argc': 1, 'alias': '--max-count' },
-    \ '-p' : { 'argt': 'space', 'argc': 1, 'alias': '--path-to-agignore' },
-    \ '--after'       : { 'argt': 'space', 'argc': 1 },
-    \ '--before'      : { 'argt': 'space', 'argc': 1 },
-    \ '--context'     : { 'argt': 'space', 'argc': 1 },
-    \ '--depth'       : { 'argt': 'space', 'argc': 1 },
-    \ '--file-from'   : { 'argt': 'space', 'argc': 1 },
-    \ '--ignore'      : { 'argt': 'space', 'argc': 1 },
-    \ '--ignore-case' : { 'argt': 'none',  'argc': 0 },
-    \ '--ignore-dir'  : { 'argt': 'space', 'argc': 1 },
-    \ '--max-count'   : { 'argt': 'space', 'argc': 1 },
-    \ '--pager'       : { 'argt': 'space', 'argc': 1 },
-    \ '--file-search-regex' : { 'argt': 'space', 'argc': 1 },
-    \ '--path-to-agignore'  : { 'argt': 'space', 'argc': 1 },
-    \ }
-let s:ARGLIST = {
-    \ 'ag'       : s:AG_ARGLIST,
-    \ 'ack-grep' : s:ACK_ARGLIST,
-    \ 'ack'      : s:ACK_ARGLIST,
-    \ }
-" }}}
-
 " Public Functions {{{1
 " ctrlsf#Search() {{{2
 func! ctrlsf#Search(args) abort
@@ -84,34 +31,6 @@ func! ctrlsf#ClearSelectedLine() abort
     call s:ClearSelectedLine()
 endf
 " }}}
-
-" Airline Support {{{2
-" ctrlsf#SectionB() {{{3
-func! ctrlsf#SectionB()
-    return 'Search: ' . get(s:ackprg_options, 'pattern', '')
-endf
-" }}}
-
-" ctrlsf#SectionC() {{{3
-func! ctrlsf#SectionC()
-    return get(get(s:jump_table, line('.')-1, {}), 'filename', '')
-endf
-" }}}
-
-" ctrlsf#SectionX() {{{3
-func! ctrlsf#SectionX()
-     let total_matches = len(s:match_list)
-     let passed_matches = 1 + ctrlsf#utils#BinarySearch(s:match_list, 0, total_matches-1, line('.'))
-     return passed_matches . '/' . total_matches
-endf
-" }}}
-
-" ctrlsf#PreviewSectionC() {{{3
-func! ctrlsf#PreviewSectionC()
-    return get(b:, 'ctrlsf_file', '')
-endf
-" }}}
-" }}}
 " }}}
 
 " Actions {{{1
@@ -131,11 +50,11 @@ func! s:Search(args) abort
         return -1
     endtry
 
-    if s:CheckAckprg() < 0
+    if ctrlsf#backend#SelfCheck() < 0
         return -1
     endif
 
-    let command = s:BuildCommand(args)
+    let command = ctrlsf#backend#BuildCommand(args)
 
     " A windows user report CtrlSF doesn't work well when 'shelltemp' is
     " turned off. Although I can't reproduce it, I think forcing 'shelltemp'
@@ -314,48 +233,6 @@ endf
 " s:ClearSelectedLine() {{{2
 func! s:ClearSelectedLine() abort
     silent! call matchdelete(b:ctrlsf_highlight_id)
-endf
-" }}}
-" }}}
-
-" Utils {{{1
-" s:CheckAckprg() {{{2
-func! s:CheckAckprg() abort
-    if !exists('g:ctrlsf_ackprg')
-        echoerr 'g:ctrlsf_ackprg is not defined!'
-        return -99
-    endif
-
-    if empty(g:ctrlsf_ackprg)
-        echoerr 'ack/ag is not found in the system!'
-        return -99
-    endif
-
-    let prg = g:ctrlsf_ackprg
-
-    if !has_key(s:ARGLIST, prg)
-        echoerr printf('%s is not supported by ctrlsf.vim!', prg)
-        return -1
-    endif
-
-    if !executable(prg)
-        echoerr printf('%s does not seem installed!', prg)
-        return -2
-    endif
-endf
-" }}}
-
-" s:BuildCommand() {{{2
-func! s:BuildCommand(args) abort
-    let prg      = g:ctrlsf_ackprg
-    let u_args   = escape(a:args, '%#!')
-    let context  = '-C ' . ctrlsf#opt#GetOpt('context')
-    let prg_args = {
-        \ 'ag'       : '--heading --group --nocolor --nobreak --column',
-        \ 'ack'      : '--heading --group --nocolor --nobreak',
-        \ 'ack-grep' : '--heading --group --nocolor --nobreak',
-        \ }
-    return printf('%s %s %s %s', prg, prg_args[prg], context, u_args)
 endf
 " }}}
 " }}}
