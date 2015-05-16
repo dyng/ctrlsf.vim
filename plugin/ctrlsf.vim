@@ -122,8 +122,8 @@ endif
 
 " Commands {{{1
 com! -n=* -comp=customlist,s:PathnameComp CtrlSF        call ctrlsf#Search(<q-args>)
-com! -n=0                                 CtrlSFOpen    call ctrlsf#OpenWindow()
-com! -n=0                                 CtrlSFClose   call ctrlsf#CloseWindow()
+com! -n=0                                 CtrlSFOpen    call ctrlsf#Open()
+com! -n=0                                 CtrlSFClose   call ctrlsf#Quit()
 com! -n=0                                 CtrlSFClearHL call ctrlsf#ClearSelectedLine()
 " }}}
 

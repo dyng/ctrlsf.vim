@@ -1,6 +1,22 @@
-""
-"" Airline Support
+"""""""""""""""""""""""""""""""""
+" Misc Functions
+"""""""""""""""""""""""""""""""""
+
+" ctrlsf#utils#MoveCursor()
 "
+func! ctrlsf#utils#MoveCursor(lnum, col) abort
+    " Move cursor to specific line
+    exec 'normal ' . a:lnum . 'z.'
+    call cursor(a:lnum, a:col)
+
+    " Open fold
+    normal zv
+endf
+
+
+"""""""""""""""""""""""""""""""""
+" Airline Support
+"""""""""""""""""""""""""""""""""
 
 " SectionB()
 "

@@ -1,4 +1,5 @@
 " CheckAckprg()
+"
 func! ctrlsf#backend#SelfCheck() abort
     if !exists('g:ctrlsf_ackprg')
         call ctrlsf#log#Error("Option 'g:ctrlsf_ackprg' is not defined.")
@@ -19,7 +20,8 @@ func! ctrlsf#backend#SelfCheck() abort
 endf
 
 " BuildCommand()
-func! ctrlsf#backend#BuildCommand(args) abort
+"
+func! s:BuildCommand(args) abort
     let prg      = g:ctrlsf_ackprg
     let u_args   = escape(a:args, '%#!')
     let context  = '-C ' . ctrlsf#opt#GetOpt('context')
@@ -29,4 +31,32 @@ func! ctrlsf#backend#BuildCommand(args) abort
         \ 'ack-grep' : '--heading --group --nocolor --nobreak',
         \ }
     return printf('%s %s %s %s', prg, prg_args[prg], context, u_args)
+endf
+
+" Run()
+"
+" Execute Ack/Ag.
+"
+" Parameters
+" {args} arguments for execution
+"
+" Returns
+" [success/fail, output]
+"
+func! ctrlsf#backend#Run(args) abort
+    let command = s:BuildCommand(a:args)
+
+    " A windows user report CtrlSF doesn't work well when 'shelltemp' is
+    " turned off. Although I can't reproduce it, I think forcing 'shelltemp'
+    " would not do something really bad.
+    let stmp_bak = &shelltemp
+    set shelltemp
+    let output = system(command)
+    let &shelltemp = stmp_bak
+
+    if v:shell_error && !empty(output)
+        return [0, output]
+    else
+        return [1, output]
+    endif
 endf

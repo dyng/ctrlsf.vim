@@ -1,34 +1,30 @@
-"" Constants
-"
 " ctrlsf buffer's name
 let s:MAIN_BUF_NAME = "__CtrlSF__"
 
 " preview buffer's name
 let s:PREVIEW_BUF_NAME = "__CtrlSFPreview__"
 
-"" Script Variables
-"
 " window which brings up ctrlsf window
 let s:caller_win = {
     \ 'bufnr' : -1,
     \ 'winnr' : -1,
     \ }
 
-""
-" Open & Close
-"
 
-" OpenWindow()
+"""""""""""""""""""""""""""""""""
+" Open & Close
+"""""""""""""""""""""""""""""""""
+
+" OpenMainWindow()
 "
-func! ctrlsf#win#OpenWindow() abort
+func! ctrlsf#win#OpenMainWindow() abort
     " backup current bufnr and winnr
     let s:caller_win = {
         \ 'bufnr' : bufnr('%'),
         \ 'winnr' : winnr(),
         \ }
 
-    " focus an existing ctrlsf window
-    " if failed, initialize a new one
+    " try to focus an existing ctrlsf window, initialize a new one if failed
     if ctrlsf#win#FocusMainWindow() == -1
         if g:ctrlsf_winsize =~ '\d\{1,2}%'
             if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
@@ -59,14 +55,12 @@ func! ctrlsf#win#OpenWindow() abort
     wincmd =
 endf
 
-" CloseWindow()
+" CloseMainWindow()
 "
-func! ctrlsf#win#CloseWindow() abort
+func! ctrlsf#win#CloseMainWindow() abort
     if ctrlsf#win#FocusMainWindow() == -1
         return
     endif
-
-    call ctrlsf#win#ClosePreviewWindow()
 
     " Surely we are in CtrlSF window
     close
@@ -77,6 +71,11 @@ endf
 " OpenPreviewWindow()
 "
 func! ctrlsf#win#OpenPreviewWindow() abort
+    " try to focus an existing preview window
+    if (ctrlsf#win#FocusPreviewWindow() != -1)
+        return
+    endif
+
     if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
         let ctrlsf_width  = winwidth(0)
         let winsize = min([&columns-ctrlsf_width, ctrlsf_width])
@@ -93,7 +92,6 @@ func! ctrlsf#win#OpenPreviewWindow() abort
 
     call s:InitPreviewWindow()
 endf
-"
 
 " ClosePreviewWindow()
 "
@@ -132,7 +130,7 @@ func! s:InitWindow() abort
     nnoremap <silent><buffer> p     :call ctrlsf#JumpTo('p')<CR>
     nnoremap <silent><buffer> <C-J> :call ctrlsf#NextMatch(1)<CR>
     nnoremap <silent><buffer> <C-K> :call ctrlsf#NextMatch(0)<CR>
-    nnoremap <silent><buffer> q     :call ctrlsf#win#CloseWindow()<CR>
+    nnoremap <silent><buffer> q     :call ctrlsf#Quit()<CR>
 endf
 
 " InitPreviewWindow()
@@ -147,9 +145,10 @@ func! s:InitPreviewWindow() abort
     nnoremap <silent><buffer> q :call ctrlsf#win#ClosePreviewWindow()<CR>
 endf
 
-""
+
+"""""""""""""""""""""""""""""""""
 " Find
-"
+"""""""""""""""""""""""""""""""""
 
 " FindWindow()
 "
@@ -159,6 +158,7 @@ endf
 
 " FocusWindow()
 "
+" Parameters
 " {exp} buffer name OR window number
 "
 func! s:FocusWindow(exp) abort
@@ -230,11 +230,16 @@ func! ctrlsf#win#FindTargetWindow(file) abort
     endif
 
     " case: previous window where ctrlsf was triggered
+    let target_winnr = s:caller_win.winnr
+
     let ctrlsf_winnr = ctrlsf#win#FindMainWindow()
-    if ctrlsf_winnr > 0 && ctrlsf_winnr <= s:caller_win.winnr
-        let target_winnr = s:caller_win.winnr + 1
-    else
-        let target_winnr = s:caller_win.winnr
+    if ctrlsf_winnr > 0 && ctrlsf_winnr <= target_winnr
+        let target_winnr += 1
+    endif
+
+    let preview_winnr = ctrlsf#win#FindPreviewWindow()
+    if preview_winnr > 0 && preview_winnr <= target_winnr
+        let target_winnr += 1
     endif
 
     if winbufnr(target_winnr) == s:caller_win.bufnr
