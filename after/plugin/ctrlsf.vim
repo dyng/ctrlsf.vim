@@ -6,7 +6,6 @@
 " Version: 0.01
 " ============================================================================
 
-" Airline support {{{1
 func! CtrlSFStatusLine(...)
     " main window
     if bufname('%') == '__CtrlSF__'
@@ -27,7 +26,3 @@ endf
 if exists('g:loaded_airline')
     call airline#add_statusline_func('CtrlSFStatusLine')
 endif
-" }}}
-
-" modeline {{{1
-" vim: set foldmarker={{{,}}} foldlevel=0 foldmethod=marker spell:

@@ -1,4 +1,54 @@
-" CheckAckprg()
+" BuildCommand()
+"
+func! s:BuildCommand(args) abort
+    let tokens = []
+
+    " add executable file
+    call add(tokens, g:ctrlsf_ackprg)
+
+    " If user has given '-A', '-B' or '-C', then use it without complaint
+    " else use the default value 'g:ctrlsf_context'
+    let context = ''
+    for opt in ['after', 'before', 'context']
+        if ctrlsf#opt#HasOpt(opt)
+            let context .= printf('--%s=%s ', opt, ctrlsf#opt#GetOpt(opt))
+        endif
+    endfo
+    if empty(context)
+        for opt in ['after', 'before', 'context']
+            if ctrlsf#opt#GetOpt(opt) > 0
+                let context .= printf('--%s=%s ', opt, ctrlsf#opt#GetOpt(opt))
+            endif
+        endfo
+    endif
+    call add(tokens, context)
+
+    " ignorecase
+    call add(tokens, ctrlsf#opt#GetOpt('ignorecase') ? '--ignore-case' : '')
+
+    " regex
+    call add(tokens, ctrlsf#opt#GetOpt('regex') ? '' : '--literal')
+
+    " filetype
+    let filetype = ctrlsf#opt#GetOpt('filetype')
+    call add(tokens, empty(filetype) ? '' : '--' . filetype)
+
+    " default
+    call add(tokens, '--heading --group --nocolor --nobreak --column')
+
+    " pattern
+    call add(tokens, ctrlsf#opt#GetOpt('pattern'))
+
+    " path
+    call extend(tokens, ctrlsf#opt#GetOpt('path'))
+
+    let cmd = join(tokens, ' ')
+    call ctrlsf#log#Debug(cmd)
+
+    return cmd
+endf
+
+" SelfCheck()
 "
 func! ctrlsf#backend#SelfCheck() abort
     if !exists('g:ctrlsf_ackprg')
@@ -19,18 +69,22 @@ func! ctrlsf#backend#SelfCheck() abort
     endif
 endf
 
-" BuildCommand()
+" Detect()
 "
-func! s:BuildCommand(args) abort
-    let prg      = g:ctrlsf_ackprg
-    let u_args   = escape(a:args, '%#!')
-    let context  = '-C ' . ctrlsf#opt#GetOpt('context')
-    let prg_args = {
-        \ 'ag'       : '--heading --group --nocolor --nobreak --column',
-        \ 'ack'      : '--heading --group --nocolor --nobreak',
-        \ 'ack-grep' : '--heading --group --nocolor --nobreak',
-        \ }
-    return printf('%s %s %s %s', prg, prg_args[prg], context, u_args)
+func! ctrlsf#backend#Detect()
+    if executable('ag')
+        return 'ag'
+    endif
+
+    if executable('ack-grep')
+        return 'ack-grep'
+    endif
+
+    if executable('ack')
+        return 'ack'
+    endif
+
+    return ''
 endf
 
 " Run()

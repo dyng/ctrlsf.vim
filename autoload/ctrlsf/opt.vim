@@ -1,3 +1,4 @@
+" option list of CtrlSF
 let s:option_list = {
     \ '-after'      : {'args': 1},
     \ '-before'     : {'args': 1},
@@ -12,23 +13,41 @@ let s:option_list = {
     \ '-R': {'fullname': '-regexp'},
     \ }
 
+" default values to options
 let s:default = {
-    \ 'after'      : 3,
-    \ 'before'     : 3,
-    \ 'context'    : g:ctrlsf_context,
-    \ 'ignorecase' : 0,
+    \ 'after'      : -1,
+    \ 'before'     : -1,
+    \ 'context'    : -1,
+    \ 'ignorecase' : g:ctrlsf_ignore_case,
     \ 'regex'      : 0,
     \ 'filetype'   : 0,
     \ 'pattern'    : '',
     \ 'path'       : [],
     \ }
 
+" options
 let s:options = {}
 
+" HasOpt()
+"
+" Return whether user has given a specific option
+"
+func! ctrlsf#opt#HasOpt(name) abort
+    return has_key(s:options, a:name)
+endf
+
+" GetOpt()
+"
+" Return option {name}, if not exists, return default value
+"
 func! ctrlsf#opt#GetOpt(name) abort
     return get(s:options, a:name, s:default[a:name])
 endf
 
+" NextToken()
+"
+" Return nex token of {chars}, which starts from {start}.
+"
 func! s:NextToken(chars, start) abort
     let buffer      = []
     let state_stack = ['normal']
@@ -98,6 +117,15 @@ func! s:NextToken(chars, start) abort
     return [join(buffer, ''), start]
 endf
 
+" Tokenize()
+"
+" Split string into a list of tokens.
+"
+" Examples
+" -I -C 2 path     -> ['-I', '-C', '2', 'path']
+" -regex 'foo bar' -> ['-regex', 'foo bar']
+" foo\ bar         -> ['foo bar']
+"
 func! s:Tokenize(options_str) abort
     let tokens = []
     let chars  = split(a:options_str, '.\zs')
@@ -115,10 +143,12 @@ func! s:Tokenize(options_str) abort
     return tokens
 endf
 
-func! ctrlsf#opt#ParseOptions(options_str) abort
-    " rest s:options
-    let s:options = {}
-
+" ParseOptions()
+"
+" Create a dict contains parsed options
+"
+func! s:ParseOptions(options_str) abort
+    let options = {}
     let tokens = s:Tokenize(a:options_str)
 
     let i = 0
@@ -128,19 +158,21 @@ func! ctrlsf#opt#ParseOptions(options_str) abort
 
         if !has_key(s:option_list, token)
             if token =~# '^-'
-                call ctrlsf#log#Error("Unknown option '%s'. If you are user from pre-v1.0, plaese be aware of CtrlSF v1.0
-                    \ no longer supports all options of ack and ag. Read manual for CtrlSF its own options.", token)
+                call ctrlsf#log#Error("Unknown option '%s'. If you are user
+                    \ from pre-v1.0, plaese be aware of CtrlSF v1.0 no longer
+                    \ supports all options of ack and ag. Read manual for
+                    \ CtrlSF its own options.", token)
                 throw 'ParseOptionsException'
             endif
 
             " resolve to PATTERN and PATH
-            if !has_key(s:options, 'pattern')
-                let s:options['pattern'] = token
+            if !has_key(options, 'pattern')
+                let options['pattern'] = token
             else
-                if !exists(s:options.path)
-                    let s:options['path'] = []
+                if !has_key(options, 'path')
+                    let options['path'] = []
                 endif
-                call add(s:options['path'], token)
+                call add(options['path'], token)
             endif
 
             continue
@@ -154,12 +186,12 @@ func! ctrlsf#opt#ParseOptions(options_str) abort
         endif
 
         if opt.args == 0
-            let s:options[name] = 1
+            let options[name] = 1
         elseif opt.args == 1
             if tokens[i] =~# '\d\+'
-                let s:options[name] = str2nr(tokens[i])
+                let options[name] = str2nr(tokens[i])
             else
-                let s:options[name] = tokens[i]
+                let options[name] = tokens[i]
             endif
 
             let i += 1
@@ -170,7 +202,25 @@ func! ctrlsf#opt#ParseOptions(options_str) abort
                 let i += 1
             endfo
 
-            let s:options[name] = argv
+            let options[name] = argv
         endif
     endwh
+
+    return options
 endf
+
+" ctrlsf#opt#ParseOptions()
+"
+func! ctrlsf#opt#ParseOptions(options_str) abort
+    let s:options = s:ParseOptions(a:options_str)
+endf
+
+""
+" Initialization
+"
+
+" read from configuration
+let ctx_opt = s:ParseOptions(g:ctrlsf_context)
+let s:default.after   = get(ctx_opt, 'after', -1)
+let s:default.before  = get(ctx_opt, 'before', -1)
+let s:default.context = get(ctx_opt, 'context', -1)

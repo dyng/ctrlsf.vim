@@ -14,28 +14,10 @@ let g:ctrlsf_loaded = 1
 " }}}
 
 " Utils {{{1
-" s:DetectAckprg() {{{2
-func! s:DetectAckprg()
-    if executable('ag')
-        return 'ag'
-    endif
-
-    if executable('ack-grep')
-        return 'ack-grep'
-    endif
-
-    if executable('ack')
-        return 'ack'
-    endif
-
-    return ''
-endf
-" }}}
-
-" g:CtrlSFGetVisualSelection() {{{2
+" s:VisualSelection() {{{
 " Thanks to xolox!
 " http://stackoverflow.com/questions/1533565/how-to-get-visually-selected-text-in-vimscript
-func! g:CtrlSFGetVisualSelection()
+func! s:VisualSelection() abort
     " Why is this not a built-in Vim script function?!
     let [lnum1, col1] = getpos("'<")[1:2]
     let [lnum2, col2] = getpos("'>")[1:2]
@@ -43,6 +25,24 @@ func! g:CtrlSFGetVisualSelection()
     let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
     let lines[0] = lines[0][col1 - 1:]
     return join(lines, "\n")
+endf
+" }}}
+
+" g:CtrlSFGetVisualSelection() {{{2
+func! g:CtrlSFGetVisualSelection()
+    let selection = s:VisualSelection()
+
+    " A conditional process is needed because string("'") will return ''''
+    " but our option parser can't parse it properly
+    "
+    " Isn't the else clause unnecessary? Yes, but I prefer plain text :)
+    if selection =~# "'"
+        return '"' . escape(selection, ' \"') . '"'
+    elseif selection =~# '[ \"]'
+        return string(selection)
+    else
+        return selection
+    endif
 endf
 " }}}
 
@@ -72,12 +72,27 @@ func! s:SearchPwordCmd(to_exec)
     return cmd
 endf
 " }}}
-
 " }}}
 
 " Options {{{1
 if !exists('g:ctrlsf_debug_mode')
     let g:ctrlsf_debug_mode = 0
+endif
+
+if !exists('g:ctrlsf_ackprg')
+    let g:ctrlsf_ackprg = ctrlsf#backend#Detect()
+endif
+
+if !exists('g:ctrlsf_auto_close')
+    let g:ctrlsf_auto_close = 1
+endif
+
+if !exists('g:ctrlsf_context')
+    let g:ctrlsf_context = '-C 3'
+endif
+
+if !exists('g:ctrlsf_ignore_case')
+    let g:ctrlsf_ignore_case = 0
 endif
 
 if !exists('g:ctrlsf_position')
@@ -90,18 +105,6 @@ if !exists('g:ctrlsf_position')
         endif
     endif
     let g:ctrlsf_position = 'left'
-endif
-
-if !exists('g:ctrlsf_ackprg')
-    let g:ctrlsf_ackprg = s:DetectAckprg()
-endif
-
-if !exists('g:ctrlsf_auto_close')
-    let g:ctrlsf_auto_close = 1
-endif
-
-if !exists('g:ctrlsf_context')
-    let g:ctrlsf_context = '-C 3'
 endif
 
 if !exists('g:ctrlsf_winsize')
