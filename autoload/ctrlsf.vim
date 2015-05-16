@@ -46,7 +46,6 @@ func! s:Search(args) abort
     try
         call ctrlsf#opt#ParseOptions(args)
     catch /ParseOptionsException/
-        echoerr "Unable to parse options " args
         return -1
     endtry
 
@@ -65,12 +64,7 @@ func! s:Search(args) abort
     let &shelltemp = stmp_bak
 
     if v:shell_error && !empty(ackprg_output)
-        echoerr printf('CtrlSF: Some error occurs in %s execution!', g:ctrlsf_ackprg)
-        echomsg printf('Executed command: "%s".', command)
-        echomsg 'Command output:'
-        for line in split(ackprg_output, '\n')
-            echomsg line
-        endfo
+        call ctrlsf#log#Error('Failed to execute command: %s. Output from backend: %s', command, ackprg_output)
         return -1
     endif
 

@@ -91,6 +91,7 @@ func! s:NextToken(chars, start) abort
     endwh
 
     if len(state_stack) != 1 || state_stack[-1] != 'normal'
+        call ctrlsf#log#Error("Unable to parse options: %s.", join(chars, ''))
         throw "ParseOptionsException"
     endif
 
@@ -127,7 +128,9 @@ func! ctrlsf#opt#ParseOptions(options_str) abort
 
         if !has_key(s:option_list, token)
             if token =~# '^-'
-                throw 'UnknownOptionException'
+                call ctrlsf#log#Error("Unknown option '%s'. If you are user from pre-v1.0, plaese be aware of CtrlSF v1.0
+                    \ no longer supports all options of ack and ag. Read manual for CtrlSF its own options.", token)
+                throw 'ParseOptionsException'
             endif
 
             " resolve to PATTERN and PATH

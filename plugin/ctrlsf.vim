@@ -7,7 +7,7 @@
 " ============================================================================
 
 " Loading {{{1
-if !exists('g:ctrlsf_debug') && exists('g:ctrlsf_loaded')
+if exists('g:ctrlsf_loaded') && !get(g:, 'ctrlsf_debug_mode', 0)
     finish
 endif
 let g:ctrlsf_loaded = 1
@@ -76,6 +76,10 @@ endf
 " }}}
 
 " Options {{{1
+if !exists('g:ctrlsf_debug_mode')
+    let g:ctrlsf_debug_mode = 0
+endif
+
 if !exists('g:ctrlsf_position')
     " [left], right, top, bottom
     if exists('g:ctrlsf_open_left')

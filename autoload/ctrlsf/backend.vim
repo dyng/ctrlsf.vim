@@ -1,19 +1,19 @@
 " CheckAckprg()
 func! ctrlsf#backend#SelfCheck() abort
     if !exists('g:ctrlsf_ackprg')
-        echoerr 'g:ctrlsf_ackprg is not defined!'
+        call ctrlsf#log#Error("Option 'g:ctrlsf_ackprg' is not defined.")
         return -99
     endif
 
     if empty(g:ctrlsf_ackprg)
-        echoerr 'ack/ag is not found in the system!'
+        call ctrlsf#log#Error("Can not find ack or ag on this system.")
         return -99
     endif
 
     let prg = g:ctrlsf_ackprg
 
     if !executable(prg)
-        echoerr printf('%s does not seem installed!', prg)
+        call ctrlsf#log#Error('Can not locate %s in PATH.', prg)
         return -2
     endif
 endf
