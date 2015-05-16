@@ -1,6 +1,6 @@
 func! s:Summary(resultset) abort
     let files   = len(ctrlsf#db#FileSet())
-    let matches = len(ctrlsf#db#Matchlist())
+    let matches = len(ctrlsf#db#MatchList())
     return [printf("%s matched lines across %s files", matches, files)]
 endf
 

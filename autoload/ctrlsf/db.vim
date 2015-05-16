@@ -83,8 +83,8 @@ func! ctrlsf#db#ParseAckprgResult(result) abort
     let current_file = ""
     let next_file    = ""
 
-    if len(ctrlsf#opt#getopt("path")) == 1
-        let path = ctrlsf#opt#getopt("path")[0]
+    if len(ctrlsf#opt#GetOpt("path")) == 1
+        let path = ctrlsf#opt#GetOpt("path")[0]
         if getftype(path) == 'file'
             let current_file = path
         endif
