@@ -6,9 +6,12 @@ func! ctrlsf#hl#HighlightMatch() abort
     endif
 
     " ignore case
+    let case_sensitive = ctrlsf#opt#GetCaseSensitive()
     let case = ''
-    if ctrlsf#opt#GetOpt('ignorecase')
+    if case_sensitive ==# 'ignorecase'
         let case = '\c'
+    elseif case_sensitive ==# 'followcase'
+        let case = '\C'
     else "smartcase
         let pat  = ctrlsf#opt#GetOpt('pattern')
         let case = (pat =~# '\u') ? '\C' : '\c'

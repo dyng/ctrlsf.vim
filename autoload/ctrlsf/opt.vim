@@ -4,6 +4,8 @@ let s:option_list = {
     \ '-before'     : {'args': 1},
     \ '-context'    : {'args': 1},
     \ '-ignorecase' : {'args': 0},
+    \ '-followcase' : {'args': 0},
+    \ '-smartcase'  : {'args': 0},
     \ '-regex'      : {'args': 0},
     \ '-filetype'   : {'args': 1},
     \ '-A': {'fullname': '-after'},
@@ -11,11 +13,11 @@ let s:option_list = {
     \ '-C': {'fullname': '-context'},
     \ '-I': {'fullname': '-ignorecase'},
     \ '-R': {'fullname': '-regex'},
+    \ '-S': {'fullname': '-followcase'},
     \ }
 
 " default values to options
 let s:default = {
-    \ 'ignorecase' : g:ctrlsf_ignore_case,
     \ 'regex'      : g:ctrlsf_regex_pattern,
     \ 'filetype'   : '',
     \ 'pattern'    : '',
@@ -57,8 +59,6 @@ func! ctrlsf#opt#GetOpt(name) abort
     endif
 endf
 
-" DefaultContext()
-"
 let s:context_config = { 'config': '' }
 func! s:DefaultContext(name) abort
     if g:ctrlsf_context ==# s:context_config.config
@@ -76,6 +76,8 @@ func! s:DefaultContext(name) abort
 endf
 
 " GetContext()
+"
+" Return a dict contains 'after', 'before' and/or 'context'
 "
 func! ctrlsf#opt#GetContext() abort
     let options = {}
@@ -96,13 +98,35 @@ func! ctrlsf#opt#GetContext() abort
         endfo
     endif
 
-    let context = ''
-    for opt in keys(options)
-        let context .= printf("--%s=%s ", opt, options[opt])
+    return options
+endf
+
+" GetCaseSensitive()
+"
+" Return 'smartcase', 'ignorecase' or 'followcase'.
+"
+" If two or more flags are given at the same time, preferred by priority
+"
+"   'followcase' > 'ignorecase' > 'smartcase'
+"
+func! ctrlsf#opt#GetCaseSensitive() abort
+    for opt in ['followcase', 'ignorecase', 'smartcase']
+        if ctrlsf#opt#HasOpt(opt)
+            return opt
+        endif
     endfo
 
-    return context
+    " default
+    return {
+        \'smart' : 'smartcase',
+        \'yes'   : 'followcase',
+        \'no'    : 'ignorecase',
+        \}[g:ctrlsf_case_sensitive]
 endf
+
+"""""""""""""""""""""""""""""""""
+" Option Parsing
+"""""""""""""""""""""""""""""""""
 
 " NextToken()
 "

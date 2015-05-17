@@ -8,11 +8,28 @@ func! s:BuildCommand(args) abort
 
     " If user has specified '-A', '-B' or '-C', then use it without complaint
     " else use the default value 'g:ctrlsf_context'
-    call add(tokens, ctrlsf#opt#GetContext())
+    let ctx_options = ctrlsf#opt#GetContext()
+    let context = ''
+    for opt in keys(ctx_options)
+        let context .= printf("--%s=%s ", opt, ctx_options[opt])
+    endfo
+    call add(tokens, context)
 
-    " ignorecase (smartcase by default)
-    call add(tokens, ctrlsf#opt#GetOpt('ignorecase') ? '--ignore-case'
-        \ : '--smart-case')
+    " ignorecase
+    let case_sensitive = ctrlsf#opt#GetCaseSensitive()
+    let case = ''
+    if case_sensitive ==# 'smartcase'
+        let case = '--smart-case'
+    elseif case_sensitive ==# 'ignorecase'
+        let case = '--ignore-case'
+    else
+        if g:ctrlsf_ackprg =~# 'ag'
+            let case = '--case-sensitive'
+        else
+            let case = '--no-smart-case'
+        endif
+    endif
+    call add(tokens, case)
 
     " regex
     call add(tokens, ctrlsf#opt#GetOpt('regex') ? '' : '--literal')

@@ -99,9 +99,9 @@ if !exists('g:ctrlsf_context')
 endif
 " }}}
 
-" g:ctrlsf_ignore_case {{{2
-if !exists('g:ctrlsf_ignore_case')
-    let g:ctrlsf_ignore_case = 0
+" g:ctrlsf_case_sensitive {{{2
+if !exists('g:ctrlsf_case_sensitive')
+    let g:ctrlsf_case_sensitive = 'smart'
 endif
 " }}}
 
