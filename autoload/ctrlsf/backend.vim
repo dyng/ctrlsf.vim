@@ -6,25 +6,13 @@ func! s:BuildCommand(args) abort
     " add executable file
     call add(tokens, g:ctrlsf_ackprg)
 
-    " If user has given '-A', '-B' or '-C', then use it without complaint
+    " If user has specified '-A', '-B' or '-C', then use it without complaint
     " else use the default value 'g:ctrlsf_context'
-    let context = ''
-    for opt in ['after', 'before', 'context']
-        if ctrlsf#opt#HasOpt(opt)
-            let context .= printf('--%s=%s ', opt, ctrlsf#opt#GetOpt(opt))
-        endif
-    endfo
-    if empty(context)
-        for opt in ['after', 'before', 'context']
-            if ctrlsf#opt#GetOpt(opt) > 0
-                let context .= printf('--%s=%s ', opt, ctrlsf#opt#GetOpt(opt))
-            endif
-        endfo
-    endif
-    call add(tokens, context)
+    call add(tokens, ctrlsf#opt#GetContext())
 
-    " ignorecase
-    call add(tokens, ctrlsf#opt#GetOpt('ignorecase') ? '--ignore-case' : '')
+    " ignorecase (smartcase by default)
+    call add(tokens, ctrlsf#opt#GetOpt('ignorecase') ? '--ignore-case'
+        \ : '--smart-case')
 
     " regex
     call add(tokens, ctrlsf#opt#GetOpt('regex') ? '' : '--literal')
@@ -36,14 +24,16 @@ func! s:BuildCommand(args) abort
     " default
     call add(tokens, '--heading --group --nocolor --nobreak --column')
 
-    " pattern
-    call add(tokens, ctrlsf#opt#GetOpt('pattern'))
+    " pattern (including escape)
+    call add(tokens, shellescape(ctrlsf#opt#GetOpt('pattern')))
 
-    " path
-    call extend(tokens, ctrlsf#opt#GetOpt('path'))
+    " path (including escape)
+    for path in ctrlsf#opt#GetOpt('path')
+        call add(tokens, shellescape(path))
+    endfo
 
     let cmd = join(tokens, ' ')
-    call ctrlsf#log#Debug(cmd)
+    call ctrlsf#log#Debug("ExecCommand: %s", cmd)
 
     return cmd
 endf

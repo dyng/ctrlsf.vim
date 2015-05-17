@@ -10,23 +10,28 @@ let s:option_list = {
     \ '-B': {'fullname': '-before'},
     \ '-C': {'fullname': '-context'},
     \ '-I': {'fullname': '-ignorecase'},
-    \ '-R': {'fullname': '-regexp'},
+    \ '-R': {'fullname': '-regex'},
     \ }
 
 " default values to options
 let s:default = {
-    \ 'after'      : -1,
-    \ 'before'     : -1,
-    \ 'context'    : -1,
     \ 'ignorecase' : g:ctrlsf_ignore_case,
-    \ 'regex'      : 0,
-    \ 'filetype'   : 0,
+    \ 'regex'      : g:ctrlsf_regex_pattern,
+    \ 'filetype'   : '',
     \ 'pattern'    : '',
     \ 'path'       : [],
     \ }
 
 " options
 let s:options = {}
+
+" OptionKeys()
+"
+" Return ALL available options. It's useful for completion functions.
+"
+func! ctrlsf#opt#OptionKeys() abort
+    return keys(s:option_list)
+endf
 
 " HasOpt()
 "
@@ -41,7 +46,62 @@ endf
 " Return option {name}, if not exists, return default value
 "
 func! ctrlsf#opt#GetOpt(name) abort
-    return get(s:options, a:name, s:default[a:name])
+    if has_key(s:options, a:name)
+        return s:options[a:name]
+    else
+        if a:name ==# 'after' || a:name ==# 'before' || a:name ==# 'context'
+            return s:DefaultContext(a:name)
+        else
+            return s:default[a:name]
+        endif
+    endif
+endf
+
+" DefaultContext()
+"
+let s:context_config = { 'config': '' }
+func! s:DefaultContext(name) abort
+    if g:ctrlsf_context ==# s:context_config.config
+        return get(s:context_config, a:name, -1)
+    endif
+
+    let s:context_config['config'] = g:ctrlsf_context
+
+    let parsed = s:ParseOptions(s:context_config['config'])
+    let s:context_config['after']   = get(parsed, 'after', -1)
+    let s:context_config['before']  = get(parsed, 'before', -1)
+    let s:context_config['context'] = get(parsed, 'context', -1)
+
+    return s:context_config[a:name]
+endf
+
+" GetContext()
+"
+func! ctrlsf#opt#GetContext() abort
+    let options = {}
+
+    " user specific
+    for opt in ['after', 'before', 'context']
+        if ctrlsf#opt#HasOpt(opt)
+            let options[opt] = ctrlsf#opt#GetOpt(opt)
+        endif
+    endfo
+
+    " default
+    if empty(options)
+        for opt in ['after', 'before', 'context']
+            if ctrlsf#opt#GetOpt(opt) > 0
+                let options[opt] = ctrlsf#opt#GetOpt(opt)
+            endif
+        endfo
+    endif
+
+    let context = ''
+    for opt in keys(options)
+        let context .= printf("--%s=%s ", opt, options[opt])
+    endfo
+
+    return context
 endf
 
 " NextToken()
@@ -105,12 +165,19 @@ func! s:NextToken(chars, start) abort
             endif
         " normal characters
         else
+            " if a normal character follows a backslash, then treat that
+            " backslash as a plain character
+            if state == 'escape'
+                call add(buffer, '\')
+                call remove(state_stack, -1)
+            endif
             call add(buffer, char)
         endif
     endwh
 
     if len(state_stack) != 1 || state_stack[-1] != 'normal'
-        call ctrlsf#log#Error("Unable to parse options: %s.", join(chars, ''))
+        call ctrlsf#log#Error("Unable to parse options: %s. Maybe you forgot
+            \ escaping.", string(join(a:chars, '')))
         throw "ParseOptionsException"
     endif
 
@@ -214,13 +281,3 @@ endf
 func! ctrlsf#opt#ParseOptions(options_str) abort
     let s:options = s:ParseOptions(a:options_str)
 endf
-
-""
-" Initialization
-"
-
-" read from configuration
-let ctx_opt = s:ParseOptions(g:ctrlsf_context)
-let s:default.after   = get(ctx_opt, 'after', -1)
-let s:default.before  = get(ctx_opt, 'before', -1)
-let s:default.context = get(ctx_opt, 'context', -1)

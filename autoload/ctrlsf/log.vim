@@ -14,6 +14,7 @@ func! s:Echo(format, argv, hlgroup, save) abort
 endf
 
 " s:Printf(format, argv)
+"
 func! s:Printf(format, argv) abort
     if len(a:argv) == 0
         return a:format

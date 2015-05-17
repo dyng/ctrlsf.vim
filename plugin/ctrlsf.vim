@@ -75,26 +75,43 @@ endf
 " }}}
 
 " Options {{{1
-if !exists('g:ctrlsf_debug_mode')
-    let g:ctrlsf_debug_mode = 0
-endif
-
+" g:ctrlsf_ackprg {{{2
 if !exists('g:ctrlsf_ackprg')
     let g:ctrlsf_ackprg = ctrlsf#backend#Detect()
 endif
+" }}}
 
+" g:ctrlsf_debug_mode {{{2
+if !exists('g:ctrlsf_debug_mode')
+    let g:ctrlsf_debug_mode = 0
+endif
+" }}}
+
+" g:ctrlsf_auto_close {{{2
 if !exists('g:ctrlsf_auto_close')
     let g:ctrlsf_auto_close = 1
 endif
+" }}}
 
+" g:ctrlsf_context {{{2
 if !exists('g:ctrlsf_context')
     let g:ctrlsf_context = '-C 3'
 endif
+" }}}
 
+" g:ctrlsf_ignore_case {{{2
 if !exists('g:ctrlsf_ignore_case')
     let g:ctrlsf_ignore_case = 0
 endif
+" }}}
 
+" g:ctrlsf_leading_space {{{2
+if !exists('g:ctrlsf_leading_space')
+    let g:ctrlsf_leading_space = 12
+endif
+" }}}
+
+" g:ctrlsf_position {{{2
 if !exists('g:ctrlsf_position')
     " [left], right, top, bottom
     if exists('g:ctrlsf_open_left')
@@ -106,28 +123,35 @@ if !exists('g:ctrlsf_position')
     endif
     let g:ctrlsf_position = 'left'
 endif
+" }}}
 
+" g:ctrlsf_regex_pattern {{{2
+if !exists('g:ctrlsf_regex_pattern')
+    let g:ctrlsf_regex_pattern = 0
+endif
+" }}}
+
+" g:ctrlsf_selected_line_hl {{{2
+if !exists('g:ctrlsf_selected_line_hl')
+    let g:ctrlsf_selected_line_hl = 'p'
+endif
+" }}}
+
+" g:ctrlsf_winsize {{{2
 if !exists('g:ctrlsf_winsize')
     if exists('g:ctrlsf_width')
         let g:ctrlsf_winsize = g:ctrlsf_width
     endif
     let g:ctrlsf_winsize = 'auto'
 endif
-
-if !exists('g:ctrlsf_selected_line_hl')
-    let g:ctrlsf_selected_line_hl = 'p'
-endif
-
-if !exists('g:ctrlsf_leading_space')
-    let g:ctrlsf_leading_space = 12
-endif
+" }}}
 " }}}
 
 " Commands {{{1
-com! -n=* -comp=customlist,s:PathnameComp CtrlSF        call ctrlsf#Search(<q-args>)
-com! -n=0                                 CtrlSFOpen    call ctrlsf#Open()
-com! -n=0                                 CtrlSFClose   call ctrlsf#Quit()
-com! -n=0                                 CtrlSFClearHL call ctrlsf#ClearSelectedLine()
+com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSF        call ctrlsf#Search(<q-args>)
+com! -n=0                                         CtrlSFOpen    call ctrlsf#Open()
+com! -n=0                                         CtrlSFClose   call ctrlsf#Quit()
+com! -n=0                                         CtrlSFClearHL call ctrlsf#ClearSelectedLine()
 " }}}
 
 " Maps {{{1
@@ -138,35 +162,6 @@ vnoremap <expr> <Plug>CtrlSFVwordPath <SID>SearchVwordCmd(0)
 vnoremap <expr> <Plug>CtrlSFVwordExec <SID>SearchVwordCmd(1)
 nnoremap <expr> <Plug>CtrlSFPwordPath <SID>SearchPwordCmd(0)
 nnoremap <expr> <Plug>CtrlSFPwordExec <SID>SearchPwordCmd(1)
-" }}}
-
-" Completion Func {{{1
-" We need a custom completion function because if we use '-comp=file' then vim
-" regards CtrlSF expecting file arguments and expand '%' to current file, '#'
-" to alternate file and so on automatically, which is not what we want.
-func! s:PathnameComp(arglead, cmdline, cursorpos)
-    let path     = a:arglead
-    let expanded = expand(path)
-    let is_glob  = (expanded == a:arglead) ? 0 : 1
-
-    if is_glob
-        if expanded =~ '\n'
-            let candidate = split(expanded, '\n')
-        else
-            let candidate = [ expanded ]
-        endif
-        call map(candidate, 'fnamemodify(v:val, ":p:.")')
-    else
-        if isdirectory(path) && path !~ '/$'
-            let candidate = [ path . '/' ]
-        else
-            let candidate = split(glob(path . '*'), '\n')
-            call map(candidate, 'fnamemodify(v:val, ":.")')
-        endif
-    endif
-
-    return candidate
-endf
 " }}}
 
 " modeline {{{1

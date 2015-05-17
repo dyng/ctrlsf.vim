@@ -5,13 +5,30 @@ func! ctrlsf#hl#HighlightMatch() abort
         return -1
     endif
 
+    " ignore case
     let case = ''
-    if (g:ctrlsf_ackprg =~# 'ag' || ctrlsf#opt#GetOpt('ignorecase'))
+    if ctrlsf#opt#GetOpt('ignorecase')
         let case = '\c'
+    else "smartcase
+        let pat  = ctrlsf#opt#GetOpt('pattern')
+        let case = (pat =~# '\u') ? '\C' : '\c'
     endif
-    let pattern = printf('/\v%s%s/', case, escape(ctrlsf#opt#GetOpt('pattern'), '/'))
 
-    exec 'match ctrlsfMatch ' . pattern
+    " magic
+    let magic = ctrlsf#opt#GetOpt('regex') ? '\v' : '\V'
+
+    " literal
+    let pattern = ''
+    if ctrlsf#opt#GetOpt('regex')
+        let pattern = ctrlsf#opt#GetOpt('pattern')
+    else
+        let pattern = escape(ctrlsf#opt#GetOpt('pattern'), '\/')
+    endif
+
+    let regex = printf('/%s%s%s/', magic, case, pattern)
+    call ctrlsf#log#Debug("Hightlight: %s", regex)
+
+    exec 'match ctrlsfMatch ' . regex
 endf
 
 " HighlightSelectedLine()
@@ -25,6 +42,7 @@ func! ctrlsf#hl#HighlightSelectedLine() abort
 endf
 
 " ClearSelectedLine()
+"
 func! ctrlsf#hl#ClearSelectedLine() abort
     silent! call matchdelete(b:ctrlsf_highlight_id)
 endf
