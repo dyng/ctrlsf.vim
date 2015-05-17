@@ -25,7 +25,15 @@ func! ctrlsf#hl#HighlightMatch() abort
         let pattern = escape(ctrlsf#opt#GetOpt('pattern'), '\/')
     endif
 
-    let regex = printf('/%s%s%s/', magic, case, pattern)
+    " sign (to prevent matching out of file body)
+    let sign = ''
+    if magic ==# '\v'
+        let sign = '(^\d+:.*)@<='
+    else
+        let sign = '\(\^\d\+:\.\*\)\@<='
+    endif
+
+    let regex = printf('/%s%s%s%s/', magic, case, sign, pattern)
     call ctrlsf#log#Debug("Hightlight: %s", regex)
 
     exec 'match ctrlsfMatch ' . regex
