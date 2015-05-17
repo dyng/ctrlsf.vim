@@ -81,15 +81,15 @@ if !exists('g:ctrlsf_ackprg')
 endif
 " }}}
 
-" g:ctrlsf_debug_mode {{{2
-if !exists('g:ctrlsf_debug_mode')
-    let g:ctrlsf_debug_mode = 0
-endif
-" }}}
-
 " g:ctrlsf_auto_close {{{2
 if !exists('g:ctrlsf_auto_close')
     let g:ctrlsf_auto_close = 1
+endif
+" }}}
+
+" g:ctrlsf_case_sensitive {{{2
+if !exists('g:ctrlsf_case_sensitive')
+    let g:ctrlsf_case_sensitive = 'smart'
 endif
 " }}}
 
@@ -99,9 +99,15 @@ if !exists('g:ctrlsf_context')
 endif
 " }}}
 
-" g:ctrlsf_case_sensitive {{{2
-if !exists('g:ctrlsf_case_sensitive')
-    let g:ctrlsf_case_sensitive = 'smart'
+" g:ctrlsf_debug_mode {{{2
+if !exists('g:ctrlsf_debug_mode')
+    let g:ctrlsf_debug_mode = 0
+endif
+" }}}
+
+" g:ctrlsf_default_root {{{2
+if !exists('g:ctrlsf_default_root')
+    let g:ctrlsf_default_root = 'cwd'
 endif
 " }}}
 

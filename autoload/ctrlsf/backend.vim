@@ -45,9 +45,21 @@ func! s:BuildCommand(args) abort
     call add(tokens, shellescape(ctrlsf#opt#GetOpt('pattern')))
 
     " path (including escape)
-    for path in ctrlsf#opt#GetOpt('path')
-        call add(tokens, shellescape(path))
-    endfo
+    if !empty(ctrlsf#opt#GetOpt('path'))
+        for path in ctrlsf#opt#GetOpt('path')
+            call add(tokens, shellescape(path))
+        endfo
+    else
+        let path = {
+            \ 'project' : ctrlsf#fs#FindVcsRoot(),
+            \ 'cwd'     : getcwd(),
+            \ }[g:ctrlsf_default_root]
+        " If project root is not found, use current file
+        if empty(path)
+            let path = expand('%:p')
+        endif
+        call add(tokens, path)
+    endif
 
     let cmd = join(tokens, ' ')
     call ctrlsf#log#Debug("ExecCommand: %s", cmd)
