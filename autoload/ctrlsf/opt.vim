@@ -158,24 +158,38 @@ func! s:NextToken(chars, start) abort
         " char: "
         elseif char ==# '"'
             if state == 'normal'
-                call add(state_stack, 'string_double')
+                " only quote as first character can start a string
+                if empty(buffer)
+                    call add(state_stack, 'string_double')
+                else
+                    call add(buffer, char)
+                endif
+            elseif state == 'string_single'
+                call add(buffer, char)
             elseif state == 'string_double'
                 call remove(state_stack, -1)
                 break
             elseif state == 'escape'
-                call remove(state_stack, -1)
-            else
                 call add(buffer, char)
+                call remove(state_stack, -1)
             endif
         " char: '
         elseif char ==# "'"
             if state == 'normal'
-                call add(state_stack, 'string_single')
+                " only quote as first character can start a string
+                if empty(buffer)
+                    call add(state_stack, 'string_single')
+                else
+                    call add(buffer, char)
+                endif
             elseif state == 'string_single'
                 call remove(state_stack, -1)
                 break
-            else
+            elseif state == 'string_double'
                 call add(buffer, char)
+            elseif state == 'escape'
+                call add(buffer, char)
+                call remove(state_stack, -1)
             endif
         " char: \
         elseif char ==# '\'
