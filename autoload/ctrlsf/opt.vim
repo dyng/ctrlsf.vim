@@ -4,7 +4,7 @@ let s:option_list = {
     \ '-before'     : {'args': 1},
     \ '-context'    : {'args': 1},
     \ '-ignorecase' : {'args': 0},
-    \ '-followcase' : {'args': 0},
+    \ '-matchcase'  : {'args': 0},
     \ '-smartcase'  : {'args': 0},
     \ '-regex'      : {'args': 0},
     \ '-filetype'   : {'args': 1},
@@ -13,7 +13,7 @@ let s:option_list = {
     \ '-C': {'fullname': '-context'},
     \ '-I': {'fullname': '-ignorecase'},
     \ '-R': {'fullname': '-regex'},
-    \ '-S': {'fullname': '-followcase'},
+    \ '-S': {'fullname': '-matchcase'},
     \ }
 
 " default values to options
@@ -103,14 +103,14 @@ endf
 
 " GetCaseSensitive()
 "
-" Return 'smartcase', 'ignorecase' or 'followcase'.
+" Return 'smartcase', 'ignorecase' or 'matchcase'.
 "
 " If two or more flags are given at the same time, preferred by priority
 "
-"   'followcase' > 'ignorecase' > 'smartcase'
+"   'matchcase' > 'ignorecase' > 'smartcase'
 "
 func! ctrlsf#opt#GetCaseSensitive() abort
-    for opt in ['followcase', 'ignorecase', 'smartcase']
+    for opt in ['matchcase', 'ignorecase', 'smartcase']
         if ctrlsf#opt#HasOpt(opt)
             return opt
         endif
@@ -119,7 +119,7 @@ func! ctrlsf#opt#GetCaseSensitive() abort
     " default
     return {
         \'smart' : 'smartcase',
-        \'yes'   : 'followcase',
+        \'yes'   : 'matchcase',
         \'no'    : 'ignorecase',
         \}[g:ctrlsf_case_sensitive]
 endf
