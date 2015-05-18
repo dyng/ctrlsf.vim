@@ -111,9 +111,9 @@ if !exists('g:ctrlsf_default_root')
 endif
 " }}}
 
-" g:ctrlsf_leading_space {{{2
-if !exists('g:ctrlsf_leading_space')
-    let g:ctrlsf_leading_space = 12
+" g:ctrlsf_indent {{{2
+if !exists('g:ctrlsf_indent')
+    let g:ctrlsf_indent = 4
 endif
 " }}}
 
@@ -121,13 +121,14 @@ endif
 if !exists('g:ctrlsf_position')
     " [left], right, top, bottom
     if exists('g:ctrlsf_open_left')
-        if g:ctrlsf_open_left = 1
+        if g:ctrlsf_open_left
             let g:ctrlsf_position = 'left'
         else
             let g:ctrlsf_position = 'right'
         endif
+    else
+        let g:ctrlsf_position = 'left'
     endif
-    let g:ctrlsf_position = 'left'
 endif
 " }}}
 

@@ -15,12 +15,14 @@ endf
 
 func! s:Line(line) abort
     let out = a:line.lnum . (a:line.matched ? ':' : '-')
-    let out .= repeat(' ', g:ctrlsf_leading_space - strlen(out)) . a:line.content
+    let out .= repeat(' ', ctrlsf#view#Indent() - len(out))
+    let out .= a:line.content
     return [out]
 endf
 
-func! s:HorizOffset(line) abort
-    return max([strlen(a:line.lnum) + 1, g:ctrlsf_leading_space])
+func! ctrlsf#view#Indent() abort
+    let maxlnum = ctrlsf#db#MaxLnum()
+    return strlen(string(maxlnum)) + 1 + g:ctrlsf_indent
 endf
 
 " Render()
@@ -52,7 +54,7 @@ func! ctrlsf#view#Render() abort
 
             if line.matched
                 let line.match.vlnum = len(view)
-                let line.match.vcol  = line.match.col + s:HorizOffset(line)
+                let line.match.vcol  = line.match.col + ctrlsf#view#Indent()
             endif
         endfo
     endfo
