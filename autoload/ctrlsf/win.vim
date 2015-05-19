@@ -1,9 +1,6 @@
 " ctrlsf buffer's name
 let s:MAIN_BUF_NAME = "__CtrlSF__"
 
-" preview buffer's name
-let s:PREVIEW_BUF_NAME = "__CtrlSFPreview__"
-
 " window which brings up ctrlsf window
 let s:caller_win = {
     \ 'bufnr' : -1,
@@ -75,43 +72,6 @@ func! ctrlsf#win#CloseMainWindow() abort
     call ctrlsf#win#FocusCallerWindow()
 endf
 
-" OpenPreviewWindow()
-"
-func! ctrlsf#win#OpenPreviewWindow() abort
-    " try to focus an existing preview window
-    if (ctrlsf#win#FocusPreviewWindow() != -1)
-        return
-    endif
-
-    if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
-        let ctrlsf_width  = winwidth(0)
-        let winsize = min([&columns-ctrlsf_width, ctrlsf_width])
-    else
-        let ctrlsf_height  = winheight(0)
-        let winsize = min([&lines-ctrlsf_height, ctrlsf_height])
-    endif
-
-    let openpos = {
-            \ 'bottom': 'leftabove',  'right' : 'leftabove vertical',
-            \ 'top'   : 'rightbelow',  'left' : 'rightbelow vertical'}
-            \[g:ctrlsf_position] . ' '
-    exec 'silent keepalt ' . openpos . winsize . 'split ' . '__CtrlSFPreview__'
-
-    call s:InitPreviewWindow()
-endf
-
-" ClosePreviewWindow()
-"
-func! ctrlsf#win#ClosePreviewWindow() abort
-    if ctrlsf#win#FocusPreviewWindow() == -1
-        return
-    endif
-
-    close
-
-    call ctrlsf#win#FocusMainWindow()
-endf
-
 " InitMainWindow()
 func! s:InitMainWindow() abort
     setl filetype=ctrlsf
@@ -141,18 +101,6 @@ func! s:InitMainWindow() abort
     nnoremap <silent><buffer> <C-K> :call ctrlsf#NextMatch(0)<CR>
     nnoremap <silent><buffer> E     :call ctrlsf#OpenEditMode()<CR>
     nnoremap <silent><buffer> q     :call ctrlsf#Quit()<CR>
-endf
-
-" InitPreviewWindow()
-func! s:InitPreviewWindow() abort
-    setl buftype=nofile
-    setl bufhidden=hide
-    setl noswapfile
-    setl nobuflisted
-    setl nomodifiable
-    setl winfixwidth
-
-    nnoremap <silent><buffer> q :call ctrlsf#win#ClosePreviewWindow()<CR>
 endf
 
 
@@ -198,18 +146,6 @@ func! ctrlsf#win#FocusMainWindow() abort
     return ctrlsf#win#FocusWindow(s:MAIN_BUF_NAME)
 endf
 
-" FindPreviewWindow()
-"
-func! ctrlsf#win#FindPreviewWindow() abort
-    return ctrlsf#win#FindWindow(s:PREVIEW_BUF_NAME)
-endf
-
-" FocusPreviewWindow()
-"
-func! ctrlsf#win#FocusPreviewWindow() abort
-    return ctrlsf#win#FocusWindow(s:PREVIEW_BUF_NAME)
-endf
-
 " FindCallerWindow()
 "
 func! ctrlsf#win#FindCallerWindow() abort
@@ -248,7 +184,7 @@ func! ctrlsf#win#FindTargetWindow(file) abort
         let target_winnr += 1
     endif
 
-    let preview_winnr = ctrlsf#win#FindPreviewWindow()
+    let preview_winnr = ctrlsf#preview#FindPreviewWindow()
     if preview_winnr > 0 && preview_winnr <= target_winnr
         let target_winnr += 1
     endif

@@ -56,7 +56,7 @@ endf
 " Quit()
 "
 func! ctrlsf#Quit() abort
-    call ctrlsf#win#ClosePreviewWindow()
+    call ctrlsf#preview#ClosePreviewWindow()
     call ctrlsf#win#CloseMainWindow()
 endf
 
@@ -159,7 +159,7 @@ endf
 " s:PreviewFile()
 "
 func! s:PreviewFile(file, lnum, col) abort
-    call ctrlsf#win#OpenPreviewWindow()
+    call ctrlsf#preview#OpenPreviewWindow()
 
     if !exists('b:ctrlsf_file') || b:ctrlsf_file !=# a:file
         let b:ctrlsf_file = a:file

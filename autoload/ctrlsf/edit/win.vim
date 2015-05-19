@@ -1,3 +1,4 @@
+" name of buffer for edit mode
 let s:EDIT_BUF_NAME = '__CtrlSFEdit__'
 
 " OpenEditMode()
@@ -8,7 +9,7 @@ func! ctrlsf#edit#win#OpenEditMode() abort
         return
     endif
 
-    call ctrlsf#win#ClosePreviewWindow()
+    call ctrlsf#preview#ClosePreviewWindow()
 
     call s:SwithEditBuffer()
 endf
