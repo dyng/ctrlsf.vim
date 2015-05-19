@@ -57,9 +57,9 @@ func! s:InitEditWindow() abort
 
     call ctrlsf#hl#HighlightMatch('ctrlsfeMatch')
 
-    com! -n=0 CtrlSFQuitEditMode call ctrlsf#edit#win#QuitEditMode()
+    com! -n=0 -buffer QuitEditMode call ctrlsf#edit#Quit()
 
-    nnoremap Q :CtrlSFQuitEditMode<CR>
+    nnoremap <silent><buffer> Q :QuitEditMode<CR>
 
     aug ctrlsfEditMode
         au!
