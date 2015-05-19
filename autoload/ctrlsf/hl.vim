@@ -1,7 +1,7 @@
 " HighlightMatch()
 "
-func! ctrlsf#hl#HighlightMatch() abort
-    if !exists('b:current_syntax') || b:current_syntax != 'ctrlsf'
+func! ctrlsf#hl#HighlightMatch(hlgroup) abort
+    if !exists('b:current_syntax') || b:current_syntax !~# 'ctrlsf'
         return -1
     endif
 
@@ -39,7 +39,7 @@ func! ctrlsf#hl#HighlightMatch() abort
     let regex = printf('/%s%s%s%s/', magic, case, sign, pattern)
     call ctrlsf#log#Debug("Hightlight: %s", regex)
 
-    exec 'match ctrlsfMatch ' . regex
+    exec printf('2match none | 2match %s %s', a:hlgroup, regex)
 endf
 
 " HighlightSelectedLine()

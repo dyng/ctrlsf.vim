@@ -6,6 +6,11 @@
 " Version: 0.01
 " ============================================================================
 
+
+"""""""""""""""""""""""""""""""""
+" Main
+"""""""""""""""""""""""""""""""""
+
 " Search()
 "
 func! ctrlsf#Search(args) abort
@@ -35,7 +40,6 @@ func! ctrlsf#Search(args) abort
 
     call ctrlsf#db#ParseAckprgResult(output)
     call ctrlsf#win#OpenMainWindow()
-    call ctrlsf#hl#HighlightMatch()
 
     let content = ctrlsf#view#Render()
     call ctrlsf#buf#WriteString(content)
@@ -47,7 +51,6 @@ endf
 "
 func! ctrlsf#Open() abort
     call ctrlsf#win#OpenMainWindow()
-    call ctrlsf#hl#HighlightMatch()
 endf
 
 " Quit()
@@ -180,4 +183,27 @@ endf
 "
 func! ctrlsf#ClearSelectedLine() abort
     call ctrlsf#hl#ClearSelectedLine()
+endf
+
+
+"""""""""""""""""""""""""""""""""
+" Edit Mode
+"""""""""""""""""""""""""""""""""
+
+" OpenEditMode()
+"
+func! ctrlsf#OpenEditMode()
+    call ctrlsf#edit#Open()
+endf
+
+" Save()
+"
+func! ctrlsf#Save()
+    call ctrlsf#edit#Save()
+endf
+
+" QuitEditMode()
+"
+func! ctrlsf#QuitEditMode()
+    call ctrlsf#edit#Quit()
 endf

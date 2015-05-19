@@ -48,11 +48,18 @@ func! ctrlsf#win#OpenMainWindow() abort
               \[g:ctrlsf_position] . ' '
         exec 'silent keepalt ' . openpos . winsize . 'split ' . '__CtrlSF__'
 
-        call s:InitWindow()
+        call s:InitMainWindow()
     endif
 
     " resize other windows
     wincmd =
+endf
+
+" SwitchMainBuffer()
+"
+func! ctrlsf#win#SwitchMainBuffer() abort
+    exec 'edit! ' . s:MAIN_BUF_NAME
+    call s:InitMainWindow()
 endf
 
 " CloseMainWindow()
@@ -105,8 +112,8 @@ func! ctrlsf#win#ClosePreviewWindow() abort
     call ctrlsf#win#FocusMainWindow()
 endf
 
-" InitWindow()
-func! s:InitWindow() abort
+" InitMainWindow()
+func! s:InitMainWindow() abort
     setl filetype=ctrlsf
     setl noreadonly
     setl buftype=nofile
@@ -122,6 +129,8 @@ func! s:InitWindow() abort
     setl nospell
     setl nofoldenable
 
+    call ctrlsf#hl#HighlightMatch('ctrlsfMatch')
+
     nnoremap <silent><buffer> <CR>  :call ctrlsf#JumpTo('o')<CR>
     nnoremap <silent><buffer> o     :call ctrlsf#JumpTo('o')<CR>
     nnoremap <silent><buffer> O     :call ctrlsf#JumpTo('O')<CR>
@@ -130,6 +139,7 @@ func! s:InitWindow() abort
     nnoremap <silent><buffer> p     :call ctrlsf#JumpTo('p')<CR>
     nnoremap <silent><buffer> <C-J> :call ctrlsf#NextMatch(1)<CR>
     nnoremap <silent><buffer> <C-K> :call ctrlsf#NextMatch(0)<CR>
+    nnoremap <silent><buffer> E     :call ctrlsf#OpenEditMode()<CR>
     nnoremap <silent><buffer> q     :call ctrlsf#Quit()<CR>
 endf
 
@@ -152,7 +162,7 @@ endf
 
 " FindWindow()
 "
-func! s:FindWindow(buf_name) abort
+func! ctrlsf#win#FindWindow(buf_name) abort
     return bufwinnr(a:buf_name)
 endf
 
@@ -161,11 +171,11 @@ endf
 " Parameters
 " {exp} buffer name OR window number
 "
-func! s:FocusWindow(exp) abort
+func! ctrlsf#win#FocusWindow(exp) abort
     if type(a:exp) == 0
         let winnr = a:exp
     else
-        let winnr = s:FindWindow(a:exp)
+        let winnr = ctrlsf#win#FindWindow(a:exp)
     endif
 
     if winnr < 0
@@ -179,25 +189,25 @@ endf
 " FindMainWindow()
 "
 func! ctrlsf#win#FindMainWindow() abort
-    return s:FindWindow(s:MAIN_BUF_NAME)
+    return ctrlsf#win#FindWindow(s:MAIN_BUF_NAME)
 endf
 
 " FocusMainWindow()
 "
 func! ctrlsf#win#FocusMainWindow() abort
-    return s:FocusWindow(s:MAIN_BUF_NAME)
+    return ctrlsf#win#FocusWindow(s:MAIN_BUF_NAME)
 endf
 
 " FindPreviewWindow()
 "
 func! ctrlsf#win#FindPreviewWindow() abort
-    return s:FindWindow(s:PREVIEW_BUF_NAME)
+    return ctrlsf#win#FindWindow(s:PREVIEW_BUF_NAME)
 endf
 
 " FocusPreviewWindow()
 "
 func! ctrlsf#win#FocusPreviewWindow() abort
-    return s:FocusWindow(s:PREVIEW_BUF_NAME)
+    return ctrlsf#win#FocusWindow(s:PREVIEW_BUF_NAME)
 endf
 
 " FindCallerWindow()
@@ -208,13 +218,14 @@ func! ctrlsf#win#FindCallerWindow() abort
         return s:caller_win.winnr + 1
     else
         return s:caller_win.winnr
+    endif
 endf
 
 " FocusCallerWindow()
 "
 func! ctrlsf#win#FocusCallerWindow() abort
     let caller_winnr = ctrlsf#win#FindCallerWindow()
-    if s:FocusWindow(caller_winnr) == -1
+    if ctrlsf#win#FocusWindow(caller_winnr) == -1
         wincmd p
     endif
 endf
