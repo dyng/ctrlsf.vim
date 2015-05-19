@@ -28,7 +28,7 @@ endf
 
 " SectionC()
 "
-" Show filename in which cursor is currently placed
+" Show filename of which cursor is currently placed in
 "
 func! ctrlsf#utils#SectionC()
     let [file, _, _] = ctrlsf#view#Reflect(line('.'))
@@ -57,4 +57,12 @@ endf
 "
 func! ctrlsf#utils#PreviewSectionC()
     return get(b:, 'ctrlsf_file', '')
+endf
+
+" EditSectionC()
+"
+" Show filename of which the cursor is placed in
+"
+func! ctrlsf#utils#EditSectionC()
+    return ctrlsf#utils#SectionC()
 endf
