@@ -157,6 +157,7 @@ endif
 " Commands {{{1
 com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSF        call ctrlsf#Search(<q-args>)
 com! -n=0                                         CtrlSFOpen    call ctrlsf#Open()
+com! -n=0                                         CtrlSFUpdate  call ctrlsf#Update()
 com! -n=0                                         CtrlSFClose   call ctrlsf#Quit()
 com! -n=0                                         CtrlSFClearHL call ctrlsf#ClearSelectedLine()
 " }}}

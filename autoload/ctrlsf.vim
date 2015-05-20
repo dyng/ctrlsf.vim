@@ -11,18 +11,16 @@
 " Main
 """""""""""""""""""""""""""""""""
 
-" Search()
+" remember what user is searching
+let s:current_query = ''
+
+" s:ExecSearch()
 "
-func! ctrlsf#Search(args) abort
-    let args = a:args
-
-    " If no pattern is given, use word under the cursor
-    if empty(args)
-        let args = expand('<cword>')
-    endif
-
+" Basic process: query, parse, render and display.
+"
+func! s:ExecSearch(args) abort
     try
-        call ctrlsf#opt#ParseOptions(args)
+        call ctrlsf#opt#ParseOptions(a:args)
     catch /ParseOptionsException/
         return -1
     endtry
@@ -31,7 +29,7 @@ func! ctrlsf#Search(args) abort
         return -1
     endif
 
-    let [success, output] = ctrlsf#backend#Run(args)
+    let [success, output] = ctrlsf#backend#Run(a:args)
     if !success
         call ctrlsf#log#Error('Failed to call backend. Error messages: %s',
             \ output)
@@ -45,6 +43,31 @@ func! ctrlsf#Search(args) abort
     call ctrlsf#buf#WriteString(content)
 
     call cursor(1, 1)
+endf
+
+" Search()
+"
+func! ctrlsf#Search(args) abort
+    let args = a:args
+
+    " If no pattern is given, use word under the cursor
+    if empty(args)
+        let args = expand('<cword>')
+    endif
+
+    let s:current_query = args
+
+    call s:ExecSearch(s:current_query)
+endf
+
+" Update()
+"
+func! ctrlsf#Update() abort
+    if empty(s:current_query)
+        return -1
+    endif
+
+    call s:ExecSearch(s:current_query)
 endf
 
 " Open()
