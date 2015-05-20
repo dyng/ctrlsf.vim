@@ -140,7 +140,7 @@ func! s:OpenFileInWindow(file, lnum, col, mode) abort
             if &modified
                 exec 'silent split ' . a:file
             else
-                exec 'edit ' . a:file
+                exec 'silent edit ' . a:file
             endif
         endif
     endif
@@ -166,7 +166,7 @@ func! s:OpenFileInTab(file, lnum, col, mode) abort
         call ctrlsf#Quit()
     endif
 
-    exec 'tabedit ' . a:file
+    exec 'silen tabedit ' . a:file
 
     call ctrlsf#utils#MoveCursor(a:lnum, a:col)
 

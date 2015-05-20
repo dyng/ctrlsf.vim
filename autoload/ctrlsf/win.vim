@@ -55,7 +55,7 @@ endf
 " SwitchMainBuffer()
 "
 func! ctrlsf#win#SwitchMainBuffer() abort
-    exec 'edit! ' . s:MAIN_BUF_NAME
+    exec 'silent edit! ' . s:MAIN_BUF_NAME
     call s:InitMainWindow()
 endf
 

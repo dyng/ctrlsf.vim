@@ -34,7 +34,7 @@ endf
 " SwithEditBuffer()
 "
 func! s:SwithEditBuffer() abort
-    exec 'edit! ' . s:EDIT_BUF_NAME
+    exec 'silent edit! ' . s:EDIT_BUF_NAME
     call s:InitEditWindow()
 endf
 
