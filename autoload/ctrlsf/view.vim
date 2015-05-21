@@ -14,7 +14,7 @@ func! s:Ellipsis() abort
 endf
 
 func! s:Line(line) abort
-    let out = a:line.lnum . (a:line.matched ? ':' : '-')
+    let out = a:line.lnum . (a:line.matched() ? ':' : '-')
     let out .= repeat(' ', ctrlsf#view#Indent() - len(out))
     let out .= a:line.content
     return [out]
@@ -44,15 +44,12 @@ func! ctrlsf#view#Render() abort
             call extend(view, s:Ellipsis())
         endif
 
-        " save line number in view (vlnum of the first line)
-        let par.vlnum = len(view) + 1
-
         for line in par.lines
             call extend(view, s:Line(line))
 
             let line.vlnum = len(view)
 
-            if line.matched
+            if line.matched()
                 let line.match.vlnum = len(view)
                 let line.match.vcol  = line.match.col + ctrlsf#view#Indent()
             endif
@@ -80,21 +77,21 @@ func! ctrlsf#view#Reflect(vlnum) abort
     " TODO: use binary search for better performance
     let ret = ['', {}, {}]
     for par in resultset
-        if a:vlnum < par.vlnum
+        if a:vlnum < par.vlnum()
             break
         endif
 
         " if there is a corresponding line
-        if a:vlnum <= par.vlnum + par.range - 1
+        if a:vlnum <= par.vlnum() + par.range() - 1
             " fetch file
             let ret[0] = par.file
 
             " fetch line object
-            let line = par.lines[a:vlnum - par.vlnum]
+            let line = par.lines[a:vlnum - par.vlnum()]
             let ret[1] = line
 
             " fetch match object
-            if line.matched
+            if line.matched()
                 let ret[2] = line.match
             endif
 

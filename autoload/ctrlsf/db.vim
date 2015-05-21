@@ -60,7 +60,7 @@ func! ctrlsf#db#MaxLnum()
 
     let max = 0
     for par in s:resultset
-        let mlnum = par.lnum + par.range - 1
+        let mlnum = par.lnum() + par.range() - 1
         let max = mlnum > max ? mlnum : max
     endfo
 
@@ -79,15 +79,12 @@ endf
 func! s:ParseParagraph(buffer, file) abort
     let paragraph = {
         \ 'file'    : a:file,
-        \ 'lnum'    : -1,
-        \ 'vlnum'   : -1,
-        \ 'range'   : len(a:buffer),
+        \ 'lnum'    : function("ctrlsf#class#paragraph#Lnum"),
+        \ 'vlnum'   : function("ctrlsf#class#paragraph#Vlnum"),
+        \ 'range'   : function("ctrlsf#class#paragraph#Range"),
         \ 'lines'   : [],
         \ 'matches' : [],
         \ }
-
-    " parse first line for starting line number
-    let paragraph.lnum = matchlist(a:buffer[0], '\v^(\d+)([-:])(\d*)')[1]
 
     for line in a:buffer
         let matched = matchlist(line, '\v^(\d+)([-:])(\d*)([-:])?(.*)$')
@@ -106,7 +103,7 @@ func! s:ParseParagraph(buffer, file) abort
 
         " add line content
         call add(paragraph.lines, {
-            \ 'matched' : !empty(match),
+            \ 'matched' : function("ctrlsf#class#line#Matched"),
             \ 'match'   : match,
             \ 'lnum'    : matched[1],
             \ 'vlnum'   : -1,
