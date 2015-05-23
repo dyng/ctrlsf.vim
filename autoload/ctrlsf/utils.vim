@@ -1,10 +1,26 @@
 """""""""""""""""""""""""""""""""
 " Misc Functions
 """""""""""""""""""""""""""""""""
-
 " ctrlsf#utils#MoveCursor()
 "
-func! ctrlsf#utils#MoveCursor(lnum, col) abort
+" Redraw, let {wlnum} be the top of window and place cursor at {lnum}, {col}.
+"
+" {wlnum} number of the top line in window
+" {lnum}  line number of cursor
+" {col}   column number of cursor
+"
+func! ctrlsf#utils#MoveCursor(wlnum, lnum, col) abort
+    " Move cursor to specific line
+    exec 'normal ' . a:wlnum . "z\r"
+    call cursor(a:lnum, a:col)
+
+    " Open fold
+    normal zv
+endf
+
+" ctrlsf#utils#MoveCentralCursor()
+"
+func! ctrlsf#utils#MoveCentralCursor(lnum, col) abort
     " Move cursor to specific line
     exec 'normal ' . a:lnum . 'z.'
     call cursor(a:lnum, a:col)
@@ -13,6 +29,21 @@ func! ctrlsf#utils#MoveCursor(lnum, col) abort
     normal zv
 endf
 
+" ctrlsf#utils#Mirror()
+"
+" Make {dicta} as an exact copy of {dictb}
+"
+func! ctrlsf#utils#Mirror(dicta, dictb) abort
+    for key in keys(a:dicta)
+        if has_key(a:dictb, key)
+            let a:dicta[key] = a:dictb[key]
+        else
+            call remove(a:dicta, key)
+        endif
+    endfo
+
+    return a:dicta
+endf
 
 """""""""""""""""""""""""""""""""
 " Airline Support
@@ -57,12 +88,4 @@ endf
 "
 func! ctrlsf#utils#PreviewSectionC()
     return get(b:, 'ctrlsf_file', '')
-endf
-
-" EditSectionC()
-"
-" Show filename of which the cursor is placed in
-"
-func! ctrlsf#utils#EditSectionC()
-    return ctrlsf#utils#SectionC()
 endf

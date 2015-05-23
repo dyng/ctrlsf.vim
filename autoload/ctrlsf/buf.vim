@@ -8,7 +8,6 @@ func! ctrlsf#buf#WriteString(content) abort
     silent %delete _
     silent 0put =a:content
     silent $delete _ " delete trailing empty line
-    call ctrlsf#buf#ClearUndoHistory()
     call setbufvar('%', '&modifiable', modifiable_bak)
     call setbufvar('%', '&modified', 0)
 endf
@@ -22,12 +21,11 @@ func! ctrlsf#buf#WriteFile(file) abort
     setl modifiable
     silent %delete _
     exec 'silent 0read ' . a:file
-    call ctrlsf#buf#ClearUndoHistory()
     call setbufvar('%', '&modifiable', modifiable_bak)
     call setbufvar('%', '&modified', 0)
 endf
 
-" CleareUndoHistory()
+" ClearUndoHistory()
 "
 func! ctrlsf#buf#ClearUndoHistory() abort
     let ul_bak = &undolevels

@@ -116,6 +116,10 @@ endf
 func! ctrlsf#view#FindNextMatch(vlnum, forward) abort
     let matchlist = ctrlsf#db#MatchList()
 
+    if empty(matchlist)
+        return [-1, -1]
+    endif
+
     let [lp, rp] = [0, len(matchlist) - 1]
 
     " when vlnum is out of range [0, len]
@@ -150,4 +154,84 @@ func! ctrlsf#view#FindNextMatch(vlnum, forward) abort
     else
         return [matchlist[nextp].vlnum, matchlist[nextp].vcol]
     endif
+endf
+
+" s:DerenderParagraph()
+"
+func! s:DerenderParagraph(buffer, file) abort
+    let paragraph = {
+        \ 'file'    : a:file,
+        \ 'lnum'    : function("ctrlsf#class#paragraph#Lnum"),
+        \ 'vlnum'   : function("ctrlsf#class#paragraph#Vlnum"),
+        \ 'range'   : function("ctrlsf#class#paragraph#Range"),
+        \ 'lines'   : [],
+        \ 'matches' : function("ctrlsf#class#paragraph#Matches"),
+        \ }
+
+    let indent = ctrlsf#view#Indent()
+
+    for line in a:buffer
+        call add(paragraph.lines, {
+            \ 'matched' : function("ctrlsf#class#line#Matched"),
+            \ 'match'   : -1,
+            \ 'lnum'    : -1,
+            \ 'vlnum'   : -1,
+            \ 'content': strpart(line, indent),
+            \ })
+    endfo
+
+    return paragraph
+endf
+
+" Derender()
+"
+func! ctrlsf#view#Derender(content) abort
+    let lines = type(a:content) == 3 ? a:content : split(a:content, "\n")
+
+    let fileset = []
+
+    let current_file = ''
+    let next_file    = ''
+
+    let i = 0
+    while i < len(lines)
+        let buffer = []
+
+        while i < len(lines)
+            let line = lines[i]
+            let i += 1
+
+            if line ==# '....' || line ==# ''
+                break
+            elseif line !~ '\v^\d+[:-]'
+                " strip trailing colon
+                let next_file = substitute(line, ':$', '', '')
+                break
+            else
+                call add(buffer, line)
+            endif
+        endwh
+
+        if len(buffer) > 0
+            let paragraph = s:DerenderParagraph(buffer, current_file)
+
+            " if derender failed, throw an exception
+            if empty(paragraph.file)
+                throw 'BrokenBufferException'
+            endif
+
+            if len(fileset) > 0 && fileset[-1].file ==# paragraph.file
+                call add(fileset[-1].paragraphs, paragraph)
+            else
+                call add(fileset, {
+                    \ 'file': paragraph.file,
+                    \ 'paragraphs': [ paragraph ],
+                    \ })
+            endif
+        endif
+
+        let current_file = next_file
+    endwh
+
+    return fileset
 endf

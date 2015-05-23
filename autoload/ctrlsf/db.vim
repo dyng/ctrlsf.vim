@@ -46,7 +46,7 @@ func! ctrlsf#db#MatchList() abort
     endif
 
     for par in s:resultset
-        call extend(matchlist, par.matches)
+        call extend(matchlist, par.matches())
     endfo
 
     let s:cache['matchlist'] = matchlist
@@ -83,7 +83,7 @@ func! s:ParseParagraph(buffer, file) abort
         \ 'vlnum'   : function("ctrlsf#class#paragraph#Vlnum"),
         \ 'range'   : function("ctrlsf#class#paragraph#Range"),
         \ 'lines'   : [],
-        \ 'matches' : [],
+        \ 'matches' : function("ctrlsf#class#paragraph#Matches"),
         \ }
 
     for line in a:buffer
@@ -98,7 +98,6 @@ func! s:ParseParagraph(buffer, file) abort
                 \ 'col'   : matched[3],
                 \ 'vcol'  : -1
                 \ }
-            call add(paragraph.matches, match)
         endif
 
         " add line content
@@ -119,7 +118,7 @@ endf
 func! ctrlsf#db#ParseAckprgResult(result) abort
     " reset
     let s:resultset = []
-    let s:cache     = {}
+    call ctrlsf#db#ClearCache()
 
     let current_file = ""
     let next_file    = ""
@@ -160,4 +159,13 @@ func! ctrlsf#db#ParseAckprgResult(result) abort
 
         let current_file = next_file
     endwh
+endf
+
+"""""""""""""""""""""""""""""""""
+" Cache
+"""""""""""""""""""""""""""""""""
+" ClearCache
+"
+func! ctrlsf#db#ClearCache() abort
+    let s:cache = {}
 endf

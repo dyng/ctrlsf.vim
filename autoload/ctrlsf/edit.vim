@@ -57,27 +57,56 @@ endf
 " s:WriteParagraph()
 "
 func! s:WriteParagraph(buffer, orig, modi, offset)
-    let common_part = min([len(a:orig.lines), len(a:modi.lines)])
-    for i in range(common_part)
-        let ln = a:orig.lnum + i - 1 + a:offset
-        let a:buffer[ln] = a:modi.lines[i].content
+    let orig_count  = len(a:orig.lines)
+    let modi_count  = len(a:modi.lines)
+    let start_lnum  = a:orig.lnum()
+    let start_vlnum = a:orig.vlnum()
+
+    for i in range(modi_count)
+        let mline = a:modi.lines[i]
+        let ln    = start_lnum + i + a:offset
+        let vln   = start_vlnum + i + a:offset
+
+        " create new line object
+        let line_obj = {
+            \ 'matched' : function("ctrlsf#class#line#Matched"),
+            \ 'match'   : {},
+            \ 'lnum'    : ln,
+            \ 'vlnum'   : vln,
+            \ 'content' : mline.content
+            \ }
+
+        let mat_idx = match(line_obj.content, ctrlsf#pat#Regex())
+        if mat_idx != -1
+            let match = {
+                \ 'lnum'  : line_obj.lnum,
+                \ 'vlnum' : line_obj.vlnum,
+                \ 'col'   : mat_idx + 1,
+                \ 'vcol'  : mat_idx + 1 + ctrlsf#view#Indent()
+                \ }
+            let line_obj.match = match
+        endif
+
+        " copy created line object to an existing line or insert it as new
+        if i < orig_count
+            call ctrlsf#utils#Mirror(a:orig.lines[i], line_obj)
+            let a:buffer[ln-1] = line_obj.content
+        else
+            call add(a:orig.lines, line_obj)
+            call insert(a:buffer, line_obj.content, ln-1)
+        endif
     endfo
 
-    if len(a:orig.lines) > common_part
-        for i in range(common_part, len(a:orig.lines) - 1)
-            let ln = a:orig.lnum + i - 1 + a:offset
-            call remove(a:buffer, ln)
+    " remove deleted lines from paragraph
+    if orig_count > modi_count
+        for i in range(orig_count-1, modi_count, -1)
+            let ln = start_lnum + i + a:offset
+            call remove(a:orig.lines, i)
+            call remove(a:buffer, ln-1)
         endfo
     endif
 
-    if len(a:modi.lines) > common_part
-        for i in range(common_part, len(a:modi.lines) - 1)
-            let ln = a:orig.lnum + i - 1 + a:offset
-            call insert(a:buffer, a:modi.lines[i].content, ln)
-        endfo
-    endif
-
-    return len(a:modi.lines) - len(a:orig.lines)
+    return modi_count - orig_count
 endf
 
 " s:SaveFile()
@@ -85,6 +114,8 @@ endf
 func! s:SaveFile(orig, modi) abort
     let file = a:orig.file
 
+    " FIXME: if file is modified externally, then loaded file content is
+    " different from that in resultset
     try
         let buffer = readfile(file)
     catch
@@ -109,22 +140,14 @@ func! s:SaveFile(orig, modi) abort
     endif
 endf
 
-" Open()
-"
-func! ctrlsf#edit#Open()
-    call ctrlsf#edit#win#OpenEditMode()
-
-    let content = ctrlsf#edit#view#Render()
-    call ctrlsf#buf#WriteString(content)
-
-    call cursor(1, 1)
-endf
-
 " Save()
 "
 func! ctrlsf#edit#Save()
     let orig = ctrlsf#db#FileSet()
-    let modi = ctrlsf#edit#view#Derender(getline(0, '$'))
+    let modi = ctrlsf#view#Derender(getline(0, '$'))
+
+    " clear cache (not very clean code I should say)
+    call ctrlsf#db#ClearCache()
 
     let changed = s:Diff(orig, modi)
 
@@ -141,10 +164,4 @@ func! ctrlsf#edit#Save()
     setl nomodified
 
     call ctrlsf#log#Info("%s files have been saved.", len(changed))
-endf
-
-" Quit()
-"
-func! ctrlsf#edit#Quit()
-    call ctrlsf#edit#win#QuitEditMode()
 endf

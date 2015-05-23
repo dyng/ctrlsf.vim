@@ -38,10 +38,8 @@ func! s:ExecSearch(args) abort
 
     call ctrlsf#db#ParseAckprgResult(output)
     call ctrlsf#win#OpenMainWindow()
-
-    let content = ctrlsf#view#Render()
-    call ctrlsf#buf#WriteString(content)
-
+    call ctrlsf#win#Draw()
+    call ctrlsf#buf#ClearUndoHistory()
     call cursor(1, 1)
 endf
 
@@ -66,7 +64,6 @@ func! ctrlsf#Update() abort
     if empty(s:current_query)
         return -1
     endif
-
     call s:ExecSearch(s:current_query)
 endf
 
@@ -74,6 +71,21 @@ endf
 "
 func! ctrlsf#Open() abort
     call ctrlsf#win#OpenMainWindow()
+endf
+
+" Redraw()
+"
+func! ctrlsf#Redraw() abort
+    let [wlnum, lnum, col] = [line('w0'), line('.'), col('.')]
+    call ctrlsf#win#Draw()
+    call ctrlsf#utils#MoveCursor(wlnum, lnum, col)
+endf
+
+" Save()
+"
+func! ctrlsf#Save()
+    call ctrlsf#edit#Save()
+    call ctrlsf#Redraw()
 endf
 
 " Quit()
@@ -145,7 +157,7 @@ func! s:OpenFileInWindow(file, lnum, col, mode) abort
         endif
     endif
 
-    call ctrlsf#utils#MoveCursor(a:lnum, a:col)
+    call ctrlsf#utils#MoveCentralCursor(a:lnum, a:col)
 
     if g:ctrlsf_selected_line_hl =~ 'o'
         call ctrlsf#hl#HighlightSelectedLine()
@@ -168,7 +180,7 @@ func! s:OpenFileInTab(file, lnum, col, mode) abort
 
     exec 'silen tabedit ' . a:file
 
-    call ctrlsf#utils#MoveCursor(a:lnum, a:col)
+    call ctrlsf#utils#MoveCentralCursor(a:lnum, a:col)
 
     if g:ctrlsf_selected_line_hl =~ 'o'
         call ctrlsf#hl#HighlightSelectedLine()
@@ -193,7 +205,7 @@ func! s:PreviewFile(file, lnum, col) abort
         exec 'doau filetypedetect BufRead ' . a:file
     endif
 
-    call ctrlsf#utils#MoveCursor(a:lnum, a:col)
+    call ctrlsf#utils#MoveCentralCursor(a:lnum, a:col)
 
     if g:ctrlsf_selected_line_hl =~ 'p'
         call ctrlsf#hl#HighlightSelectedLine()
@@ -206,27 +218,4 @@ endf
 "
 func! ctrlsf#ClearSelectedLine() abort
     call ctrlsf#hl#ClearSelectedLine()
-endf
-
-
-"""""""""""""""""""""""""""""""""
-" Edit Mode
-"""""""""""""""""""""""""""""""""
-
-" OpenEditMode()
-"
-func! ctrlsf#OpenEditMode()
-    call ctrlsf#edit#Open()
-endf
-
-" Save()
-"
-func! ctrlsf#Save()
-    call ctrlsf#edit#Save()
-endf
-
-" QuitEditMode()
-"
-func! ctrlsf#QuitEditMode()
-    call ctrlsf#edit#Quit()
 endf

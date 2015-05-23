@@ -15,3 +15,15 @@ endf
 func! ctrlsf#class#paragraph#Range() abort dict
     return len(self.lines)
 endf
+
+" Matches()
+"
+func! ctrlsf#class#paragraph#Matches() abort dict
+    let matches = []
+    for line in self.lines
+        if line.matched()
+            call add(matches, line.match)
+        endif
+    endfo
+    return matches
+endf

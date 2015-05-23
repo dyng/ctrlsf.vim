@@ -52,11 +52,11 @@ func! ctrlsf#win#OpenMainWindow() abort
     wincmd =
 endf
 
-" SwitchMainBuffer()
+" Draw()
 "
-func! ctrlsf#win#SwitchMainBuffer() abort
-    exec 'silent edit! ' . s:MAIN_BUF_NAME
-    call s:InitMainWindow()
+func! ctrlsf#win#Draw() abort
+    let content = ctrlsf#view#Render()
+    silent! undojoin | keepjumps call ctrlsf#buf#WriteString(content)
 endf
 
 " CloseMainWindow()
@@ -76,11 +76,10 @@ endf
 func! s:InitMainWindow() abort
     setl filetype=ctrlsf
     setl noreadonly
-    setl buftype=nofile
+    setl buftype=acwrite
     setl bufhidden=hide
     setl noswapfile
     setl nobuflisted
-    setl nomodifiable
     setl nolist
     setl nonumber
     setl nowrap
@@ -101,6 +100,11 @@ func! s:InitMainWindow() abort
     nnoremap <silent><buffer> <C-K> :call ctrlsf#NextMatch(0)<CR>
     nnoremap <silent><buffer> E     :call ctrlsf#OpenEditMode()<CR>
     nnoremap <silent><buffer> q     :call ctrlsf#Quit()<CR>
+
+    augroup ctrlsf
+        au!
+        au BufWriteCmd <buffer> call ctrlsf#Save()
+    augroup END
 endf
 
 

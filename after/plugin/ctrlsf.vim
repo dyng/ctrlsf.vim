@@ -21,11 +21,6 @@ func! CtrlSFStatusLine(...)
         let w:airline_section_a = 'Preview'
         let w:airline_section_c = '%{ctrlsf#utils#PreviewSectionC()}'
     endif
-
-    if bufname('%') == '__CtrlSFEdit__'
-        let w:airline_section_a = 'Edit'
-        let w:airline_section_c = '%{ctrlsf#utils#EditSectionC()}'
-    endif
 endf
 
 if exists('g:loaded_airline')
