@@ -88,8 +88,11 @@ func! ctrlsf#Save()
         return
     endif
 
-    let changed = ctrlsf#edit#Save()
-    if changed > 0
+    let changed  = ctrlsf#edit#Save()
+    let undotree = undotree()
+
+    " DO NOT redraw if it is an undo (then seq_last != seq_cur)
+    if changed > 0 && undotree.seq_last == undotree.seq_cur
         call ctrlsf#Redraw()
     endif
 endf
