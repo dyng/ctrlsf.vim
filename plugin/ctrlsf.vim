@@ -93,6 +93,12 @@ if !exists('g:ctrlsf_case_sensitive')
 endif
 " }}}
 
+" g:ctrlsf_confirm_save {{{2
+if !exists('g:ctrlsf_confirm_save')
+    let g:ctrlsf_confirm_save = 1
+endif
+" }}}
+
 " g:ctrlsf_context {{{2
 if !exists('g:ctrlsf_context')
     let g:ctrlsf_context = '-C 3'

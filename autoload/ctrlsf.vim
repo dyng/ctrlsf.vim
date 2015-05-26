@@ -84,8 +84,14 @@ endf
 " Save()
 "
 func! ctrlsf#Save()
-    call ctrlsf#edit#Save()
-    call ctrlsf#Redraw()
+    if !&l:modified
+        return
+    endif
+
+    let changed = ctrlsf#edit#Save()
+    if changed > 0
+        call ctrlsf#Redraw()
+    endif
 endf
 
 " Quit()

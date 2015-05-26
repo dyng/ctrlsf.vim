@@ -151,6 +151,16 @@ func! ctrlsf#edit#Save()
 
     let changed = s:Diff(orig, modi)
 
+    " prompt to confirm save
+    if g:ctrlsf_confirm_save
+        let mes = printf("%s files will be saved. Confirm? (Y/n)", len(changed))
+        let confirm = input(mes) | redraw
+        if !(confirm ==? 'y' || confirm ==? '')
+            call ctrlsf#log#Info("Cancelled.")
+            return -1
+        endif
+    endif
+
     if len(changed) == 0
         call ctrlsf#log#Warn("No file has been changed.")
         return 0
@@ -164,4 +174,6 @@ func! ctrlsf#edit#Save()
     setl nomodified
 
     call ctrlsf#log#Info("%s files have been saved.", len(changed))
+
+    return len(changed)
 endf
