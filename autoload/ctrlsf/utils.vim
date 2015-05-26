@@ -10,9 +10,9 @@
 " {col}   column number of cursor
 "
 func! ctrlsf#utils#MoveCursor(wlnum, lnum, col) abort
-    " Move cursor to specific line
-    exec 'normal ' . a:wlnum . "z\r"
+    " Move cursor to specific position, and window stops at {wlnum} line
     call cursor(a:lnum, a:col)
+    exec 'keepjumps normal ' . a:wlnum . "z\r"
 
     " Open fold
     normal zv
@@ -21,9 +21,9 @@ endf
 " ctrlsf#utils#MoveCentralCursor()
 "
 func! ctrlsf#utils#MoveCentralCursor(lnum, col) abort
-    " Move cursor to specific line
-    exec 'normal ' . a:lnum . 'z.'
+    " Move cursor to specific position
     call cursor(a:lnum, a:col)
+    exec 'keepjumps normal ' . a:lnum . 'z.'
 
     " Open fold
     normal zv
