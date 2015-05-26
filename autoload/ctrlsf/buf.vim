@@ -28,9 +28,11 @@ endf
 " ClearUndoHistory()
 "
 func! ctrlsf#buf#ClearUndoHistory() abort
+    let modified_bak = getbufvar('%', '&modified')
     let ul_bak = &undolevels
     set undolevels=-1
     exe "normal a \<BS>\<Esc>"
     let &undolevels = ul_bak
     unlet ul_bak
+    call setbufvar('%', '&modified', modified_bak)
 endf
