@@ -1,6 +1,6 @@
 " NextToken()
 "
-" Return nex token of {chars}, which starts from {start}.
+" Return next token of {chars}, which starts from {start}.
 "
 func! s:NextToken(chars, start) abort
     let buffer      = []
@@ -96,7 +96,8 @@ endf
 "
 " Split string into a list of tokens.
 "
-" Examples
+" Examples:
+"
 " -I -C 2 path     -> ['-I', '-C', '2', 'path']
 " -regex 'foo bar' -> ['-regex', 'foo bar']
 " foo\ bar         -> ['foo bar']

@@ -41,13 +41,18 @@ endf
 " InitPreviewWindow()
 func! s:InitPreviewWindow() abort
     setl buftype=nofile
-    setl bufhidden=hide
+    setl bufhidden=unload
     setl noswapfile
     setl nobuflisted
     setl nomodifiable
     setl winfixwidth
 
     nnoremap <silent><buffer> q :call ctrlsf#preview#ClosePreviewWindow()<CR>
+
+    augroup ctrlsfp
+        au!
+        au BufUnload <buffer> unlet b:ctrlsf_file
+    augroup END
 endf
 
 " FindPreviewWindow()
