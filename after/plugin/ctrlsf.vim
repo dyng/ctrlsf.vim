@@ -7,10 +7,10 @@
 " ============================================================================
 
 " Loading Guard {{{1
-if !exists('g:ctrlsf_debug') && exists('g:ctrlsf_aftplugin_loaded')
+if !exists('g:ctrlsf_debug') && exists('g:ctrlsf_tail_loaded')
     finish
 endif
-let g:ctrlsf_aftplugin_loaded = 1
+let g:ctrlsf_tail_loaded = 1
 " }}}
 
 " Airline support {{{1

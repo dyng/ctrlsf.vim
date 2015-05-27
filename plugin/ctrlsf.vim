@@ -6,7 +6,7 @@
 " Version: 0.01
 " ============================================================================
 
-" Loading {{{1
+" Loading Guard {{{1
 if !exists('g:ctrlsf_debug') && exists('g:ctrlsf_loaded')
     finish
 endif
