@@ -123,6 +123,29 @@ if !exists('g:ctrlsf_indent')
 endif
 " }}}
 
+" g:ctrlsf_mapping {{{
+let s:default_mapping = {
+    \ "open"  : "<CR>",
+    \ "openb" : "O",
+    \ "tab"   : "t",
+    \ "tabb"  : "T",
+    \ "prevw" : "p",
+    \ "quit"  : "q",
+    \ "next"  : "<C-J>",
+    \ "prev"  : "<C-K>",
+    \ "pquit" : "q",
+    \ }
+
+if !exists('g:ctrlsf_mapping')
+    let g:ctrlsf_mapping = s:default_mapping
+else
+    for key in keys(s:default_mapping)
+        let g:ctrlsf_mapping[key] = get(g:ctrlsf_mapping, key,
+            \ s:default_mapping[key])
+    endfo
+endif
+" }}}
+
 " g:ctrlsf_position {{{2
 if !exists('g:ctrlsf_position')
     " [left], right, top, bottom

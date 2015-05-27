@@ -90,16 +90,23 @@ func! s:InitMainWindow() abort
 
     call ctrlsf#hl#HighlightMatch('ctrlsfMatch')
 
-    nnoremap <silent><buffer> <CR>  :call ctrlsf#JumpTo('o')<CR>
-    nnoremap <silent><buffer> o     :call ctrlsf#JumpTo('o')<CR>
-    nnoremap <silent><buffer> O     :call ctrlsf#JumpTo('O')<CR>
-    nnoremap <silent><buffer> t     :call ctrlsf#JumpTo('t')<CR>
-    nnoremap <silent><buffer> T     :call ctrlsf#JumpTo('T')<CR>
-    nnoremap <silent><buffer> p     :call ctrlsf#JumpTo('p')<CR>
-    nnoremap <silent><buffer> <C-J> :call ctrlsf#NextMatch(1)<CR>
-    nnoremap <silent><buffer> <C-K> :call ctrlsf#NextMatch(0)<CR>
-    nnoremap <silent><buffer> E     :call ctrlsf#OpenEditMode()<CR>
-    nnoremap <silent><buffer> q     :call ctrlsf#Quit()<CR>
+    let act_func_ref = {
+        \ "open"  : "ctrlsf#JumpTo('o')",
+        \ "openb" : "ctrlsf#JumpTo('O')",
+        \ "tab"   : "ctrlsf#JumpTo('t')",
+        \ "tabb"  : "ctrlsf#JumpTo('T')",
+        \ "prevw" : "ctrlsf#JumpTo('p')",
+        \ "quit"  : "ctrlsf#Quit()",
+        \ "next"  : "ctrlsf#NextMatch(1)",
+        \ "prev"  : "ctrlsf#NextMatch(0)",
+        \ }
+
+    for act in keys(act_func_ref)
+        if !empty(g:ctrlsf_mapping[act])
+            exec "nnoremap <silent><buffer> " . g:ctrlsf_mapping[act]
+                \ . " :call " . act_func_ref[act] . "<CR>"
+        endif
+    endfo
 
     augroup ctrlsf
         au!
