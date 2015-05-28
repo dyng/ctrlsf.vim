@@ -39,7 +39,11 @@ func! s:BuildCommand(args) abort
     call add(tokens, empty(filetype) ? '' : '--' . filetype)
 
     " default
-    call add(tokens, '--heading --group --nocolor --nobreak --column')
+    if g:ctrlsf_ackprg =~# 'ag'
+        call add(tokens, '--heading --group --nocolor --nobreak')
+    else
+        call add(tokens, '--heading --group --nocolor --nobreak --nocolumn')
+    endif
 
     " pattern (including escape)
     call add(tokens, shellescape(ctrlsf#opt#GetOpt('pattern')))
@@ -119,7 +123,7 @@ endf
 func! ctrlsf#backend#Run(args) abort
     let command = s:BuildCommand(a:args)
 
-    " A windows user report CtrlSF doesn't work well when 'shelltemp' is
+    " A windows user reports CtrlSF doesn't work well when 'shelltemp' is
     " turned off. Although I can't reproduce it, I think forcing 'shelltemp'
     " would not do something really bad.
     let stmp_bak = &shelltemp

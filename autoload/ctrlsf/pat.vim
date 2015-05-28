@@ -1,6 +1,6 @@
 " Regex()
 "
-func! ctrlsf#pat#Regex(...) abort
+func! ctrlsf#pat#Regex() abort
     " ignore case
     let case_sensitive = ctrlsf#opt#GetCaseSensitive()
     let case = ''
@@ -25,7 +25,6 @@ func! ctrlsf#pat#Regex(...) abort
     endif
 
     let regex = printf('%s%s%s', magic, case, pattern)
-    call ctrlsf#log#Debug("Pattern: %s", regex)
 
     return regex
 endf

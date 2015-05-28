@@ -86,16 +86,19 @@ func! s:ParseParagraph(buffer, file) abort
         \ 'matches' : function("ctrlsf#class#paragraph#Matches"),
         \ }
 
+    let regex = ctrlsf#pat#Regex()
+
     for line in a:buffer
-        let matched = matchlist(line, '\v^(\d+)([-:])(\d*)([-:])?(.*)$')
+        let matched = matchlist(line, '\v^(\d+)([-:])(.*)$')
 
         " add matched line to match list
         let match = {}
-        if matched[2] == ':'
+        let mat_col = match(matched[3], regex) + 1
+        if mat_col > 0
             let match = {
                 \ 'lnum'  : matched[1],
                 \ 'vlnum' : -1,
-                \ 'col'   : matched[3],
+                \ 'col'   : mat_col,
                 \ 'vcol'  : -1
                 \ }
         endif
@@ -106,7 +109,7 @@ func! s:ParseParagraph(buffer, file) abort
             \ 'match'   : match,
             \ 'lnum'    : matched[1],
             \ 'vlnum'   : -1,
-            \ 'content' : matched[5],
+            \ 'content' : matched[3],
             \ })
     endfo
 

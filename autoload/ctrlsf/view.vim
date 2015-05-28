@@ -99,6 +99,7 @@ func! ctrlsf#view#Reflect(vlnum) abort
         endif
     endfo
 
+    call ctrlsf#log#Debug("Reflect: vlnum: %s, result: %s", a:vlnum, string(ret))
     return ret
 endf
 

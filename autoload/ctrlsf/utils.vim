@@ -11,8 +11,8 @@
 "
 func! ctrlsf#utils#MoveCursor(wlnum, lnum, col) abort
     " Move cursor to specific position, and window stops at {wlnum} line
-    call cursor(a:lnum, a:col)
     exec 'keepjumps normal ' . a:wlnum . "z\r"
+    call cursor(a:lnum, a:col)
 
     " Open fold
     normal zv
@@ -22,8 +22,8 @@ endf
 "
 func! ctrlsf#utils#MoveCentralCursor(lnum, col) abort
     " Move cursor to specific position
-    call cursor(a:lnum, a:col)
     exec 'keepjumps normal ' . a:lnum . 'z.'
+    call cursor(a:lnum, a:col)
 
     " Open fold
     normal zv
