@@ -84,6 +84,7 @@ func! s:InitMainWindow() abort
     setl nonumber
     setl nowrap
     setl winfixwidth
+    setl winfixheight
     setl textwidth=0
     setl nospell
     setl nofoldenable

@@ -46,6 +46,7 @@ func! s:InitPreviewWindow() abort
     setl nobuflisted
     setl nomodifiable
     setl winfixwidth
+    setl winfixheight
 
     exec "nnoremap <silent><buffer> " . g:ctrlsf_mapping['pquit']
         \ . " :call ctrlsf#preview#ClosePreviewWindow()<CR>"

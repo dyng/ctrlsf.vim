@@ -6,7 +6,7 @@
 " Version: 0.01
 " ============================================================================
 
-" Loading {{{1
+" Loading Guard {{{1
 if exists('g:ctrlsf_loaded') && !get(g:, 'ctrlsf_debug_mode', 0)
     finish
 endif
@@ -60,7 +60,7 @@ endf
 func! s:SearchVwordCmd(to_exec)
     let keys = '":\<C-U>CtrlSF " . g:CtrlSFGetVisualSelection()'
     let keys .= a:to_exec ? '."\r"' : '." "'
-    let cmd = ":\<C-U>call feedkeys(" . keys . ")\r"
+    let cmd = ":\<C-U>call feedkeys(" . keys . ", 'n')\r"
     return cmd
 endf
 " }}}
