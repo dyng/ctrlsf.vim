@@ -1,11 +1,23 @@
-*ctrlsf.txt* A code search and view tool.                  *CtrlSF* *'ctrlsf'*
+*ctrlsf.txt* A code search and view tool.                    *CtrlSF* *'ctrlsf'*
 
 Author:  Ye Ding <dygvirus@gmail.com>
 Licence: Vim licence, see |license|
-Version: 0.01
+Version: 1.00
 
-==============================================================================
-Contents                                                     *ctrlsf-contents*
+
+           .-') _   _  .-')              .-')               
+          (  OO) ) ( \( -O )            ( OO ).             
+   .-----./     '._ ,------.  ,--.     (_)---\_)   ,------. 
+  '  .--./|'--...__)|   /`. ' |  |.-') /    _ | ('-| _.---' 
+  |  |('-.'--.  .--'|  /  | | |  | OO )\  :` `. (OO|(_\     
+ /_) |OO  )  |  |   |  |_.' | |  |`-' | '..`''.)/  |  '--.  
+ ||  |`-'|   |  |   |  .  '.'(|  '---.'.-._)   \\_)|  .--'  
+(_'  '--'\   |  |   |  |\  \  |      | \       /  \|  |_)   
+   `-----'   `--'   `--' '--' `------'  `-----'    `--'     
+
+
+================================================================================
+Contents                                                       *ctrlsf-contents*
 
         1. Intro ........................... |ctrlsf-intro|
         2. Usage ........................... |ctrlsf-usage|
@@ -16,14 +28,14 @@ Contents                                                     *ctrlsf-contents*
         5. Options ......................... |ctrlsf-options|
         6. About ........................... |ctrlsf-about|
 
-==============================================================================
-1. Intro                                                        *ctrlsf-intro*
+================================================================================
+1. Intro                                                          *ctrlsf-intro*
 
 CtrlSF is a tool for project-wide code search and view. It uses ack/ag as its
-backend, parse the search result and show it in a uniform format. It is
-developed as an alternative for ack.vim and ag.vim, and as its name implies,
-it is inspired by 'Find in Files...' command in Sublime Text 2, which is
-triggered by 'Ctrl+Shift+F'.
+backend, parse the search result and display the result in a user-friendly
+format. It is developed as an alternative for ack.vim and ag.vim, and as its
+name implies, it is inspired by 'Find in Files...' command in Sublime Text 2,
+whose shortcut is 'Ctrl+Shift+F'.
 
 An example of CtrlSF search result is like this:
 >
@@ -37,11 +49,11 @@ An example of CtrlSF search result is like this:
     66-                 let g:ctrlsf_ackprg = s:DetectAckprg()
 <
 
-==============================================================================
-2. Usage                                                        *ctrlsf-usage*
+================================================================================
+2. Usage                                                          *ctrlsf-usage*
 
-------------------------------------------------------------------------------
-2.1 Quick Start                                            *ctrlsf-quickstart*
+--------------------------------------------------------------------------------
+2.1 Quick Start                                              *ctrlsf-quickstart*
 
 A typical workflow using CtrlSF is like this:
 
@@ -72,8 +84,8 @@ A typical workflow using CtrlSF is like this:
 >
     :CtrlSF -i -C 2 {pattern} /restrict/to/some/path
 <
-------------------------------------------------------------------------------
-2.2 Examples                                                 *ctrlsf-examples*
+--------------------------------------------------------------------------------
+2.2 Examples                                                   *ctrlsf-examples*
 
   1. Search only a specific sub-directory
 >
@@ -91,10 +103,10 @@ A typical workflow using CtrlSF is like this:
 >
     :CtrlSF -A 3 -B 1 {pattern}
 <
-==============================================================================
-3. Commands                                                  *ctrlsf-commands*
+================================================================================
+3. Commands                                                    *ctrlsf-commands*
 
-:CtrlSF [options] {pattern} [path] ...                               *:CtrlSF*
+:CtrlSF [options] {pattern} [path] ...                                 *:CtrlSF*
 
   Search {pattern}. Open a new CtrlSF window if not exist or closed, otherwise
   reuse the existing window.
@@ -106,23 +118,23 @@ A typical workflow using CtrlSF is like this:
   depends on the backend, by default ack/ag will recursively search current
   directory.
 
-:CtrlSFOpen                                                      *:CtrlSFOpen*
+:CtrlSFOpen                                                        *:CtrlSFOpen*
 
   When CtrlSF window is closed by <q> or |:CtrlSFClose|, reopen it. If the
   window is already opened, then focus to it.
 
-:CtrlSFClose                                                    *:CtrlSFClose*
+:CtrlSFClose                                                      *:CtrlSFClose*
 
   Close an existing CtrlSF window. If there is no active CtrlSF window, do
   nothing.
 
-:CtrlSFClearHL                                                *:CtrlSFClearHL*
+:CtrlSFClearHL                                                  *:CtrlSFClearHL*
 
   If you have turned on |g:ctrlsf_selected_line_hl|, use this command to clear
   a highlight on the selected line.
 
-==============================================================================
-4. Key Maps                                                   *ctrlsf-keymaps*
+================================================================================
+4. Key Maps                                                     *ctrlsf-keymaps*
 
   Maps for launching CtrlSF:
 
@@ -164,27 +176,26 @@ A typical workflow using CtrlSF is like this:
 
     <q>          Quit preview.
 
-==============================================================================
-5. Options                                                    *ctrlsf-options*
+================================================================================
+5. Options                                                      *ctrlsf-options*
 
-g:ctrlsf_ackprg                                            *'g:ctrlsf_ackprg'*
+g:ctrlsf_ackprg                                              *'g:ctrlsf_ackprg'*
 Default: auto
-'g:ctrlsf_ackprg' defines the backend which CtrlSF will use. By default,
-CtrlSF will check 'ag' program whether it is available and use it as the best
-choice, otherwise fallback to 'ack'. CtrlSF can handle this option properly
-but you can also explicitly set it by
+'g:ctrlsf_ackprg' defines the path to ack or ag which CtrlSF uses as its
+backend. If nothing is specified, CtrlSF will try 'ag' first and fallback to
+'ack' if 'ag' is not available. You can also explicitly set it by
 >
-    let g:ctrlsf_ackprg = 'ag'
+    let g:ctrlsf_ackprg = '/usr/local/bin/ag'
 <
-g:ctrlsf_auto_close                                    *'g:ctrlsf_auto_close'*
+g:ctrlsf_auto_close                                      *'g:ctrlsf_auto_close'*
 Default: 1
-When you jump to source file from a CtrlSF window, by default the CtrlSF
-window will be closed automatically. Set 'g:ctrlsf_auto_close' to 0 to prevent
-it.
+'g:ctrlsf_auto_close' defines if CtrlSF close itself when you are opening some
+file. By default CtrlSF window will close automatically but you can prevent it
+by setting this option to 0
 >
     let g:ctrlsf_auto_close = 0
 
-g:ctrlsf_context                                          *'g:ctrlsf_context'*
+g:ctrlsf_context                                            *'g:ctrlsf_context'*
 Default: '-C 3'
 Determine how to print lines around the matches. Actually this option is
 passed literally to backend as command argument, therefore shares same format
@@ -193,7 +204,7 @@ Example:
 >
     let g:ctrlsf_context = '-B 5 -A 3'
 <
-g:ctrlsf_leading_space                              *'g:ctrlsf_leading_space'*
+g:ctrlsf_leading_space                                *'g:ctrlsf_leading_space'*
 Default: 12
 Determine how many spaces are placed before the actual result line (including
 line number). A value larger than 8 is recommended in case there is a file
@@ -211,7 +222,7 @@ be opened 'above', 'right', or 'below'. E.g.:
 >
     let g:ctrlsf_position = 'below'
 <
-g:ctrlsf_selected_line_hl                        *'g:ctrlsf_selected_line_hl'*
+g:ctrlsf_selected_line_hl                          *'g:ctrlsf_selected_line_hl'*
 Default: 'p'
 Highlight matching line in the target file. It is useful especially in the
 preview. The value of this option is a flag-map including following valid
@@ -225,7 +236,7 @@ can config it as
 >
     let g:ctrlsf_selected_line_hl = 'op'
 <
-g:ctrlsf_winsize                                              *'g:ctrlsf_width'*
+g:ctrlsf_winsize                                                *'g:ctrlsf_width'*
 Default: 'auto'
 Size of CtrlSF window. This is its width if the window opens vertically (to the
 left or right), or height if it opens horizontally (above or below). It accepts
@@ -239,13 +250,13 @@ Example:
 >
     let g:ctrlsf_winsize = '30%'
 
-==============================================================================
-6. About                                                        *ctrlsf-about*
+================================================================================
+6. About                                                          *ctrlsf-about*
 
 CtrlSF was initially written by Ye Ding <dygvirus@gmail.com> and released
 under the Vim licence, see |licence|. The original author learned a lot of
 things from reading Tagbar's source code, thanks to Jan Larres the author of
-Tagbar.
+Tagbar!
 
-==============================================================================
+================================================================================
  vim: tw=78 ts=8 sw=4 sts=4 et ft=help

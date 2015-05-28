@@ -1,3 +1,11 @@
+" ============================================================================
+" File: after/plugin/ctrlsf.vim
+" Description: An ack/ag powered code search and view tool.
+" Author: Ye Ding <dygvirus@gmail.com>
+" Licence: Vim licence
+" Version: 1.00
+" ============================================================================
+
 func! s:Summary(resultset) abort
     let files   = len(ctrlsf#db#FileSet())
     let matches = len(ctrlsf#db#MatchList())
@@ -26,6 +34,8 @@ func! ctrlsf#view#Indent() abort
 endf
 
 " Render()
+"
+" Return rendered view of current resultset.
 "
 func! ctrlsf#view#Render() abort
     let resultset = ctrlsf#db#ResultSet()
@@ -185,6 +195,8 @@ func! s:DerenderParagraph(buffer, file) abort
 endf
 
 " Derender()
+"
+" Return a pseudo-fileset which is derendered from {content}.
 "
 func! ctrlsf#view#Derender(content) abort
     let lines = type(a:content) == 3 ? a:content : split(a:content, "\n")

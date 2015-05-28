@@ -1,9 +1,16 @@
+" ============================================================================
+" File: after/plugin/ctrlsf.vim
+" Description: An ack/ag powered code search and view tool.
+" Author: Ye Ding <dygvirus@gmail.com>
+" Licence: Vim licence
+" Version: 1.00
+" ============================================================================
+
 " List of paragraphs, paragraph is main object which stores parsed query result
 let s:resultset = []
 
 " cache contains ALL cacheable result
 let s:cache = {}
-
 
 """""""""""""""""""""""""""""""""
 " Getter

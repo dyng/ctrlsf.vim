@@ -1,7 +1,15 @@
+" ============================================================================
+" File: after/plugin/ctrlsf.vim
+" Description: An ack/ag powered code search and view tool.
+" Author: Ye Ding <dygvirus@gmail.com>
+" Licence: Vim licence
+" Version: 1.00
+" ============================================================================
+
 """""""""""""""""""""""""""""""""
 " Misc Functions
 """""""""""""""""""""""""""""""""
-" ctrlsf#utils#MoveCursor()
+" MoveCursor()
 "
 " Redraw, let {wlnum} be the top of window and place cursor at {lnum}, {col}.
 "
@@ -18,7 +26,7 @@ func! ctrlsf#utils#MoveCursor(wlnum, lnum, col) abort
     normal zv
 endf
 
-" ctrlsf#utils#MoveCentralCursor()
+" MoveCentralCursor()
 "
 func! ctrlsf#utils#MoveCentralCursor(lnum, col) abort
     " Move cursor to specific position
@@ -29,7 +37,7 @@ func! ctrlsf#utils#MoveCentralCursor(lnum, col) abort
     normal zv
 endf
 
-" ctrlsf#utils#Mirror()
+" Mirror()
 "
 " Make {dicta} as an exact copy of {dictb}
 "
@@ -45,7 +53,7 @@ func! ctrlsf#utils#Mirror(dicta, dictb) abort
     return a:dicta
 endf
 
-" ctrlsf#utils#UndoAllChanges()
+" UndoAllChanges()
 "
 func! ctrlsf#utils#UndoAllChanges() abort
     if &modified

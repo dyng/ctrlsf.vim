@@ -1,3 +1,11 @@
+" ============================================================================
+" File: after/plugin/ctrlsf.vim
+" Description: An ack/ag powered code search and view tool.
+" Author: Ye Ding <dygvirus@gmail.com>
+" Licence: Vim licence
+" Version: 1.00
+" ============================================================================
+
 " ctrlsf buffer's name
 let s:MAIN_BUF_NAME = "__CtrlSF__"
 
@@ -6,7 +14,6 @@ let s:caller_win = {
     \ 'bufnr' : -1,
     \ 'winnr' : -1,
     \ }
-
 
 """""""""""""""""""""""""""""""""
 " Open & Close
