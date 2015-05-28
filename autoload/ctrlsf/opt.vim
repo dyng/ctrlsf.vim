@@ -35,11 +35,11 @@ func! ctrlsf#opt#OptionKeys() abort
     return keys(s:option_list)
 endf
 
-" HasOpt()
+" IsOptGiven()
 "
 " Return whether user has given a specific option
 "
-func! ctrlsf#opt#HasOpt(name) abort
+func! ctrlsf#opt#IsOptGiven(name) abort
     return has_key(s:options, a:name)
 endf
 
@@ -84,7 +84,7 @@ func! ctrlsf#opt#GetContext() abort
 
     " user specific
     for opt in ['after', 'before', 'context']
-        if ctrlsf#opt#HasOpt(opt)
+        if ctrlsf#opt#IsOptGiven(opt)
             let options[opt] = ctrlsf#opt#GetOpt(opt)
         endif
     endfo
@@ -111,7 +111,7 @@ endf
 "
 func! ctrlsf#opt#GetCaseSensitive() abort
     for opt in ['matchcase', 'ignorecase', 'smartcase']
-        if ctrlsf#opt#HasOpt(opt)
+        if ctrlsf#opt#IsOptGiven(opt)
             return opt
         endif
     endfo
@@ -128,7 +128,7 @@ endf
 " Option Parsing
 """""""""""""""""""""""""""""""""
 
-" ParseOptions()
+" s:ParseOptions()
 "
 " Create a dict contains parsed options
 "
@@ -195,7 +195,7 @@ func! s:ParseOptions(options_str) abort
     return options
 endf
 
-" ctrlsf#opt#ParseOptions()
+" ParseOptions()
 "
 func! ctrlsf#opt#ParseOptions(options_str) abort
     let s:options = s:ParseOptions(a:options_str)

@@ -65,10 +65,7 @@ func! s:BuildCommand(args) abort
         call add(tokens, path)
     endif
 
-    let cmd = join(tokens, ' ')
-    call ctrlsf#log#Debug("ExecCommand: %s", cmd)
-
-    return cmd
+    return join(tokens, ' ')
 endf
 
 " SelfCheck()
@@ -122,6 +119,7 @@ endf
 "
 func! ctrlsf#backend#Run(args) abort
     let command = s:BuildCommand(a:args)
+    call ctrlsf#log#Debug("ExecCommand: %s", command)
 
     " A windows user reports CtrlSF doesn't work well when 'shelltemp' is
     " turned off. Although I can't reproduce it, I think forcing 'shelltemp'

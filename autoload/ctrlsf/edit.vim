@@ -12,12 +12,12 @@ func! s:DiffFile(orig, modi) abort
         let mpar = a:modi.paragraphs[i]
         let i += 1
 
-        if len(opar.lines) != len(mpar.lines)
+        if opar.range() != mpar.range()
             return 1
         endif
 
         let j = 0
-        while j < len(opar.lines)
+        while j < opar.range()
             if opar.lines[j].content !=# mpar.lines[j].content
                 return 1
             endif
@@ -30,6 +30,8 @@ func! s:DiffFile(orig, modi) abort
 endf
 
 " s:Diff()
+"
+" Return list of changed files.
 "
 func! s:Diff(orig, modi) abort
     if len(a:orig) != len(a:modi)
@@ -54,11 +56,35 @@ func! s:Diff(orig, modi) abort
     return changed_files
 endf
 
+" s:VerifyConsistent()
+"
+" Check if a file in resultset is different from its disk counterpart.
+"
+func! s:VerifyConsistent(buffer, orig)
+    for par in a:orig.paragraphs
+        for i in range(par.range())
+            let ln = par.lnum() + i
+            let line = par.lines[i]
+
+            if line.content !=# a:buffer[ln-1]
+                return 0
+            endif
+        endfo
+    endfo
+
+    return 1
+endf
+
 " s:WriteParagraph()
 "
+" Function which does two things:
+"
+" 1. modify, insert or/and delete lines in buffer
+" 2. update resultset to represent modified content
+"
 func! s:WriteParagraph(buffer, orig, modi, offset)
-    let orig_count  = len(a:orig.lines)
-    let modi_count  = len(a:modi.lines)
+    let orig_count  = a:orig.range()
+    let modi_count  = a:modi.range()
     let start_lnum  = a:orig.lnum()
     let start_vlnum = a:orig.vlnum()
 
@@ -114,14 +140,21 @@ endf
 func! s:SaveFile(orig, modi) abort
     let file = a:orig.file
 
-    " FIXME: if file is modified externally, then loaded file content is
-    " different from that in resultset
     try
         let buffer = readfile(file)
     catch
         call ctrlsf#log#Error("Failed to open file %s", file)
-        return
+        return -1
     endtry
+
+    " if file is changed after searching thus shows differences against
+    " resultset, skip writing and warn user.
+    if !s:VerifyConsistent(buffer, a:orig)
+        call ctrlsf#log#Error("File %s has been changed from last search. Skip
+            \ this file. Please run :CtrlsfUpdate to update your search result."
+            \ , file)
+        return -1
+    endif
 
     let i = 0
     let offset = 0
@@ -163,17 +196,22 @@ func! ctrlsf#edit#Save()
 
     if len(changed) == 0
         call ctrlsf#log#Warn("No file has been changed.")
-        return 0
+        return -1
     endif
 
+    let [saved, skipped] = [0, 0]
     for file in changed
-        call s:SaveFile(file.orig, file.modi)
+        if s:SaveFile(file.orig, file.modi) > -1
+            let saved += 1
+        else
+            let skipped += 1
+        endif
     endfo
 
     " reset 'modified' flag
     setl nomodified
 
-    call ctrlsf#log#Info("%s files have been saved.", len(changed))
+    call ctrlsf#log#Info("Saved: %s files. Skipped: %s files.", saved, skipped)
 
     return len(changed)
 endf
