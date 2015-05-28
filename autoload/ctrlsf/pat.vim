@@ -1,6 +1,41 @@
+" s:TranslateRegex()
+"
+" Translate perl-regex to vim-regex.
+"
+func! s:TranslateRegex(pattern) abort
+    let pattern = a:pattern
+
+    " escape '@' and '%' (plain in perl regex but special in vim regex)
+    let pattern = escape(pattern, '@%')
+
+    " non-capturing group
+    let pattern = substitute(pattern, '\v\(\?:((\(.{-}\))|(.{-}))\)', '%(\1)', 'g')
+
+    " case sensitive
+    let pattern = substitute(pattern, '\V(?i)', '\c', 'g')
+    let pattern = substitute(pattern, '\V(?-i)', '\C', 'g')
+
+    " minimal matching
+    let pattern = substitute(pattern, '\V*?', '{-}', 'g')
+    let pattern = substitute(pattern, '\V+?', '{-1,}', 'g')
+    let pattern = substitute(pattern, '\V??', '{-0,1}', 'g')
+    let pattern = substitute(pattern, '\m{\(.\{-}\)}?', '{-\1}', 'g')
+
+    " zero-length matching
+    let pattern = substitute(pattern, '\v\(\?\=((\(.{-}\))|(.{-}))\)', '\1@=', 'g')
+    let pattern = substitute(pattern, '\v\(\?!((\(.{-}\))|(.{-}))\)', '\1@!', 'g')
+    let pattern = substitute(pattern, '\v\(\?\<\=((\(.{-}\))|(.{-}))\)', '\1@<=', 'g')
+    let pattern = substitute(pattern, '\v\(\?\<!((\(.{-}\))|(.{-}))\)', '\1@<!', 'g')
+    let pattern = substitute(pattern, '\v\(\?\>((\(.{-}\))|(.{-}))\)', '\1@>', 'g')
+
+    return pattern
+endf
+
 " Regex()
 "
 func! ctrlsf#pat#Regex() abort
+    let pattern = ctrlsf#opt#GetOpt('pattern')
+
     " ignore case
     let case_sensitive = ctrlsf#opt#GetCaseSensitive()
     let case = ''
@@ -17,16 +52,13 @@ func! ctrlsf#pat#Regex() abort
     let magic = ctrlsf#opt#GetOpt('regex') ? '\v' : '\V'
 
     " literal
-    let pattern = ''
     if ctrlsf#opt#GetOpt('regex')
-        let pattern = ctrlsf#opt#GetOpt('pattern')
+        let pattern = s:TranslateRegex(pattern)
     else
-        let pattern = escape(ctrlsf#opt#GetOpt('pattern'), '\/')
+        let pattern = escape(pattern, '\/')
     endif
 
-    let regex = printf('%s%s%s', magic, case, pattern)
-
-    return regex
+    return printf('%s%s%s', magic, case, pattern)
 endf
 
 " HighlightRegex()
@@ -46,8 +78,5 @@ func! ctrlsf#pat#HighlightRegex() abort
         let sign = '\(\^\d\+:\.\*\)\@<='
     endif
 
-    let regex = printf('/%s%s%s%s/', magic, case, sign, pattern)
-    call ctrlsf#log#Debug("Highlighting: %s", regex)
-
-    return regex
+    return printf('/%s%s%s%s/', magic, case, sign, pattern)
 endf

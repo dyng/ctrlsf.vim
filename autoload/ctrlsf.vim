@@ -95,6 +95,11 @@ func! ctrlsf#Save()
     if changed > 0 && undotree.seq_last == undotree.seq_cur
         call ctrlsf#Redraw()
     endif
+
+    " reload modified files
+    if changed > 0
+        checktime
+    endif
 endf
 
 " Quit()

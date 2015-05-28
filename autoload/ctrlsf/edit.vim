@@ -102,7 +102,7 @@ func! s:WriteParagraph(buffer, orig, modi, offset)
             \ 'content' : mline.content
             \ }
 
-        let mat_idx = match(line_obj.content, ctrlsf#pat#Regex())
+        let mat_idx = match(line_obj.content, ctrlsf#opt#GetOpt("_vimregex"))
         if mat_idx != -1
             let match = {
                 \ 'lnum'  : line_obj.lnum,

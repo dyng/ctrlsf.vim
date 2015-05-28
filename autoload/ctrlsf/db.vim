@@ -86,14 +86,12 @@ func! s:ParseParagraph(buffer, file) abort
         \ 'matches' : function("ctrlsf#class#paragraph#Matches"),
         \ }
 
-    let regex = ctrlsf#pat#Regex()
-
     for line in a:buffer
         let matched = matchlist(line, '\v^(\d+)([-:])(.*)$')
 
         " add matched line to match list
         let match = {}
-        let mat_col = match(matched[3], regex) + 1
+        let mat_col = match(matched[3], ctrlsf#opt#GetOpt("_vimregex")) + 1
         if mat_col > 0
             let match = {
                 \ 'lnum'  : matched[1],

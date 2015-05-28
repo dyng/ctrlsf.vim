@@ -199,4 +199,14 @@ endf
 "
 func! ctrlsf#opt#ParseOptions(options_str) abort
     let s:options = s:ParseOptions(a:options_str)
+
+    " derivative options
+
+    " vimregex
+    let s:options["_vimregex"] = ctrlsf#pat#Regex()
+
+    " vimhlregex
+    let s:options["_vimhlregex"] = ctrlsf#pat#HighlightRegex()
+
+    call ctrlsf#log#Debug("Options: %s", string(s:options))
 endf

@@ -6,7 +6,7 @@ func! ctrlsf#hl#HighlightMatch(hlgroup) abort
     endif
 
     exec printf('2match none | 2match %s %s', a:hlgroup,
-        \ ctrlsf#pat#HighlightRegex())
+        \ ctrlsf#opt#GetOpt("_vimhlregex"))
 endf
 
 " HighlightSelectedLine()
