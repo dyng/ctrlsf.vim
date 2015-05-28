@@ -90,6 +90,7 @@ func! s:InitMainWindow() abort
 
     call ctrlsf#hl#HighlightMatch('ctrlsfMatch')
 
+    " map
     let act_func_ref = {
         \ "open"  : "ctrlsf#JumpTo('o')",
         \ "openb" : "ctrlsf#JumpTo('O')",
@@ -108,9 +109,11 @@ func! s:InitMainWindow() abort
         endif
     endfo
 
+    " autocmd
     augroup ctrlsf
         au!
-        au BufWriteCmd <buffer> call ctrlsf#Save()
+        au BufWriteCmd         <buffer> call ctrlsf#Save()
+        au BufHidden,BufUnload <buffer> call ctrlsf#utils#UndoAllChanges()
     augroup END
 endf
 

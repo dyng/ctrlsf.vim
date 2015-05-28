@@ -45,6 +45,14 @@ func! ctrlsf#utils#Mirror(dicta, dictb) abort
     return a:dicta
 endf
 
+" ctrlsf#utils#UndoAllChanges()
+"
+func! ctrlsf#utils#UndoAllChanges() abort
+    if &modified
+        earlier 1f
+    endif
+endf
+
 """""""""""""""""""""""""""""""""
 " Airline Support
 """""""""""""""""""""""""""""""""
