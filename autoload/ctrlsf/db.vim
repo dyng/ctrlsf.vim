@@ -126,6 +126,8 @@ func! ctrlsf#db#ParseAckprgResult(result) abort
     let current_file = ""
     let next_file    = ""
 
+    " ack/ag has a feature that if a single file is given as search path, then
+    " there will be no explicit filename in search result.
     if len(ctrlsf#opt#GetOpt("path")) == 1
         let path = ctrlsf#opt#GetOpt("path")[0]
         if getftype(path) == 'file'
@@ -138,21 +140,34 @@ func! ctrlsf#db#ParseAckprgResult(result) abort
     let cur = 0
     while cur < len(result_lines)
         let buffer = []
+        let ln = -1
 
         while cur < len(result_lines)
             let line = result_lines[cur]
             let cur += 1
 
-            " if come across a division line, end loop and start parsing
+            " don't rely on division line any longer. ignore it.
             if line =~ '^--$'
-                break
+                continue
+            endif
+
+            let matched = matchlist(line, '\v^(\d+)[-:]')
+
             " if line doesn't match [lnum:col] pattern, assume it is filename
-            elseif line !~ '\v^\d+[-:]\d*'
+            if empty(matched)
                 let next_file = line
                 break
-            else
-                call add(buffer, line)
             endif
+
+            " else regard this line as content line
+            let cur_ln = matched[0]
+            if (ln == -1) || (cur_ln == ln + 1)
+                call add(buffer, line)
+            else
+                break
+            endif
+
+            let ln = cur_ln
         endwh
 
         if len(buffer) > 0
