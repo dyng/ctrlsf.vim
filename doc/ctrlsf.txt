@@ -59,7 +59,7 @@ An example of CtrlSF search result is like this:
 
 A typical workflow using CtrlSF is like this:
 
-  1. Run |:CtrlSF| to invoke a search. In most cases you may just want to search 
+  1. Run |:CtrlSF| to invoke a search. In most cases you may just want to search
   a literal string, it's easy like this
 >
     :CtrlSF {string}
@@ -79,10 +79,8 @@ A typical workflow using CtrlSF is like this:
   5. Or press <q> to quit.
 
   6. |:CtrlSFOpen| can reopen CtrlSF window when you have closed CtrlSF window.
-  It is free because it won't invoke a same but new search.
-
-  7. |:CtrlSFToggle| can open the CtrlSF window if it is closed, or close it
-  if it is open.
+  It is free because it won't invoke a same but new search. A useful command
+  |:CtrlSFToggle| is also available.
 
 --------------------------------------------------------------------------------
 2.2 Edit Mode                                                 *ctrlsf-edit-mode*
@@ -131,7 +129,7 @@ mode:
 ================================================================================
 3. Commands                                                    *ctrlsf-commands*
 
-:CtrlSF [arguments] {pattern} [path] ...                                 *:CtrlSF*
+:CtrlSF [arguments] {pattern} [path] ...                               *:CtrlSF*
 
   Search {pattern}. Default is search literally. Then open a new CtrlSF window
   if there is no existing one, or reuse it.
@@ -163,7 +161,7 @@ mode:
 
 :CtrlSFToggle                                                    *:CtrlSFToggle*
 
-    Open the CtrlSF window if it is closed, or close it if it is open.
+  Open the CtrlSF window if it is closed, or close it if it is open.
 
 ================================================================================
 4. Key Maps                                                     *ctrlsf-keymaps*

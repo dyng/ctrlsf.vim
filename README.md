@@ -46,9 +46,7 @@ An ack/ag powered code search and view tool, more context, more intuitive and mo
 
 5. If you changed your mind after saving, you can always undo it by pressing `u` and saving it again.
 
-6. `:CtrlSFOpen` can reopen CtrlSF window when you have closed CtrlSF window. It is free because it won't invoke a same but new search.
-
-7. `:CtrlSFToggle` can open the CtrlSF window if it is closed, or close it if it is open.
+6. `:CtrlSFOpen` can reopen CtrlSF window when you have closed CtrlSF window. It is free because it won't invoke a same but new search. A useful command `:CtrlSFToggle` is also available.
 
 ## Key Maps
 
@@ -105,9 +103,9 @@ vmap     <C-F>f <Plug>CtrlSFVwordPath
 vmap     <C-F>F <Plug>CtrlSFVwordExec
 nmap     <C-F>n <Plug>CtrlSFCwordPath
 nmap     <C-F>p <Plug>CtrlSFPwordPath
-imap     <C-F>t <Esc>:CtrlSFToggle<CR>
-nnoremap <C-F>t :CtrlSFToggle<CR>
 nnoremap <C-F>o :CtrlSFOpen<CR>
+nnoremap <C-F>t :CtrlSFToggle<CR>
+inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
 ```
 
 ## Edit Mode
