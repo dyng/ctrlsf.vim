@@ -73,7 +73,7 @@ There are also some useful maps need to be mentioned.
 
 - `<Plug>CtrlSFPrompt`
 
-    Input `:CtrlSF ` in command line for you, just a handy alias.
+    Input `:CtrlSF ` in command line for you, just a handy shortcut.
 
 - `<Plug>CtrlSFVwordPath`
 
@@ -187,7 +187,7 @@ Read `:h ctrlsf-arguments` for a full list of arguments.
     let g:ctrlsf_indent = 2
     ```
 
-- `g:ctrlsf_mapping` defines maps used in result window and preview window. Value of this option is a dictionary, where key is a functionality and value is a key for mapping. An empty value can disable that functionality. You can just defind a subset of full dictionary, those not defined functionalities will use default key mapping.
+- `g:ctrlsf_mapping` defines maps used in result window and preview window. Value of this option is a dictionary, where key is a method and value is a key for mapping. An empty value can disable that method. You can just defind a subset of full dictionary, those not defined functionalities will use default key mapping.
 
     ```vim
     let g:ctrlsf_mapping = {
