@@ -81,6 +81,9 @@ A typical workflow using CtrlSF is like this:
   6. |:CtrlSFOpen| can reopen CtrlSF window when you have closed CtrlSF window.
   It is free because it won't invoke a same but new search.
 
+  7. |:CtrlSFToggle| can open the CtrlSF window if it is closed, or close it
+  if it is open.
+
 --------------------------------------------------------------------------------
 2.2 Edit Mode                                                 *ctrlsf-edit-mode*
 
@@ -157,6 +160,10 @@ mode:
 
   If you have turned on |g:ctrlsf_selected_line_hl|, use this command to clear
   highlighting on the selected line.
+
+:CtrlSFToggle                                                    *:CtrlSFToggle*
+
+    Open the CtrlSF window if it is closed, or close it if it is open.
 
 ================================================================================
 4. Key Maps                                                     *ctrlsf-keymaps*

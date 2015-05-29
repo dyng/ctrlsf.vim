@@ -232,3 +232,15 @@ endf
 func! ctrlsf#ClearSelectedLine() abort
     call ctrlsf#hl#ClearSelectedLine()
 endf
+
+" Toggle()
+"
+func! ctrlsf#Toggle() abort
+    let ctrlsf_winnr = ctrlsf#win#FindMainWindow()
+    if ctrlsf_winnr != -1
+        call ctrlsf#Quit()
+        return
+    endif
+
+    call ctrlsf#Open()
+endf

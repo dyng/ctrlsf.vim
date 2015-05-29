@@ -189,6 +189,7 @@ com! -n=0                                         CtrlSFOpen    call ctrlsf#Open
 com! -n=0                                         CtrlSFUpdate  call ctrlsf#Update()
 com! -n=0                                         CtrlSFClose   call ctrlsf#Quit()
 com! -n=0                                         CtrlSFClearHL call ctrlsf#ClearSelectedLine()
+com! -n=0                                         CtrlSFToggle  call ctrlsf#Toggle()
 " }}}
 
 " Maps {{{1
