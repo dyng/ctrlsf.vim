@@ -17,7 +17,7 @@ func! s:TranslateRegex(pattern) abort
     let pattern = escape(pattern, '@%')
 
     " non-capturing group
-    let pattern = substitute(pattern, '\v\(\?:((\(.{-}\))|(.{-}))\)', '%(\1)', 'g')
+    let pattern = substitute(pattern, '\v\(\?:(.{-})\)', '%(\1)', 'g')
 
     " case sensitive
     let pattern = substitute(pattern, '\V(?i)', '\c', 'g')
@@ -30,11 +30,11 @@ func! s:TranslateRegex(pattern) abort
     let pattern = substitute(pattern, '\m{\(.\{-}\)}?', '{-\1}', 'g')
 
     " zero-length matching
-    let pattern = substitute(pattern, '\v\(\?\=((\(.{-}\))|(.{-}))\)', '\1@=', 'g')
-    let pattern = substitute(pattern, '\v\(\?!((\(.{-}\))|(.{-}))\)', '\1@!', 'g')
-    let pattern = substitute(pattern, '\v\(\?\<\=((\(.{-}\))|(.{-}))\)', '\1@<=', 'g')
-    let pattern = substitute(pattern, '\v\(\?\<!((\(.{-}\))|(.{-}))\)', '\1@<!', 'g')
-    let pattern = substitute(pattern, '\v\(\?\>((\(.{-}\))|(.{-}))\)', '\1@>', 'g')
+    let pattern = substitute(pattern, '\v\(\?\=(.{-})\)', '(\1)@=', 'g')
+    let pattern = substitute(pattern, '\v\(\?!(.{-})\)', '(\1)@!', 'g')
+    let pattern = substitute(pattern, '\v\(\?\<\=(.{-})\)', '(\1)@<=', 'g')
+    let pattern = substitute(pattern, '\v\(\?\<!(.{-})\)', '(\1)@<!', 'g')
+    let pattern = substitute(pattern, '\v\(\?\>(.{-})\)', '(\1)@>', 'g')
 
     return pattern
 endf
