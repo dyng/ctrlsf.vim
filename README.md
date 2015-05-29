@@ -105,9 +105,9 @@ vmap     <C-F>f <Plug>CtrlSFVwordPath
 vmap     <C-F>F <Plug>CtrlSFVwordExec
 nmap     <C-F>n <Plug>CtrlSFCwordPath
 nmap     <C-F>p <Plug>CtrlSFPwordPath
+imap     <C-F>t <Esc>:CtrlSFToggle<CR>
+nnoremap <C-F>t :CtrlSFToggle<CR>
 nnoremap <C-F>o :CtrlSFOpen<CR>
-nnoremap <silent><C-F>t :CtrlSFToggle<cr>
-imap <C-F>t <Esc>:CtrlSFToggle<cr>
 ```
 
 ## Edit Mode
