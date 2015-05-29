@@ -55,9 +55,9 @@ An ack/ag powered code search and view tool, more context, more intuitive and mo
 In CtrlSF window:
 
 - `Enter` - Open corresponding file of current line in the window which CtrlSF is launched from.
-- `t` - Like `o` but open file in a new tab.
-- `p` - Like `o` but open file in a preview window.
-- `O` - Like `o` but always leave CtrlSF window opening.
+- `t` - Like `Enter` but open file in a new tab.
+- `p` - Like `Enter` but open file in a preview window.
+- `O` - Like `Enter` but always leave CtrlSF window opening.
 - `T` - Lkie `t` but focus CtrlSF window instead of new opened tab.
 - `q` - Quit CtrlSF window.
 - `<C-J>` - Move cursor to next match.
