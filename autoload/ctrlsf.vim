@@ -236,8 +236,8 @@ endf
 " Toggle()
 "
 func! ctrlsf#Toggle() abort
-    let ctrlsfwinnr = bufwinnr("__CtrlSF__")
-    if ctrlsfwinnr != -1
+    let ctrlsf_winnr = ctrlsf#win#FindMainWindow()
+    if ctrlsf_winnr != -1
         call ctrlsf#preview#ClosePreviewWindow()
         call ctrlsf#win#CloseMainWindow()
         return
