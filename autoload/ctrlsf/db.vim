@@ -145,7 +145,7 @@ func! ctrlsf#db#ParseAckprgResult(result) abort
     let cur = 0
     while cur < len(result_lines)
         let buffer = []
-        let ln = -1
+        let pre_ln = -1
 
         while cur < len(result_lines)
             let line = result_lines[cur]
@@ -161,18 +161,24 @@ func! ctrlsf#db#ParseAckprgResult(result) abort
             " if line doesn't match [lnum:col] pattern, assume it is filename
             if empty(matched)
                 let next_file = line
-                break
+
+                if current_file !=# next_file
+                    let cur -= 1
+                    break
+                else
+                    continue
+                endif
             endif
 
             " else regard this line as content line
             let cur_ln = matched[0]
-            if (ln == -1) || (cur_ln == ln + 1)
+            if (pre_ln == -1) || (cur_ln == pre_ln + 1)
+                let pre_ln = cur_ln
                 call add(buffer, line)
             else
+                let cur -= 1
                 break
             endif
-
-            let ln = cur_ln
         endwh
 
         if len(buffer) > 0
