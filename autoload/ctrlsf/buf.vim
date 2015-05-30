@@ -29,6 +29,7 @@ func! ctrlsf#buf#WriteFile(file) abort
     setl modifiable
     silent %delete _
     exec 'silent 0read ' . a:file
+    silent $delete _ " delete trailing empty line
     call setbufvar('%', '&modifiable', modifiable_bak)
     call setbufvar('%', '&modified', 0)
 endf
