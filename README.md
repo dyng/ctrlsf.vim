@@ -1,20 +1,20 @@
 # ctrlsf.vim
 
-An ack/ag powered code search and view tool, more context, more intuitive and more powerful.
+An ack/ag powered code search and view tool, like ack.vim or `:vimgrep` but together with more context, and let you edit in-place with powerful edit mode.
 
 ### Search and Explore
 
-![ctrlsf demo](http://i.imgur.com/vrPj7T9.gif)
+![ctrlsf demo](http://i.imgur.com/NOy8gwj.gif)
 
 ### Edit Mode (with [vim-multiple-cursors][7])
 
-![ctrlsf_edit_demo](http://i.imgur.com/S9QuQ0N.gif)
+![ctrlsf_edit_demo](http://i.imgur.com/xMUm8Ii.gif)
 
 ## Features
 
 - Search and display result in a user friendly view with customizable context.
 
-- Powerful edit mode which is incredible useful when you are doing refactoring. (Inspired by [vim-ags][6].)
+- Edit mode which is incredible useful when you are doing refactoring. (Inspired by [vim-ags][6])
 
 - Preview mode for fast exploring.
 

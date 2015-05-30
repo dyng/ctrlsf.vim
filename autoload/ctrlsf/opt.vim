@@ -152,9 +152,9 @@ func! s:ParseOptions(options_str) abort
         if !has_key(s:option_list, token)
             if token =~# '^-'
                 call ctrlsf#log#Error("Unknown option '%s'. If you are user
-                    \ from pre-v1.0, plaese be aware of CtrlSF v1.0 no longer
-                    \ supports all options of ack and ag. Read manual for
-                    \ CtrlSF its own options.", token)
+                    \ from pre-v1.0, plaese be aware of that CtrlSF no longer
+                    \ supports all options of ack and ag since v1.0. Read
+                    \ manual for CtrlSF its own options.", token)
                 throw 'ParseOptionsException'
             endif
 
