@@ -1,0 +1,36 @@
+detailed description:
+
+An ack/ag powered code search and view tool, like ack.vim or `:vimgrep` but together with more context, and let you edit in-place with powerful edit mode.
+
+
+Project repository: https://github.com/dyng/ctrlsf.vim
+
+(Please view above github link for comprehensive demo.)
+
+
+Features:
+
+* Search and display result in a user friendly view with customizable context.
+
+* Edit mode which is incredible useful when you are doing refactoring. (Inspired by vim-ags)
+
+* Preview mode for fast exploring.
+
+* Various options for more detailed search, view and edit.
+
+-------------------------------------------------------------------------------
+
+install details:
+
+1. Good old way:
+
+Extract the archive to ~/.vim on Linux/MacOSX or $HOME\vimfiles on Windows.
+Run :helptags  ~/.vim/doc or :helptags $HOME\vimfiles\doc
+
+2. Modern way:
+
+Use package manager like pathogen, vundle or neobundle.
+
+Take vundle for example:
+
+    Bundle 'dyng/ctrlsf.vim'
