@@ -130,22 +130,30 @@ CtrlSF has a lot of arguments you can use in search. Most arguments are similar 
 
 - `-R` - Use regular expression pattern.
 - `-I`, `-S` - Searching case-insensitively (`-I`) or case-sensitively (`-S`).
-- `-C`, `-A`, `-B` - Specify how many context lines, identical to those in Ag/Ack.
+- `-C`, `-A`, `-B` - Specify how many context lines to be printed, identical to their counterparts in Ag/Ack.
 
 Read `:h ctrlsf-arguments` for a full list of arguments.
 
 ### Example
 
-- Search with regular expression pattern and case-insensitively:
+- Search a regular expression pattern case-insensitively:
 
     ```vim
     :CtrlSF -R -I foo.*
     ```
 
-- Search with pattern that contains space:
+- Search a pattern that contains space:
 
     ```vim
     :CtrlSF 'def foo():'
+    ```
+
+- Search a pattern with characters requiring escaping:
+
+    ```vim
+    :CtrlSF '"foobar"'
+    " or
+    :CtrlSF \"foobar\"
     ```
 
 ## Tips
