@@ -13,8 +13,10 @@ func! ctrlsf#hl#HighlightMatch(hlgroup) abort
         return -1
     endif
 
-    exec printf('2match none | 2match %s %s', a:hlgroup,
-        \ ctrlsf#opt#GetOpt("_vimhlregex"))
+    let regex = printf('/%s/', escape(ctrlsf#opt#GetOpt("_vimhlregex"), '/'))
+    call ctrlsf#log#Debug("HighlightRegex: %s", regex)
+
+    exec printf('2match none | 2match %s %s', a:hlgroup, regex)
 endf
 
 " HighlightSelectedLine()

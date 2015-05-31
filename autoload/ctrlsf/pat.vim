@@ -63,7 +63,7 @@ func! ctrlsf#pat#Regex() abort
     if ctrlsf#opt#GetRegex()
         let pattern = s:TranslateRegex(pattern)
     else
-        let pattern = escape(pattern, '\/')
+        let pattern = escape(pattern, '\')
     endif
 
     return printf('%s%s%s', magic, case, pattern)
@@ -86,5 +86,5 @@ func! ctrlsf#pat#HighlightRegex() abort
         let sign = '\(\^\d\+:\.\*\)\@<='
     endif
 
-    return printf('/%s%s%s%s/', magic, case, sign, pattern)
+    return printf('%s%s%s%s', magic, case, sign, pattern)
 endf
