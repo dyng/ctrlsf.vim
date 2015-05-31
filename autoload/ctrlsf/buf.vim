@@ -45,3 +45,12 @@ func! ctrlsf#buf#ClearUndoHistory() abort
     unlet ul_bak
     call setbufvar('%', '&modified', modified_bak)
 endf
+
+" UndoAllChanges()
+"
+func! ctrlsf#buf#UndoAllChanges() abort
+    if &modified
+        earlier 1f
+    endif
+endf
+

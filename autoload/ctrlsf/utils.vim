@@ -9,37 +9,9 @@
 """""""""""""""""""""""""""""""""
 " Misc Functions
 """""""""""""""""""""""""""""""""
-" MoveCursor()
-"
-" Redraw, let {wlnum} be the top of window and place cursor at {lnum}, {col}.
-"
-" {wlnum} number of the top line in window
-" {lnum}  line number of cursor
-" {col}   column number of cursor
-"
-func! ctrlsf#utils#MoveCursor(wlnum, lnum, col) abort
-    " Move cursor to specific position, and window stops at {wlnum} line
-    exec 'keepjumps normal ' . a:wlnum . "z\r"
-    call cursor(a:lnum, a:col)
-
-    " Open fold
-    normal zv
-endf
-
-" MoveCentralCursor()
-"
-func! ctrlsf#utils#MoveCentralCursor(lnum, col) abort
-    " Move cursor to specific position
-    exec 'keepjumps normal ' . a:lnum . 'z.'
-    call cursor(a:lnum, a:col)
-
-    " Open fold
-    normal zv
-endf
-
 " Mirror()
 "
-" Make {dicta} as an exact copy of {dictb}
+" Make {dicta} as an exact shallow copy of {dictb}
 "
 func! ctrlsf#utils#Mirror(dicta, dictb) abort
     for key in keys(a:dicta)
@@ -51,14 +23,6 @@ func! ctrlsf#utils#Mirror(dicta, dictb) abort
     endfo
 
     return a:dicta
-endf
-
-" UndoAllChanges()
-"
-func! ctrlsf#utils#UndoAllChanges() abort
-    if &modified
-        earlier 1f
-    endif
 endf
 
 """""""""""""""""""""""""""""""""
