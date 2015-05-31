@@ -1,5 +1,4 @@
 " ============================================================================
-" File: autoload/ctrlsf.vim
 " Description: An ack/ag powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
@@ -77,7 +76,7 @@ endf
 func! ctrlsf#Redraw() abort
     let [wlnum, lnum, col] = [line('w0'), line('.'), col('.')]
     call ctrlsf#win#Draw()
-    call ctrlsf#utils#MoveCursor(wlnum, lnum, col)
+    call ctrlsf#win#MoveCursor(wlnum, lnum, col)
 endf
 
 " Save()
@@ -106,6 +105,16 @@ endf
 func! ctrlsf#Quit() abort
     call ctrlsf#preview#ClosePreviewWindow()
     call ctrlsf#win#CloseMainWindow()
+endf
+
+" Toggle()
+"
+func! ctrlsf#Toggle() abort
+    if ctrlsf#win#FindMainWindow() != -1
+        call ctrlsf#Quit()
+    else
+        call ctrlsf#Open()
+    endif
 endf
 
 " JumpTo()
@@ -170,7 +179,7 @@ func! s:OpenFileInWindow(file, lnum, col, mode) abort
         endif
     endif
 
-    call ctrlsf#utils#MoveCentralCursor(a:lnum, a:col)
+    call ctrlsf#win#MoveCentralCursor(a:lnum, a:col)
 
     if g:ctrlsf_selected_line_hl =~ 'o'
         call ctrlsf#hl#HighlightSelectedLine()
@@ -193,7 +202,7 @@ func! s:OpenFileInTab(file, lnum, col, mode) abort
 
     exec 'silen tabedit ' . a:file
 
-    call ctrlsf#utils#MoveCentralCursor(a:lnum, a:col)
+    call ctrlsf#win#MoveCentralCursor(a:lnum, a:col)
 
     if g:ctrlsf_selected_line_hl =~ 'o'
         call ctrlsf#hl#HighlightSelectedLine()
@@ -218,7 +227,7 @@ func! s:PreviewFile(file, lnum, col) abort
         exec 'doau filetypedetect BufRead ' . a:file
     endif
 
-    call ctrlsf#utils#MoveCentralCursor(a:lnum, a:col)
+    call ctrlsf#win#MoveCentralCursor(a:lnum, a:col)
 
     if g:ctrlsf_selected_line_hl =~ 'p'
         call ctrlsf#hl#HighlightSelectedLine()
@@ -231,16 +240,4 @@ endf
 "
 func! ctrlsf#ClearSelectedLine() abort
     call ctrlsf#hl#ClearSelectedLine()
-endf
-
-" Toggle()
-"
-func! ctrlsf#Toggle() abort
-    let ctrlsf_winnr = ctrlsf#win#FindMainWindow()
-    if ctrlsf_winnr != -1
-        call ctrlsf#Quit()
-        return
-    endif
-
-    call ctrlsf#Open()
 endf

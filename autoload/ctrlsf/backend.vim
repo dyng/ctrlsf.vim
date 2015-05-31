@@ -1,5 +1,4 @@
 " ============================================================================
-" File: after/plugin/ctrlsf.vim
 " Description: An ack/ag powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
@@ -40,7 +39,7 @@ func! s:BuildCommand(args) abort
     call add(tokens, case)
 
     " regex
-    call add(tokens, ctrlsf#opt#GetOpt('regex') ? '' : '--literal')
+    call add(tokens, ctrlsf#opt#GetRegex() ? '' : '--literal')
 
     " filetype
     let filetype = ctrlsf#opt#GetOpt('filetype')

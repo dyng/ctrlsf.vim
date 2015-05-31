@@ -1,5 +1,4 @@
 " ============================================================================
-" File: after/plugin/ctrlsf.vim
 " Description: An ack/ag powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
@@ -57,13 +56,13 @@ func! ctrlsf#pat#Regex() abort
     endif
 
     " magic
-    let magic = ctrlsf#opt#GetOpt('regex') ? '\v' : '\V'
+    let magic = ctrlsf#opt#GetRegex() ? '\v' : '\V'
 
     " literal
-    if ctrlsf#opt#GetOpt('regex')
+    if ctrlsf#opt#GetRegex()
         let pattern = s:TranslateRegex(pattern)
     else
-        let pattern = escape(pattern, '\/')
+        let pattern = escape(pattern, '\')
     endif
 
     return printf('%s%s%s', magic, case, pattern)
@@ -86,5 +85,5 @@ func! ctrlsf#pat#HighlightRegex() abort
         let sign = '\(\^\d\+:\.\*\)\@<='
     endif
 
-    return printf('/%s%s%s%s/', magic, case, sign, pattern)
+    return printf('%s%s%s%s', magic, case, sign, pattern)
 endf

@@ -1,5 +1,4 @@
 " ============================================================================
-" File: after/plugin/ctrlsf.vim
 " Description: An ack/ag powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
@@ -29,6 +28,7 @@ func! ctrlsf#buf#WriteFile(file) abort
     setl modifiable
     silent %delete _
     exec 'silent 0read ' . a:file
+    silent $delete _ " delete trailing empty line
     call setbufvar('%', '&modifiable', modifiable_bak)
     call setbufvar('%', '&modified', 0)
 endf
@@ -44,3 +44,12 @@ func! ctrlsf#buf#ClearUndoHistory() abort
     unlet ul_bak
     call setbufvar('%', '&modified', modified_bak)
 endf
+
+" UndoAllChanges()
+"
+func! ctrlsf#buf#UndoAllChanges() abort
+    if &modified
+        earlier 1f
+    endif
+endf
+

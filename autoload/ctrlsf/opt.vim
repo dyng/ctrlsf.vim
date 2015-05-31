@@ -1,5 +1,4 @@
 " ============================================================================
-" File: after/plugin/ctrlsf.vim
 " Description: An ack/ag powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
@@ -13,6 +12,7 @@ let s:option_list = {
     \ '-context'    : {'args': 1},
     \ '-filetype'   : {'args': 1},
     \ '-ignorecase' : {'args': 0},
+    \ '-literal'    : {'args': 0},
     \ '-matchcase'  : {'args': 0},
     \ '-regex'      : {'args': 0},
     \ '-smartcase'  : {'args': 0},
@@ -20,13 +20,13 @@ let s:option_list = {
     \ '-B': {'fullname': '-before'},
     \ '-C': {'fullname': '-context'},
     \ '-I': {'fullname': '-ignorecase'},
+    \ '-L': {'fullname': '-literal'},
     \ '-R': {'fullname': '-regex'},
     \ '-S': {'fullname': '-matchcase'},
     \ }
 
 " default values to options
 let s:default = {
-    \ 'regex'      : g:ctrlsf_regex_pattern,
     \ 'filetype'   : '',
     \ 'pattern'    : '',
     \ 'path'       : [],
@@ -35,11 +35,11 @@ let s:default = {
 " options
 let s:options = {}
 
-" OptionKeys()
+" OptionNames()
 "
 " Return ALL available options. It's useful for completion functions.
 "
-func! ctrlsf#opt#OptionKeys() abort
+func! ctrlsf#opt#OptionNames() abort
     return keys(s:option_list)
 endf
 
@@ -59,28 +59,8 @@ func! ctrlsf#opt#GetOpt(name) abort
     if has_key(s:options, a:name)
         return s:options[a:name]
     else
-        if a:name ==# 'after' || a:name ==# 'before' || a:name ==# 'context'
-            return s:DefaultContext(a:name)
-        else
-            return s:default[a:name]
-        endif
+        return s:default[a:name]
     endif
-endf
-
-let s:context_config = { 'config': '' }
-func! s:DefaultContext(name) abort
-    if g:ctrlsf_context ==# s:context_config.config
-        return get(s:context_config, a:name, -1)
-    endif
-
-    let s:context_config['config'] = g:ctrlsf_context
-
-    let parsed = s:ParseOptions(s:context_config['config'])
-    let s:context_config['after']   = get(parsed, 'after', -1)
-    let s:context_config['before']  = get(parsed, 'before', -1)
-    let s:context_config['context'] = get(parsed, 'context', -1)
-
-    return s:context_config[a:name]
 endf
 
 " GetContext()
@@ -97,16 +77,26 @@ func! ctrlsf#opt#GetContext() abort
         endif
     endfo
 
-    " default
+    " if no user specific context, use default context
     if empty(options)
-        for opt in ['after', 'before', 'context']
-            if ctrlsf#opt#GetOpt(opt) > 0
-                let options[opt] = ctrlsf#opt#GetOpt(opt)
-            endif
-        endfo
+        return s:DefaultContext()
     endif
 
     return options
+endf
+
+let s:default_context = { 'conf': '', 'ctx': {} }
+func! s:DefaultContext() abort
+    " if g:ctrlsf_context is not changed from last search, then return cached
+    " result.
+    if g:ctrlsf_context ==# s:default_context.conf
+        return s:default_context.ctx
+    endif
+
+    let s:default_context['conf'] = g:ctrlsf_context
+    let s:default_context['ctx']  = s:ParseOptions(g:ctrlsf_context)
+
+    return s:default_context.ctx
 endf
 
 " GetCaseSensitive()
@@ -130,6 +120,22 @@ func! ctrlsf#opt#GetCaseSensitive() abort
         \'yes'   : 'matchcase',
         \'no'    : 'ignorecase',
         \}[g:ctrlsf_case_sensitive]
+endf
+
+" GetRegex()
+"
+" Return 1 or 0.
+"
+" If both of 'literal' and 'regex' are given, prefer 'literal' than 'regex'.
+"
+func! ctrlsf#opt#GetRegex() abort
+    if ctrlsf#opt#IsOptGiven('literal')
+        return 0
+    elseif ctrlsf#opt#IsOptGiven('regex')
+        return 1
+    else
+        return g:ctrlsf_regex_pattern
+    endif
 endf
 
 """""""""""""""""""""""""""""""""

@@ -46,18 +46,16 @@ An ack/ag powered code search and view tool, like ack.vim or `:vimgrep` but toge
 
 5. If you changed your mind after saving, you can always undo it by pressing `u` and saving it again.
 
-6. `:CtrlSFOpen` can reopen CtrlSF window when you have closed CtrlSF window. It is free because it won't invoke a same but new search.
-
-7. `:CtrlSFToggle` can open the CtrlSF window if it is closed, or close it if it is open.
+6. `:CtrlSFOpen` can reopen CtrlSF window when you have closed CtrlSF window. It is free because it won't invoke a same but new search. A useful command `:CtrlSFToggle` is also available.
 
 ## Key Maps
 
 In CtrlSF window:
 
 - `Enter` - Open corresponding file of current line in the window which CtrlSF is launched from.
-- `t` - Like `o` but open file in a new tab.
-- `p` - Like `o` but open file in a preview window.
-- `O` - Like `o` but always leave CtrlSF window opening.
+- `t` - Like `Enter` but open file in a new tab.
+- `p` - Like `Enter` but open file in a preview window.
+- `O` - Like `Enter` but always leave CtrlSF window opening.
 - `T` - Lkie `t` but focus CtrlSF window instead of new opened tab.
 - `q` - Quit CtrlSF window.
 - `<C-J>` - Move cursor to next match.
@@ -105,9 +103,9 @@ vmap     <C-F>f <Plug>CtrlSFVwordPath
 vmap     <C-F>F <Plug>CtrlSFVwordExec
 nmap     <C-F>n <Plug>CtrlSFCwordPath
 nmap     <C-F>p <Plug>CtrlSFPwordPath
-imap     <C-F>t <Esc>:CtrlSFToggle<CR>
-nnoremap <C-F>t :CtrlSFToggle<CR>
 nnoremap <C-F>o :CtrlSFOpen<CR>
+nnoremap <C-F>t :CtrlSFToggle<CR>
+inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
 ```
 
 ## Edit Mode
@@ -132,22 +130,30 @@ CtrlSF has a lot of arguments you can use in search. Most arguments are similar 
 
 - `-R` - Use regular expression pattern.
 - `-I`, `-S` - Searching case-insensitively (`-I`) or case-sensitively (`-S`).
-- `-C`, `-A`, `-B` - Specify how many context lines, identical to those in Ag/Ack.
+- `-C`, `-A`, `-B` - Specify how many context lines to be printed, identical to their counterparts in Ag/Ack.
 
 Read `:h ctrlsf-arguments` for a full list of arguments.
 
 ### Example
 
-- Search with regular expression pattern and case-insensitively:
+- Search a regular expression pattern case-insensitively:
 
     ```vim
     :CtrlSF -R -I foo.*
     ```
 
-- Search with pattern that contains space:
+- Search a pattern that contains space:
 
     ```vim
     :CtrlSF 'def foo():'
+    ```
+
+- Search a pattern with characters requiring escaping:
+
+    ```vim
+    :CtrlSF '"foobar"'
+    " or
+    :CtrlSF \"foobar\"
     ```
 
 ## Tips
