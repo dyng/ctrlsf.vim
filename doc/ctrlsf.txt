@@ -243,6 +243,12 @@ Make this search be case-insensitive.
 >
     :CtrlSF -I foo
 <
+'-literal', '-L'                           *ctrlsf_args_L* *ctrlsf_args_literal*
+
+Use pattern as literal string.
+>
+    :CtrlSF -L foo.*
+<
 '-matchcase', '-S'                       *ctrlsf_args_S* *ctrlsf_args_matchcase*
 
 Make this search be case-sensitive.
@@ -251,7 +257,7 @@ Make this search be case-sensitive.
 <
 '-regex', '-R'                               *ctrlsf_args_R* *ctrlsf_args_regex*
 
-Using pattern as regular expression.
+Use pattern as regular expression.
 >
     :CtrlSF -R foo.*
 <

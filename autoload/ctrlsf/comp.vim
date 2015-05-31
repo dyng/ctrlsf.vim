@@ -19,7 +19,7 @@ endf
 " OptionComp()
 "
 func! s:OptionComp(arglead, cmdline, cursorpos)
-    let options = ctrlsf#opt#OptionKeys()
+    let options = ctrlsf#opt#OptionNames()
     return filter(options, "stridx(v:val, a:arglead) == 0")
 endf
 

@@ -57,10 +57,10 @@ func! ctrlsf#pat#Regex() abort
     endif
 
     " magic
-    let magic = ctrlsf#opt#GetOpt('regex') ? '\v' : '\V'
+    let magic = ctrlsf#opt#GetRegex() ? '\v' : '\V'
 
     " literal
-    if ctrlsf#opt#GetOpt('regex')
+    if ctrlsf#opt#GetRegex()
         let pattern = s:TranslateRegex(pattern)
     else
         let pattern = escape(pattern, '\/')

@@ -40,7 +40,7 @@ func! s:BuildCommand(args) abort
     call add(tokens, case)
 
     " regex
-    call add(tokens, ctrlsf#opt#GetOpt('regex') ? '' : '--literal')
+    call add(tokens, ctrlsf#opt#GetRegex() ? '' : '--literal')
 
     " filetype
     let filetype = ctrlsf#opt#GetOpt('filetype')
