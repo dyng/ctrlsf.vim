@@ -12,13 +12,13 @@ An ack/ag powered code search and view tool, like ack.vim or `:vimgrep` but toge
 
 ## Features
 
-- Search and display result in a user friendly view with customizable context.
+- Search and display result in a user-friendly view with adjustable context.
 
 - Edit mode which is incredible useful when you are doing refactoring. (Inspired by [vim-ags][6])
 
 - Preview mode for fast exploring.
 
-- Various options for more detailed search, view and edit.
+- Various options for customized search, view and edit.
 
 ## Installation
 
@@ -42,11 +42,11 @@ An ack/ag powered code search and view tool, like ack.vim or `:vimgrep` but toge
 
 3. Press `p` to explore file in a preview window if you only want a glance.
 
-4. You can edit search result as you like. Whenever you apply a change, you can save your change to actual files by `:w`.
+4. You can edit search result as you like. Whenever you apply a change, you can save your change to actual file by `:w`.
 
-5. If you changed your mind after saving, you can always undo it by pressing `u` and saving it again.
+5. If you change your mind after saving, you can always undo it by pressing `u` and saving it again.
 
-6. `:CtrlSFOpen` can reopen CtrlSF window when you have closed CtrlSF window. It is free because it won't invoke a same but new search. A useful command `:CtrlSFToggle` is also available.
+6. `:CtrlSFOpen` can reopen CtrlSF window when you have closed CtrlSF window. It is free because it won't invoke a same but new search. A handy command `:CtrlSFToggle` is also available.
 
 ## Key Maps
 
@@ -65,7 +65,7 @@ In preview window:
 
 - `q` - Close preview window.
 
-Some default defined keys may comflict with keys you have used to when you are editing. But don't worry, you can custom your mapping by setting `g:ctrlsf_mapping`. `:h g:ctrlsf_mapping` for more information.
+Some default defined keys may comflict with keys you have been used to when you are editing. But don't worry, you can customize your mapping by setting `g:ctrlsf_mapping`. `:h g:ctrlsf_mapping` for more information.
 
 ## Use Your Own Map
 
@@ -129,7 +129,7 @@ inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
 CtrlSF has a lot of arguments you can use in search. Most arguments are similar to Ack/Ag's but not perfectly same. Here are some most frequently used arguments:
 
 - `-R` - Use regular expression pattern.
-- `-I`, `-S` - Searching case-insensitively (`-I`) or case-sensitively (`-S`).
+- `-I`, `-S` - Search case-insensitively (`-I`) or case-sensitively (`-S`).
 - `-C`, `-A`, `-B` - Specify how many context lines to be printed, identical to their counterparts in Ag/Ack.
 
 Read `:h ctrlsf-arguments` for a full list of arguments.
@@ -158,13 +158,13 @@ Read `:h ctrlsf-arguments` for a full list of arguments.
 
 ## Tips
 
-- CtrlSF is searching literally by default, which is different from Ack/Ag. If you need a search using regular expression, run `:CtrlSF -R regex`, and if you dislike this default behavior, turn it off by `let g:ctrlsf_regex_pattern = 1`.
+- CtrlSF searches pattern literally by default, which is different from Ack/Ag. If you need to search a regular expression pattern, run `:CtrlSF -R regex`. If you dislike this default behavior, turn it off by `let g:ctrlsf_regex_pattern = 1`.
 
-- By default, CtrlSF use working directory as search path when no path is specified. But CtrlSF can also use project root as its path if you set `g:ctrlsf_default_root` to `project`, CtrlSF does this by searching CVS directory (.git, .hg, etc.) upward from current file. It is usefule when you are editing files across multiple projects.
+- By default, CtrlSF use working directory as search path when no path is specified. But CtrlSF can also use project root as its path if you set `g:ctrlsf_default_root` to `project`, CtrlSF does this by searching VCS directory (.git, .hg, etc.) upward from current file. It is usefule when you are working with files across multiple projects.
 
-- `-filetype` is useful when you only want to search in files of a specific type. Read option `--type` in `ack`'s [manual][6] for more information.
+- `-filetype` is useful when you only want to search in files of specific type. Read option `--type` in `ack`'s [manual][6] for more information.
 
-- Running `:CtrlSF` without any argument or pattern will use word under the cursor.
+- Running `:CtrlSF` without any argument or pattern will use word under cursor.
 
 ## Configuration
 
@@ -174,18 +174,18 @@ Read `:h ctrlsf-arguments` for a full list of arguments.
     let g:ctrlsf_auto_close = 0
     ```
 
-- `g:ctrlsf_case_sensitive` defines case-sensivivity in search. Possible values are `yes`, `no` and `smart`, `smart` works the same as it is in vim. The default value is `smart`.
+- `g:ctrlsf_case_sensitive` defines default case-sensivivity in search. Possible values are `yes`, `no` and `smart`, `smart` works the same as it is in vim. The default value is `smart`.
 
     ```vim
     let g:ctrlsf_case_sensitive = 'no'
     ```
 
-- `g:ctrlsf_context` defines how many lines to print around then matched line. Please read `ack`'s [manual][6] for acceptable format. The default value is `-C 3`, and you can set another value by
+- `g:ctrlsf_context` defines how many context lines will be printed. Please read `ack`'s [manual][6] for acceptable format. The default value is `-C 3`, and you can set another value by
 
     ```vim
     let g:ctrlsf_context = '-B 5 -A 3'
     ```
-- `g:ctrlsf_default_root` defines how CtrlSF find search root when no explicit path is given. Two possible values are `cwd` and `project`. `cwd` means current working directory and `project` means project root, CtrlSF locates project root by searching CVS root (.git, .hg, .svn, etc.)
+- `g:ctrlsf_default_root` defines how CtrlSF find search root when no explicit path is given. Two possible values are `cwd` and `project`. `cwd` means current working directory and `project` means project root. CtrlSF locates project root by searching VCS root (.git, .hg, .svn, etc.)
 
     ```vim
     let g:ctrlsf_default_root = 'project'
@@ -236,9 +236,11 @@ There are many features and changes introduced in v1.0, but the most important d
 
 ### Where and why backward compatibility is given up?
 
-CtrlSF is at first designed as an wrapper of ag/ack within vim, and the principle of designing interface is *keeping same interface with ag/ack running on shell*. This fact lets user get access to all features of ag/ack, and it's easier to implement too. However I found it is not as useful as I thought, what's worse, this principle limits features I can add to CtrlSF and makes CtrlSF counter-intuitive sometimes.
+CtrlSF is at first designed as a wrapper of ag/ack within vim, and the principle of interface design is *sticking to the interface of ag/ack running upon shell*. This fact lets user get access to all features of ag/ack, and it's easier to implement too. However I found it is not as useful as I thought, what's worse, this principle limits features I could add to CtrlSF and makes CtrlSF counter-intuitive sometimes.
 
 **So I want to change it.**
+
+Example:
 
 Case-insensitive searching in pre-v1.0 CtrlSF is like this
 
@@ -252,7 +254,7 @@ In v1.0, that will be replaced by
 CtrlSF -ignorecase foo
 ```
 
-For those most frequently used arguments, an upper case short version is also available
+For those most frequently used arguments, an upper case short version is available
 
 ```vim
 CtrlSF -I foo
