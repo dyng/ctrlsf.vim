@@ -16,7 +16,7 @@
 func! s:Echo(format, argv, hlgroup, save) abort
     let message = s:Printf(a:format, a:argv)
     exec 'echohl ' . a:hlgroup
-    exec a:save ? "echom message" : "echo message"
+    exec (a:save ? "echom" : "echo") . " message"
     echohl None
 endf
 
@@ -34,7 +34,7 @@ endf
 " Notice(format, ...)
 "
 func! ctrlsf#log#Notice(format, ...) abort
-    call s:Echo(a:format, a:000, 'None', 0)
+    call s:Echo(a:format, a:000, 'WarningMsg', 0)
 endf
 
 " Debug(format, ...)

@@ -145,8 +145,22 @@ endf
 " s:NextMatch()
 "
 func! ctrlsf#NextMatch(forward) abort
-    let [vlnum, vcol] = ctrlsf#view#FindNextMatch(line('.'), a:forward)
-    call cursor(vlnum, vcol)
+    let cur_vlnum     = line('.')
+    let [vlnum, vcol] = ctrlsf#view#FindNextMatch(cur_vlnum, a:forward)
+
+    if vlnum > 0
+        if a:forward && vlnum <= cur_vlnum
+            redraw!
+            call ctrlsf#log#Warn("search hit BOTTOM, continuing at TOP")
+        elseif !a:forward && vlnum >= cur_vlnum
+            redraw!
+            call ctrlsf#log#Warn("search hit TOP, continuing at BOTTOM")
+        else
+            redraw!
+        endif
+
+        call cursor(vlnum, vcol)
+    endif
 endf
 
 " OpenFileInWindow()
