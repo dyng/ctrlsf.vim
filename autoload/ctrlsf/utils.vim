@@ -14,11 +14,11 @@
 "
 func! ctrlsf#utils#Mirror(dicta, dictb) abort
     for key in keys(a:dicta)
-        if has_key(a:dictb, key)
-            let a:dicta[key] = a:dictb[key]
-        else
-            call remove(a:dicta, key)
-        endif
+        call remove(a:dicta, key)
+    endfo
+
+    for key in keys(a:dictb)
+        let a:dicta[key] = a:dictb[key]
     endfo
 
     return a:dicta
