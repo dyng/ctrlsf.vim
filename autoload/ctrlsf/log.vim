@@ -5,7 +5,7 @@
 " Version: 1.00
 " ============================================================================
 
-" s:Echo(format, argv, hlgroup, save)
+" s:Echo()
 "
 " Parameters
 " {format}  format same as printf()
@@ -20,7 +20,7 @@ func! s:Echo(format, argv, hlgroup, save) abort
     echohl None
 endf
 
-" s:Printf(format, argv)
+" s:Printf()
 "
 func! s:Printf(format, argv) abort
     if len(a:argv) == 0
@@ -31,13 +31,21 @@ func! s:Printf(format, argv) abort
     endif
 endf
 
-" Notice(format, ...)
+" Clear()
+"
+" Clear printed messages.
+"
+func! ctrlsf#log#Clear() abort
+    echo ""
+endf
+
+" Notice()
 "
 func! ctrlsf#log#Notice(format, ...) abort
     call s:Echo(a:format, a:000, 'WarningMsg', 0)
 endf
 
-" Debug(format, ...)
+" Debug()
 "
 func! ctrlsf#log#Debug(format, ...) abort
     if g:ctrlsf_debug_mode
@@ -45,19 +53,19 @@ func! ctrlsf#log#Debug(format, ...) abort
     endif
 endf
 
-" Info(format, ...)
+" Info()
 "
 func! ctrlsf#log#Info(format, ...) abort
     call s:Echo(a:format, a:000, 'MoreMsg', 1)
 endf
 
-" Warn(format, ...)
+" Warn()
 "
 func! ctrlsf#log#Warn(format, ...) abort
     call s:Echo(a:format, a:000, 'WarningMsg', 1)
 endf
 
-" Error(format, ...)
+" Error()
 "
 func! ctrlsf#log#Error(format, ...) abort
     call s:Echo(a:format, a:000, 'ErrorMsg', 1)

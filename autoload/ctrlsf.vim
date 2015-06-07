@@ -159,7 +159,7 @@ func! ctrlsf#NextMatch(forward) abort
             redraw!
             call ctrlsf#log#Warn("search hit TOP, continuing at BOTTOM")
         else
-            redraw!
+            call ctrlsf#log#Clear()
         endif
 
         call cursor(vlnum, vcol)
