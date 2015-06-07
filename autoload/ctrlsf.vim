@@ -87,15 +87,18 @@ func! ctrlsf#Save()
     endif
 
     let changed  = ctrlsf#edit#Save()
-    let undotree = undotree()
 
-    " DO NOT redraw if it is an undo (then seq_last != seq_cur)
-    if changed > 0 && undotree.seq_last == undotree.seq_cur
-        call ctrlsf#Redraw()
-    endif
-
-    " reload modified files
     if changed > 0
+        " DO NOT redraw if it is an undo (then seq_last != seq_cur)
+        let undotree = undotree()
+        if undotree.seq_last == undotree.seq_cur
+            call ctrlsf#Redraw()
+        endif
+
+        " reset 'modified' flag
+        setl nomodified
+
+        " reload modified files
         checktime
     endif
 endf
