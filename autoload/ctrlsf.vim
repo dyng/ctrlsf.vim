@@ -154,10 +154,10 @@ func! ctrlsf#NextMatch(forward) abort
     if vlnum > 0
         if a:forward && vlnum <= cur_vlnum
             redraw!
-            call ctrlsf#log#Warn("search hit BOTTOM, continuing at TOP")
+            call ctrlsf#log#Notice("search hit BOTTOM, continuing at TOP")
         elseif !a:forward && vlnum >= cur_vlnum
             redraw!
-            call ctrlsf#log#Warn("search hit TOP, continuing at BOTTOM")
+            call ctrlsf#log#Notice("search hit TOP, continuing at BOTTOM")
         else
             call ctrlsf#log#Clear()
         endif
