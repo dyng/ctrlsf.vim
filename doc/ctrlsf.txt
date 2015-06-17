@@ -146,8 +146,8 @@ mode:
 
 :CtrlSFUpdate                                                    *:CtrlSFUpdate*
 
-  Update CtrlSF result by invking a new search with same arguments and pattern
-  of last one.
+  Update CtrlSF result by invoking a new search with same arguments and
+  pattern of last one.
 
 :CtrlSFClose                                                      *:CtrlSFClose*
 
