@@ -330,7 +330,7 @@ Default: 4
 Defines how many spaces are places between line number and line content. You
 can set a sane small value for more compact view.
 >
-    let g:ctrlsf_leading_space = 2
+    let g:ctrlsf_indent = 2
 <
 g:ctrlsf_mapping                                            *'g:ctrlsf_mapping'*
 Defines keys for mapping in result window. You may find default mapping of
