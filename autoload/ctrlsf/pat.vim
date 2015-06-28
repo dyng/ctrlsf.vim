@@ -2,7 +2,7 @@
 " Description: An ack/ag powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 1.00
+" Version: 1.10
 " ============================================================================
 
 " s:TranslateRegex()
@@ -83,6 +83,29 @@ func! ctrlsf#pat#HighlightRegex() abort
         let sign = '(^\d+:.*)@<='
     else
         let sign = '\(\^\d\+:\.\*\)\@<='
+    endif
+
+    return printf('%s%s%s%s', magic, case, sign, pattern)
+endf
+
+" MatchPerLineRegex()
+"
+" Regular expression to match the matched word. Difference from HighlightRegex()
+" is that this pattern only matches the first matched word in each line.
+"
+func! ctrlsf#pat#MatchPerLineRegex() abort
+    let base = ctrlsf#pat#Regex()
+
+    let magic   = strpart(base, 0, 2)
+    let case    = strpart(base, 2, 2)
+    let pattern = strpart(base, 4)
+
+    " sign (to prevent matching out of file body)
+    let sign = ''
+    if magic ==# '\v'
+        let sign = '^\d+:.{-}\zs'
+    else
+        let sign = '\^\d\+:\.\{-}\zs'
     endif
 
     return printf('%s%s%s%s', magic, case, sign, pattern)

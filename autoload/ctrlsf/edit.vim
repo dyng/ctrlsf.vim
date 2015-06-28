@@ -2,7 +2,7 @@
 " Description: An ack/ag powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 1.00
+" Version: 1.10
 " ============================================================================
 
 " s:DiffFile()
@@ -157,7 +157,7 @@ func! s:SaveFile(orig, modi) abort
     " if file is changed after searching thus shows differences against
     " resultset, skip writing and warn user.
     if !s:VerifyConsistent(buffer, a:orig)
-        call ctrlsf#log#Error("File %s has been changed from last search. Skip
+        call ctrlsf#log#Error("File %s has been changed since last search. Skip
             \ this file. Please run :CtrlsfUpdate to update your search result."
             \ , file)
         return -1
@@ -215,10 +215,11 @@ func! ctrlsf#edit#Save()
         endif
     endfo
 
-    " reset 'modified' flag
-    setl nomodified
-
-    call ctrlsf#log#Info("Saved: %s files. Skipped: %s files.", saved, skipped)
+    if skipped == 0
+        call ctrlsf#log#Info("%s files are saved.", saved)
+    else
+        call ctrlsf#log#Info("%s files are saved (%s skipped).", saved, skipped)
+    endif
 
     return len(changed)
 endf

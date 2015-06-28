@@ -2,7 +2,7 @@
 
 Author:  Ye Ding <dygvirus@gmail.com>
 Licence: Vim licence, see |license|
-Version: 1.00
+Version: 1.10
 
 
            .-') _   _  .-')              .-')               
@@ -34,7 +34,7 @@ Contents                                                       *ctrlsf-contents*
 1. Intro                                                          *ctrlsf-intro*
 
 CtrlSF is a tool for project-wide code search and view. It uses ack/ag as its
-backend, parse the search result and display the result in a user-friendly
+backend, parses the search result and displays the result in a user-friendly
 format. It is developed as an alternative for ack.vim and ag.vim, and as its
 name implies, it is inspired by 'Find in Files...' command in Sublime Text 2,
 whose shortcut is 'Ctrl+Shift+F'.
@@ -60,18 +60,18 @@ An example of CtrlSF search result is like this:
 A typical workflow using CtrlSF is like this:
 
   1. Run |:CtrlSF| to invoke a search. In most cases you may just want to search
-  a literal string, it's easy like this
+  a literal string, it's as easy like this
 >
     :CtrlSF {string}
 <
   Then CtrlSF will split a new window to show you result.
 
-  2. Use <h><j><k><l> and other keys to navigate in CtrlSF window, also there
+  2. Use <h><j><k><l> and other keys to navigate through result, also there
   are two handy maps <C-J> and <C-K> that can move forward to next match or
   backward to previous match.
 
-  3. Press <Enter> if you want to open corresponding file which contains
-  current line under the cursor.
+  3. Press <Enter> if you want to open corresponding file of line under
+  cursor.
 
   4. Or you may need more context, press <p> to open that file in an individual
   preview window.
@@ -94,13 +94,13 @@ mode:
   2. Edit as you like in result buffer, and when your change is done, save it
   by |:w|.
 
-  3. CtrlSF will confirm you how many files will be affected, and if you are
-  sure, input |'y'| or just press |Enter|.
+  3. CtrlSF will ask you for confirmation about how many files will be
+  affected, and if you are sure, input |'y'| or just press |Enter|.
 
   4. All changes then are saved to files. You can find result buffer is also
   updated to the latest version of files.
 
-  5. If you eventually changed your mind, you can always undo it by pressing
+  5. If you change your mind later, you can always undo it by pressing
   |u| and saving result buffer again.
 
 --------------------------------------------------------------------------------
@@ -110,15 +110,15 @@ mode:
 >
     :CtrlSF {pattern} /path/to/dir
 <
-  2. Case insensitive search
+  2. Search case-insensitivly
 >
     :CtrlSF -I {pattern}
 <
-  3. Using regular expression for search
+  3. Search with regular expression
 >
     :CtrlSF -R {regex}
 <
-  4. Output using another context setting
+  4. Show result with specific context setting
 >
     :CtrlSF -A 3 -B 1 {pattern}
 <
@@ -131,23 +131,25 @@ mode:
 
 :CtrlSF [arguments] {pattern} [path] ...                               *:CtrlSF*
 
-  Search {pattern}. Default is search literally. Then open a new CtrlSF window
-  if there is no existing one, or reuse it.
+  Search {pattern}. Default is search by literal. Show result in a new CtrlSF
+  window if there is no existing one, otherwise reuse that one.
 
   [arguments] are all valid CtrlSF arguments, see |ctrlsf-arguments| for what
   they are.
 
-  [path] is one or more places where CtrlSF will search. If nothing is given,
+  [path] is one or more directories/files where CtrlSF will search. If nothing
+  is given, the default directory is used, which is specified by
+  |g:ctrlsf_default_root|.
 
 :CtrlSFOpen                                                        *:CtrlSFOpen*
 
-  When CtrlSF window is closed by <q> or |:CtrlSFClose|, reopen it. If the
-  window is already opened, then focus it.
+  If CtrlSF window is closed (by <q> or |:CtrlSFClose|), reopen it. If the
+  window is already on display, then focus it.
 
 :CtrlSFUpdate                                                    *:CtrlSFUpdate*
 
-  Update CtrlSF result by invoking a new search with same arguments and
-  pattern of last one.
+  Update CtrlSF result by invoking a new search with same arguments and pattern
+  of last one.
 
 :CtrlSFClose                                                      *:CtrlSFClose*
 
@@ -161,12 +163,12 @@ mode:
 
 :CtrlSFToggle                                                    *:CtrlSFToggle*
 
-  Open the CtrlSF window if it is closed, or close it if it is open.
+  Open the CtrlSF window if it is closed, or vice versa.
 
 ================================================================================
 4. Key Maps                                                     *ctrlsf-keymaps*
 
-  Maps for launching CtrlSF:
+  Maps to launch CtrlSF:
 
     <Plug>CtrlSFPrompt      Input 'CtrlSF' in command line and waiting, just a
                             handy shortcut.
@@ -192,11 +194,11 @@ mode:
 
     <p>          Open a preview window to view file.
 
-    <O>          Like <o>, but always leave CtrlSF window opening.
+    <O>          Like <o>, but always leave CtrlSF window open.
 
     <T>          Like <t>, but focus CtrlSF window instead of opened new tab.
 
-    <q>          Quit CtrlSF. Also close preview window if it is open.
+    <q>          Quit CtrlSF. Also close preview window if any.
 
     <C-J>        Move cursor to next match.
 
@@ -204,7 +206,7 @@ mode:
 
   Maps by default in preview window:
 
-    <q>          Quit preview.
+    <q>          Quit preview mode.
 
 ================================================================================
 5. Arguments                                                  *ctrlsf-arguments*
@@ -212,28 +214,28 @@ mode:
 '-after', '-A'                              *ctrlsf_args_A*  *ctrlsf_args_after*
 
 Defines how many lines after the matching line will be printed. '-A' is an
-alias of '-after'.
+alias for '-after'.
 >
     :CtrlSF -A 10 foo
 <
 '-before', '-B'                             *ctrlsf_args_B* *ctrlsf_args_before*
 
 Defines how many lines before the matching line will be printed. '-B' is an
-alias of '-before'.
+alias for '-before'.
 >
     :CtrlSF -B 5 foo
 <
 '-context', '-C'                            *ctrlsf_args_C* *ctrlsf_args_context*
 
 Defines how many lines around the matching line will be printed. '-C' is an
-alias of '-context'.
+alias for '-context'.
 >
     :CtrlSF -C 0 foo
 <
 '-filetype'                                               *ctrlsf_args_filetype*
 
-Defines which type of files should search be restrict to. view `ack --help=typs`
-for all available types.
+Defines which type of files should the search be restricted to. view
+`ack --help=typs` for all available types.
 >
     :CtrlSF -filetype vim foo
 <
@@ -272,39 +274,39 @@ Make this search be smart-cased.
 
 g:ctrlsf_ackprg                                              *'g:ctrlsf_ackprg'*
 Default: auto
-'g:ctrlsf_ackprg' defines the path to ack or ag which CtrlSF uses as its
-backend. If nothing is specified, CtrlSF will try 'ag' first and fallback to
+'g:ctrlsf_ackprg' defines the path of ack/ag which CtrlSF will use as its
+backend. If nothing is given, CtrlSF will try 'ag' first and fallback to
 'ack' if 'ag' is not available. You can also explicitly set it by
 >
     let g:ctrlsf_ackprg = '/usr/local/bin/ag'
 <
 g:ctrlsf_auto_close                                      *'g:ctrlsf_auto_close'*
 Default: 1
-'g:ctrlsf_auto_close' defines if CtrlSF close itself when you are opening some
-file. By default CtrlSF window will close automatically but you can prevent it
-by setting this option to 0
+'g:ctrlsf_auto_close' defines how CtrlSF handle itself after you have opened
+a file from CtrlSF window. By default CtrlSF will close itself but you can
+prevent this behavior by setting this option to 0
 >
     let g:ctrlsf_auto_close = 0
 <
 g:ctrlsf_case_sensitive                              *'g:ctrlsf_case_sensitive'*
 Default: 'smart'
 Defines the default case-sensitivity in search. Possible values are 'yes',
-'no' and 'smart'. 'yes' and 'no' is as its literal. 'smart' means smart-case,
-which is same as it is in Vim.
+'no' and 'smart'. 'yes' and 'no' works exactly as its meaning. 'smart' means
+smart-case, which is as same as it is in Vim.
 >
     let g:ctrlsf_case_sensitive = 'no'
 <
 g:ctrlsf_confirm_save                                  *'g:ctrlsf_confirm_save'*
 Default: 1
-Confirm before saving your changes to file. If you find your typing 'yes' all
-the time, you can turn off this confirmation by
+Confirm before saving your changes to file. If you are tired of typing 'yes',
+you can turn off this confirmation by
 >
     let g:ctrlsf_confirm_save = 0
 <
 g:ctrlsf_context                                            *'g:ctrlsf_context'*
 Default: '-C 3'
 Defines how many lines around the matching line will be printed. Use same format
-with Ack/Ag options.
+as its counterpart in Ag/Ack.
 >
     let g:ctrlsf_context = '-B 5 -A 3'
 <
@@ -333,11 +335,11 @@ can set a sane small value for more compact view.
     let g:ctrlsf_indent = 2
 <
 g:ctrlsf_mapping                                            *'g:ctrlsf_mapping'*
-Defines keys for mapping in result window. You may find default mapping of
-CtrlSF conflict with keys you are used to sometimes, especially in editing.
-Then you can change default mapping by setting this option. A subset of all
-available methods is valid, those unspecified methods will use default keys.
-Also you can disable a method by map it to an empty string.
+Defines keys for mapping in result window. Sometimes you may find default
+mapping of CtrlSF conflict with keys you have been used to sometimes, especially
+in editing.  Then you can change default mapping by setting this option. A
+subset of available methods is valid, those unspecified methods will use default
+keys. You can also disable a method by mapping it to an empty string.
 
 Default:
 >
@@ -371,22 +373,22 @@ be opened 'above', 'right', or 'below'. E.g.:
 g:ctrlsf_regex_pattern                                *'g:ctrlsf_regex_pattern'*
 Default: 0
 Default case-sensitivity used in search. Default value 0 means CtrlSF search
-pattern literally, if you want CtrlSF use regular expression by default like
-Ack/Ag, you can set it to 1.
+pattern literally, if you want CtrlSF use regular expression by default (like
+Ack/Ag), you can set it to 1.
 >
     let g:ctrlsf_regex_pattern = 1
 <
 g:ctrlsf_selected_line_hl                          *'g:ctrlsf_selected_line_hl'*
 Default: 'p'
-Highlight matching line in the target file. It is useful especially in the
-preview. The value of this option is a flag-map including following valid
+Highlight matching line in the target file. It is useful especially in preview
+mode. The value of this option is a flag-map including following valid
 flags:
 >
-    'o' : highlight matching line in the target file after jumping.
+    'o' : highlight matching line in the target file after file is opened.
     'p' : highlight matching line in preview window.
 <
 If you want to enable this feature both in preview window and actual file, you
-can config it as
+can set it as
 >
     let g:ctrlsf_selected_line_hl = 'op'
 <
@@ -408,9 +410,8 @@ Example:
 7. About                                                          *ctrlsf-about*
 
 CtrlSF was initially written by Ye Ding <dygvirus@gmail.com> and released
-under the Vim licence, see |licence|. The original author learned a lot of
-things from reading Tagbar's source code, thanks to Jan Larres the author of
-Tagbar!
+under the Vim licence, see |licence|. The original author have learned a lot of
+things from reading source of Tagbar, thanks to Jan Larres the author of Tagbar!
 
 ================================================================================
  vim: tw=78 ts=8 sw=4 sts=4 et ft=help

@@ -2,7 +2,7 @@
 " Description: An ack/ag powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 1.00
+" Version: 1.10
 " ============================================================================
 
 " option list of CtrlSF
@@ -87,7 +87,7 @@ endf
 
 let s:default_context = { 'conf': '', 'ctx': {} }
 func! s:DefaultContext() abort
-    " if g:ctrlsf_context is not changed from last search, then return cached
+    " if g:ctrlsf_context is not changed since last search, then return cached
     " result.
     if g:ctrlsf_context ==# s:default_context.conf
         return s:default_context.ctx

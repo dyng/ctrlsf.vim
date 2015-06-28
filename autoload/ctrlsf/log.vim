@@ -2,10 +2,10 @@
 " Description: An ack/ag powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 1.00
+" Version: 1.10
 " ============================================================================
 
-" s:Echo(format, argv, hlgroup, save)
+" s:Echo()
 "
 " Parameters
 " {format}  format same as printf()
@@ -16,11 +16,11 @@
 func! s:Echo(format, argv, hlgroup, save) abort
     let message = s:Printf(a:format, a:argv)
     exec 'echohl ' . a:hlgroup
-    exec a:save ? "echom message" : "echo message"
+    exec (a:save ? "echom" : "echo") . " message"
     echohl None
 endf
 
-" s:Printf(format, argv)
+" s:Printf()
 "
 func! s:Printf(format, argv) abort
     if len(a:argv) == 0
@@ -31,13 +31,21 @@ func! s:Printf(format, argv) abort
     endif
 endf
 
-" Notice(format, ...)
+" Clear()
 "
-func! ctrlsf#log#Notice(format, ...) abort
-    call s:Echo(a:format, a:000, 'None', 0)
+" Clear printed messages.
+"
+func! ctrlsf#log#Clear() abort
+    echo ""
 endf
 
-" Debug(format, ...)
+" Notice()
+"
+func! ctrlsf#log#Notice(format, ...) abort
+    call s:Echo(a:format, a:000, 'WarningMsg', 0)
+endf
+
+" Debug()
 "
 func! ctrlsf#log#Debug(format, ...) abort
     if g:ctrlsf_debug_mode
@@ -45,19 +53,19 @@ func! ctrlsf#log#Debug(format, ...) abort
     endif
 endf
 
-" Info(format, ...)
+" Info()
 "
 func! ctrlsf#log#Info(format, ...) abort
     call s:Echo(a:format, a:000, 'MoreMsg', 1)
 endf
 
-" Warn(format, ...)
+" Warn()
 "
 func! ctrlsf#log#Warn(format, ...) abort
     call s:Echo(a:format, a:000, 'WarningMsg', 1)
 endf
 
-" Error(format, ...)
+" Error()
 "
 func! ctrlsf#log#Error(format, ...) abort
     call s:Echo(a:format, a:000, 'ErrorMsg', 1)

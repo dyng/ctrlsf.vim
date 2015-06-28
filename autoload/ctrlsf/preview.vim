@@ -2,7 +2,7 @@
 " Description: An ack/ag powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 1.00
+" Version: 1.10
 " ============================================================================
 
 " preview buffer's name
@@ -11,8 +11,11 @@ let s:PREVIEW_BUF_NAME = "__CtrlSFPreview__"
 " OpenPreviewWindow()
 "
 func! ctrlsf#preview#OpenPreviewWindow() abort
+    " backup width/height of other windows
+    call ctrlsf#win#BackupAllWinSize()
+
     " try to focus an existing preview window
-    if (ctrlsf#preview#FocusPreviewWindow() != -1)
+    if ctrlsf#preview#FocusPreviewWindow() != -1
         return
     endif
 
@@ -41,6 +44,9 @@ func! ctrlsf#preview#ClosePreviewWindow() abort
     endif
 
     close
+
+    " restore width/height of other windows
+    call ctrlsf#win#RestoreAllWinSize()
 
     call ctrlsf#win#FocusMainWindow()
 endf

@@ -2,7 +2,7 @@
 " Description: An ack/ag powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 1.00
+" Version: 1.10
 " ============================================================================
 
 func! s:Summary(resultset) abort
@@ -114,7 +114,7 @@ endf
 
 " FindNextMatch()
 "
-" Find next match.
+" Find next match. Wrapping around or not depends on value of 'wrapscan'.
 "
 " Parameters
 " {vlnum}   the line number of search base
@@ -124,46 +124,9 @@ endf
 " [vlnum, vcol] line number and column number of next match
 "
 func! ctrlsf#view#FindNextMatch(vlnum, forward) abort
-    let matchlist = ctrlsf#db#MatchList()
-
-    if empty(matchlist)
-        return [-1, -1]
-    endif
-
-    let [lp, rp] = [0, len(matchlist) - 1]
-
-    " when vlnum is out of range [0, len]
-    if a:vlnum < matchlist[lp].vlnum
-        let rp = lp
-        let lp = -1
-    elseif a:vlnum > matchlist[rp].vlnum
-        let lp = rp
-        let rp = -1
-    else
-        " main binary search
-        while rp - lp > 1
-            let mp    = (lp + rp) / 2
-            let pivot = matchlist[mp]
-
-            if matchlist[mp].vlnum == a:vlnum
-                let lp = (mp == 0) ? -1 : mp - 1
-                let rp = (mp == len(matchlist) - 1) ? -1 : mp + 1
-                break
-            elseif matchlist[mp].vlnum < a:vlnum
-                let lp = mp
-            else
-                let rp = mp
-            endif
-        endwh
-    endif
-
-    let nextp = a:forward ? rp : lp
-
-    if nextp == -1
-        return [-1, -1]
-    else
-        return [matchlist[nextp].vlnum, matchlist[nextp].vcol]
-    endif
+    let regex = ctrlsf#pat#MatchPerLineRegex()
+    let flag  = a:forward ? 'n' : 'nb'
+    return searchpos(regex, flag)
 endf
 
 " s:DerenderParagraph()

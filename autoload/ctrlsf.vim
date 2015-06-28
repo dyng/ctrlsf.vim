@@ -2,7 +2,7 @@
 " Description: An ack/ag powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 1.00
+" Version: 1.10
 " ============================================================================
 
 """""""""""""""""""""""""""""""""
@@ -87,15 +87,18 @@ func! ctrlsf#Save()
     endif
 
     let changed  = ctrlsf#edit#Save()
-    let undotree = undotree()
 
-    " DO NOT redraw if it is an undo (then seq_last != seq_cur)
-    if changed > 0 && undotree.seq_last == undotree.seq_cur
-        call ctrlsf#Redraw()
-    endif
-
-    " reload modified files
     if changed > 0
+        " DO NOT redraw if it is an undo (then seq_last != seq_cur)
+        let undotree = undotree()
+        if undotree.seq_last == undotree.seq_cur
+            call ctrlsf#Redraw()
+        endif
+
+        " reset 'modified' flag
+        setl nomodified
+
+        " reload modified files
         checktime
     endif
 endf
@@ -145,8 +148,22 @@ endf
 " s:NextMatch()
 "
 func! ctrlsf#NextMatch(forward) abort
-    let [vlnum, vcol] = ctrlsf#view#FindNextMatch(line('.'), a:forward)
-    call cursor(vlnum, vcol)
+    let cur_vlnum     = line('.')
+    let [vlnum, vcol] = ctrlsf#view#FindNextMatch(cur_vlnum, a:forward)
+
+    if vlnum > 0
+        if a:forward && vlnum <= cur_vlnum
+            redraw!
+            call ctrlsf#log#Notice("search hit BOTTOM, continuing at TOP")
+        elseif !a:forward && vlnum >= cur_vlnum
+            redraw!
+            call ctrlsf#log#Notice("search hit TOP, continuing at BOTTOM")
+        else
+            call ctrlsf#log#Clear()
+        endif
+
+        call cursor(vlnum, vcol)
+    endif
 endf
 
 " OpenFileInWindow()

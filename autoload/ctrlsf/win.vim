@@ -2,7 +2,7 @@
 " Description: An ack/ag powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 1.00
+" Version: 1.10
 " ============================================================================
 
 " ctrlsf buffer's name
@@ -27,32 +27,37 @@ func! ctrlsf#win#OpenMainWindow() abort
         \ 'winnr' : winnr(),
         \ }
 
+    " backup width/height of other windows
+    call ctrlsf#win#BackupAllWinSize()
+
     " try to focus an existing ctrlsf window, initialize a new one if failed
-    if ctrlsf#win#FocusMainWindow() == -1
-        if g:ctrlsf_winsize =~ '\d\{1,2}%'
-            if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
-                let winsize = &columns * str2nr(g:ctrlsf_winsize) / 100
-            else
-                let winsize = &lines * str2nr(g:ctrlsf_winsize) / 100
-            endif
-        elseif g:ctrlsf_winsize =~ '\d\+'
-            let winsize = str2nr(g:ctrlsf_winsize)
-        else
-            if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
-                let winsize = &columns / 2
-            else
-                let winsize = &lines / 2
-            endif
-        endif
-
-        let openpos = {
-              \ 'top'    : 'topleft',  'left'  : 'topleft vertical',
-              \ 'bottom' : 'botright', 'right' : 'botright vertical'}
-              \[g:ctrlsf_position] . ' '
-        exec 'silent keepalt ' . openpos . winsize . 'split ' . '__CtrlSF__'
-
-        call s:InitMainWindow()
+    if ctrlsf#win#FocusMainWindow() != -1
+        return
     endif
+
+    if g:ctrlsf_winsize =~ '\d\{1,2}%'
+        if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
+            let winsize = &columns * str2nr(g:ctrlsf_winsize) / 100
+        else
+            let winsize = &lines * str2nr(g:ctrlsf_winsize) / 100
+        endif
+    elseif g:ctrlsf_winsize =~ '\d\+'
+        let winsize = str2nr(g:ctrlsf_winsize)
+    else
+        if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
+            let winsize = &columns / 2
+        else
+            let winsize = &lines / 2
+        endif
+    endif
+
+    let openpos = {
+          \ 'top'    : 'topleft',  'left'  : 'topleft vertical',
+          \ 'bottom' : 'botright', 'right' : 'botright vertical'}
+          \[g:ctrlsf_position] . ' '
+    exec 'silent keepalt ' . openpos . winsize . 'split ' . '__CtrlSF__'
+
+    call s:InitMainWindow()
 
     " resize other windows
     wincmd =
@@ -74,6 +79,9 @@ func! ctrlsf#win#CloseMainWindow() abort
 
     " Surely we are in CtrlSF window
     close
+
+    " restore width/height of other windows
+    call ctrlsf#win#RestoreAllWinSize()
 
     call ctrlsf#win#FocusCallerWindow()
 endf
@@ -257,4 +265,53 @@ func! ctrlsf#win#MoveCentralCursor(lnum, col) abort
 
     " Open fold
     normal zv
+endf
+
+"""""""""""""""""""""""""""""""""
+" Backup & Restore Window Size
+"""""""""""""""""""""""""""""""""
+" BackupAllWinSize()
+"
+" Goal of BackupAllWinSize() and RestoreAllWinSize() is to restore
+" width/height of fixed sized windows such like NERDTree's. As a result, we only
+" backup width/height of fixed window's to keep least side effects.
+"
+func! ctrlsf#win#BackupAllWinSize()
+    let nr = 1
+    while winbufnr(nr) != -1
+        if getwinvar(nr, '&winfixwidth') || getwinvar(nr, '&winfixheight')
+            if type(getwinvar(nr, 'ctrlsf_winwidth_bak')) != 3
+                call setwinvar(nr, 'ctrlsf_winwidth_bak', [])
+            endif
+            call add(getwinvar(nr, 'ctrlsf_winwidth_bak'), winwidth(nr))
+
+            if type(getwinvar(nr, 'ctrlsf_winheight_bak')) != 3
+                call setwinvar(nr, 'ctrlsf_winheight_bak', [])
+            endif
+            call add(getwinvar(nr, 'ctrlsf_winheight_bak'), winheight(nr))
+        endif
+        let nr += 1
+    endwh
+endf
+
+" RestoreAllWinSize()
+"
+func! ctrlsf#win#RestoreAllWinSize()
+    let nr = 1
+    while winbufnr(nr) != -1
+        if getwinvar(nr, '&winfixwidth') || getwinvar(nr, '&winfixheight')
+            exec nr . 'wincmd w'
+
+            let width_stack = getwinvar(nr, 'ctrlsf_winwidth_bak')
+            if type(width_stack) == 3 && !empty(width_stack)
+                exec "vertical resize " . remove(width_stack, -1)
+            endif
+
+            let height_stack = getwinvar(nr, 'ctrlsf_winheight_bak')
+            if type(height_stack) == 3 && !empty(height_stack)
+                exec "resize " . remove(height_stack, -1)
+            endif
+        endif
+        let nr += 1
+    endwh
 endf
