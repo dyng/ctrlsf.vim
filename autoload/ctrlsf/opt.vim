@@ -59,7 +59,7 @@ func! ctrlsf#opt#GetOpt(name) abort
     if has_key(s:options, a:name)
         return s:options[a:name]
     else
-        return s:default[a:name]
+        return get(s:default, 'a:name', '')
     endif
 endf
 

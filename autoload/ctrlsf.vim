@@ -188,7 +188,7 @@ func! s:OpenFileInWindow(file, lnum, col, mode) abort
         exec target_winnr . 'wincmd w'
 
         if bufname('%') !~# a:file
-            if &modified
+            if &modified && !&hidden
                 exec 'silent split ' . a:file
             else
                 exec 'silent edit ' . a:file
