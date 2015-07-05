@@ -157,7 +157,7 @@ func! ctrlsf#db#ParseAckprgResult(result) abort
 
             let matched = matchlist(line, '\v^(\d+)[-:]')
 
-            " if line doesn't match [lnum:col] pattern, assume it is filename
+            " if line doesn't match [lnum:text] pattern, assume it is filename
             if empty(matched)
                 let next_file = line
 
