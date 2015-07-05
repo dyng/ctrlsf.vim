@@ -11,13 +11,14 @@ let s:PREVIEW_BUF_NAME = "__CtrlSFPreview__"
 " OpenPreviewWindow()
 "
 func! ctrlsf#preview#OpenPreviewWindow() abort
-    " backup width/height of other windows
-    call ctrlsf#win#BackupAllWinSize()
-
     " try to focus an existing preview window
     if ctrlsf#preview#FocusPreviewWindow() != -1
         return
     endif
+
+    " backup width/height of other windows
+    " be sure doing this only when *opening new window*
+    call ctrlsf#win#BackupAllWinSize()
 
     if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
         let ctrlsf_width  = winwidth(0)
