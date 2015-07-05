@@ -27,13 +27,14 @@ func! ctrlsf#win#OpenMainWindow() abort
         \ 'winnr' : winnr(),
         \ }
 
-    " backup width/height of other windows
-    call ctrlsf#win#BackupAllWinSize()
-
     " try to focus an existing ctrlsf window, initialize a new one if failed
     if ctrlsf#win#FocusMainWindow() != -1
         return
     endif
+
+    " backup width/height of other windows
+    " be sure doing this only when *opening new window*
+    call ctrlsf#win#BackupAllWinSize()
 
     if g:ctrlsf_winsize =~ '\d\{1,2}%'
         if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
@@ -272,7 +273,7 @@ endf
 """""""""""""""""""""""""""""""""
 " BackupAllWinSize()
 "
-" Goal of BackupAllWinSize() and RestoreAllWinSize() is to restore
+" Purpose of BackupAllWinSize() and RestoreAllWinSize() is to restore
 " width/height of fixed sized windows such like NERDTree's. As a result, we only
 " backup width/height of fixed window's to keep least side effects.
 "
