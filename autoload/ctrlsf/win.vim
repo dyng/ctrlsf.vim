@@ -27,13 +27,14 @@ func! ctrlsf#win#OpenMainWindow() abort
         \ 'winnr' : winnr(),
         \ }
 
-    " backup width/height of other windows
-    call ctrlsf#win#BackupAllWinSize()
-
     " try to focus an existing ctrlsf window, initialize a new one if failed
     if ctrlsf#win#FocusMainWindow() != -1
         return
     endif
+
+    " backup width/height of other windows
+    " be sure doing this only when *opening new window*
+    call ctrlsf#win#BackupAllWinSize()
 
     if g:ctrlsf_winsize =~ '\d\{1,2}%'
         if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
@@ -106,23 +107,20 @@ func! s:InitMainWindow() abort
     call ctrlsf#hl#HighlightMatch('ctrlsfMatch')
 
     " map
+    " key 'prevw' is a deprecated key but here for backward-compatible
     let act_func_ref = {
-        \ "open"  : "ctrlsf#JumpTo('o')",
-        \ "openb" : "ctrlsf#JumpTo('O')",
-        \ "tab"   : "ctrlsf#JumpTo('t')",
-        \ "tabb"  : "ctrlsf#JumpTo('T')",
-        \ "prevw" : "ctrlsf#JumpTo('p')",
+        \ "open"  : "ctrlsf#JumpTo('open')",
+        \ "openb" : "ctrlsf#JumpTo('open_background')",
+        \ "split" : "ctrlsf#JumpTo('split')",
+        \ "tab"   : "ctrlsf#JumpTo('tab')",
+        \ "tabb"  : "ctrlsf#JumpTo('tab_background')",
+        \ "prevw" : "ctrlsf#JumpTo('preview')",
+        \ "popen" : "ctrlsf#JumpTo('preview')",
         \ "quit"  : "ctrlsf#Quit()",
         \ "next"  : "ctrlsf#NextMatch(1)",
         \ "prev"  : "ctrlsf#NextMatch(0)",
         \ }
-
-    for act in keys(act_func_ref)
-        if !empty(g:ctrlsf_mapping[act])
-            exec "nnoremap <silent><buffer> " . g:ctrlsf_mapping[act]
-                \ . " :call " . act_func_ref[act] . "<CR>"
-        endif
-    endfo
+    call ctrlsf#utils#SetMap(g:ctrlsf_mapping, act_func_ref)
 
     " autocmd
     augroup ctrlsf
@@ -272,7 +270,7 @@ endf
 """""""""""""""""""""""""""""""""
 " BackupAllWinSize()
 "
-" Goal of BackupAllWinSize() and RestoreAllWinSize() is to restore
+" Purpose of BackupAllWinSize() and RestoreAllWinSize() is to restore
 " width/height of fixed sized windows such like NERDTree's. As a result, we only
 " backup width/height of fixed window's to keep least side effects.
 "
