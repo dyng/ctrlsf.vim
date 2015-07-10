@@ -124,12 +124,12 @@ endif
 
 " g:ctrlsf_mapping {{{
 let s:default_mapping = {
-    \ "open"  : "<CR>",
+    \ "open"  : ["<CR>", "o"],
     \ "openb" : "O",
     \ "split" : "<C-O>",
     \ "tab"   : "t",
     \ "tabb"  : "T",
-    \ "prevw" : "p",
+    \ "popen" : "p",
     \ "quit"  : "q",
     \ "next"  : "<C-J>",
     \ "prev"  : "<C-K>",

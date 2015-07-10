@@ -107,6 +107,7 @@ func! s:InitMainWindow() abort
     call ctrlsf#hl#HighlightMatch('ctrlsfMatch')
 
     " map
+    " key 'prevw' is a deprecated key but here for backward-compatible
     let act_func_ref = {
         \ "open"  : "ctrlsf#JumpTo('open')",
         \ "openb" : "ctrlsf#JumpTo('open_background')",
@@ -114,17 +115,12 @@ func! s:InitMainWindow() abort
         \ "tab"   : "ctrlsf#JumpTo('tab')",
         \ "tabb"  : "ctrlsf#JumpTo('tab_background')",
         \ "prevw" : "ctrlsf#JumpTo('preview')",
+        \ "popen" : "ctrlsf#JumpTo('preview')",
         \ "quit"  : "ctrlsf#Quit()",
         \ "next"  : "ctrlsf#NextMatch(1)",
         \ "prev"  : "ctrlsf#NextMatch(0)",
         \ }
-
-    for act in keys(act_func_ref)
-        if !empty(g:ctrlsf_mapping[act])
-            exec "nnoremap <silent><buffer> " . g:ctrlsf_mapping[act]
-                \ . " :call " . act_func_ref[act] . "<CR>"
-        endif
-    endfo
+    call ctrlsf#utils#SetMap(g:ctrlsf_mapping, act_func_ref)
 
     " autocmd
     augroup ctrlsf

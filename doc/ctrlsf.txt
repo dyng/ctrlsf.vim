@@ -190,25 +190,25 @@ mode:
 
   Maps by default in CtrlSF window:
 
-    <Enter>      Open file which contains the line under cursor.
+    <Enter>, <o>   Open file which contains the line under cursor.
 
-    <C-O>        Open file in a horizontally split window.
+    <C-O>          Open file in a horizontally split window.
 
-    <p>          Open a preview window to view file.
+    <p>            Open a preview window to view file.
 
-    <O>          Like <o>, but always leave CtrlSF window open.
+    <O>            Like <o>, but always leave CtrlSF window open.
 
-    <T>          Like <t>, but focus CtrlSF window instead of opened new tab.
+    <T>            Like <t>, but focus CtrlSF window instead of opened new tab.
 
-    <q>          Quit CtrlSF. Also close preview window if any.
+    <q>            Quit CtrlSF. Also close preview window if any.
 
-    <C-J>        Move cursor to next match.
+    <C-J>          Move cursor to next match.
 
-    <C-K>        Move cursor to previous match.
+    <C-K>          Move cursor to previous match.
 
   Maps by default in preview window:
 
-    <q>          Quit preview mode.
+    <q>            Quit preview mode.
 
 ================================================================================
 5. Arguments                                                  *ctrlsf-arguments*
@@ -346,12 +346,12 @@ keys. You can also disable a method by mapping it to an empty string.
 Default:
 >
     {
-        "open"  : "<CR>",
+        "open"  : ["<CR>", "o"],
         "openb" : "O",
         "split" : "<C-O>",
         "tab"   : "t",
         "tabb"  : "T",
-        "prevw" : "p",
+        "popen" : "p",
         "quit"  : "q",
         "next"  : "<C-J>",
         "prev"  : "<C-K>",
