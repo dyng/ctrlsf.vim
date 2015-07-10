@@ -192,6 +192,8 @@ mode:
 
     <Enter>      Open file which contains the line under cursor.
 
+    <C-O>        Open file in a horizontally split window.
+
     <p>          Open a preview window to view file.
 
     <O>          Like <o>, but always leave CtrlSF window open.
@@ -346,6 +348,7 @@ Default:
     {
         "open"  : "<CR>",
         "openb" : "O",
+        "split" : "<C-O>",
         "tab"   : "t",
         "tabb"  : "T",
         "prevw" : "p",

@@ -108,11 +108,12 @@ func! s:InitMainWindow() abort
 
     " map
     let act_func_ref = {
-        \ "open"  : "ctrlsf#JumpTo('o')",
-        \ "openb" : "ctrlsf#JumpTo('O')",
-        \ "tab"   : "ctrlsf#JumpTo('t')",
-        \ "tabb"  : "ctrlsf#JumpTo('T')",
-        \ "prevw" : "ctrlsf#JumpTo('p')",
+        \ "open"  : "ctrlsf#JumpTo('open')",
+        \ "openb" : "ctrlsf#JumpTo('open_background')",
+        \ "split" : "ctrlsf#JumpTo('split')",
+        \ "tab"   : "ctrlsf#JumpTo('tab')",
+        \ "tabb"  : "ctrlsf#JumpTo('tab_background')",
+        \ "prevw" : "ctrlsf#JumpTo('preview')",
         \ "quit"  : "ctrlsf#Quit()",
         \ "next"  : "ctrlsf#NextMatch(1)",
         \ "prev"  : "ctrlsf#NextMatch(0)",

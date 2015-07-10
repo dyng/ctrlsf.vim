@@ -126,6 +126,7 @@ endif
 let s:default_mapping = {
     \ "open"  : "<CR>",
     \ "openb" : "O",
+    \ "split" : "<C-O>",
     \ "tab"   : "t",
     \ "tabb"  : "T",
     \ "prevw" : "p",

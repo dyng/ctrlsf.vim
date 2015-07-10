@@ -132,15 +132,17 @@ func! ctrlsf#JumpTo(mode) abort
     let lnum = line.lnum
     let col  = empty(match)? 0 : match.col
 
-    if a:mode ==# 'o'
-        call s:OpenFileInWindow(file, lnum, col, 1)
-    elseif a:mode ==# 'O'
-        call s:OpenFileInWindow(file, lnum, col, 2)
-    elseif a:mode ==# 't'
+    if a:mode ==# 'open'
+        call s:OpenFileInWindow(file, lnum, col, 1, 0)
+    elseif a:mode ==# 'open_background'
+        call s:OpenFileInWindow(file, lnum, col, 2, 0)
+    elseif a:mode ==# 'split'
+        call s:OpenFileInWindow(file, lnum, col, 1, 1)
+    elseif a:mode ==# 'tab'
         call s:OpenFileInTab(file, lnum, col, 1)
-    elseif a:mode ==# 'T'
+    elseif a:mode ==# 'tab_background'
         call s:OpenFileInTab(file, lnum, col, 2)
-    elseif a:mode ==# 'p'
+    elseif a:mode ==# 'preview'
         call s:PreviewFile(file, lnum, col)
     endif
 endf
@@ -170,13 +172,18 @@ endf
 "
 " OpenFileInWindow() has 2 modes:
 "
-" 1. Open file in a window (usually the window where CtrlSF was launched), then
-" close CtrlSF window depending on the value of 'g:ctrlsf_auto_close'.
+" 1. Open file in a window (usually the window where CtrlSF is launched), then
+" close CtrlSF window or not, depending on value of 'g:ctrlsf_auto_close'.
 "
 " 2. Open file in a window like mode 1, but don't close CtrlSF no matter what
 " 'g:ctrlsf_auto_close' is.
 "
-func! s:OpenFileInWindow(file, lnum, col, mode) abort
+" About split:
+"
+" '0' means don't split by default unless there exists unsaved changes.
+" '1' means split in any case.
+"
+func! s:OpenFileInWindow(file, lnum, col, mode, split) abort
     if a:mode == 1 && g:ctrlsf_auto_close
         call ctrlsf#Quit()
     endif
@@ -188,7 +195,7 @@ func! s:OpenFileInWindow(file, lnum, col, mode) abort
         exec target_winnr . 'wincmd w'
 
         if bufname('%') !~# a:file
-            if &modified && !&hidden
+            if a:split || (&modified && !&hidden)
                 exec 'silent split ' . a:file
             else
                 exec 'silent edit ' . a:file
