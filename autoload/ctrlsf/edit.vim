@@ -189,7 +189,14 @@ func! ctrlsf#edit#Save()
     " clear cache (not very clean code I should say)
     call ctrlsf#db#ClearCache()
 
-    let changed = s:Diff(orig, modi)
+    try
+        let changed = s:Diff(orig, modi)
+    catch /InconsistentException/
+        call ctrlsf#log#Error("CtrlSF's write buffer is corrupted. Note that
+                            \ you can't insert line/delete block/delete entire
+                            \ file in edit mode.")
+        return -1
+    endtry
 
     " prompt to confirm save
     if g:ctrlsf_confirm_save
