@@ -49,7 +49,7 @@ endf
 "
 func! ctrlsf#buf#UndoAllChanges() abort
     if &modified
-        earlier 1f
+        silent! earlier 1f
     endif
 endf
 
