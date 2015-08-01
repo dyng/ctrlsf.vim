@@ -14,7 +14,6 @@ let s:cache = {}
 """""""""""""""""""""""""""""""""
 " Getter
 """""""""""""""""""""""""""""""""
-
 func! ctrlsf#db#ResultSet() abort
     return s:resultset
 endf
@@ -77,11 +76,55 @@ endf
 """""""""""""""""""""""""""""""""
 " Parser
 """""""""""""""""""""""""""""""""
+" s:DefactorizeLine()
+"
+" Defactorize result line into [filename, line_number, content].
+"
+" Expected input is like 'autoload/ctrlsf.vim:182-endif', where '-' serves as
+" delimiter.
+"
+" Note: A subtle difference exists between ack's result and ag's, delimiter
+" between path and line number is always ':' in ag, but varies in ack
+" depending on whether line matches.
+"
+func! s:DefactorizeLine(line, fname_guess) abort
+    " filename
+    let filename = ''
+
+    if a:fname_guess !=# '' && stridx(a:line, a:fname_guess) == 0
+        let filename = a:fname_guess
+    else
+        let fname_end = 0
+        while fname_end != -1
+            let fname_end = match(a:line, '[-:]\d\+[-:]', fname_end + 1)
+            let possible_fname = strpart(a:line, 0, fname_end)
+
+            " check possible filename aginst actual file to determine filename
+            if filereadable(possible_fname) && !isdirectory(possible_fname)
+                let filename = possible_fname
+                break
+            endif
+        endwh
+    endif
+
+    " line number
+    let lnum = matchstr(a:line, '\d\+', strlen(filename))
+
+    " content
+    let content = strpart(a:line, strlen(filename) + strlen(lnum) + 2)
+
+    call ctrlsf#log#Debug(
+                \ "Defactorize line into [%s, %s, %s], original: %s",
+                \ filename, lnum, content, a:line)
+
+    return [filename, lnum, content]
+endf
 
 " s:ParseParagraph()
 "
 " Notice that some fields are initialized with -1, which will be populated
 " in render processing.
+"
 func! s:ParseParagraph(buffer, file) abort
     let paragraph = {
         \ 'file'    : a:file,
@@ -93,7 +136,7 @@ func! s:ParseParagraph(buffer, file) abort
         \ }
 
     for line in a:buffer
-        let matched = matchlist(line, '\v^(\d+)([-:])(.*)$')
+        let matched = matchlist(line, '\v^(\d+)([-:])(.*)$', strlen(a:file) + 1)
 
         " add matched line to match list
         let match = {}
@@ -120,59 +163,42 @@ func! s:ParseParagraph(buffer, file) abort
     return paragraph
 endf
 
-" ParseAckprgOutput()
+" ParseAckprgResult()
 "
 func! ctrlsf#db#ParseAckprgResult(result) abort
     " reset
     let s:resultset = []
     call ctrlsf#db#ClearCache()
 
-    let current_file = ""
-    let next_file    = ""
-
-    " ack/ag has a feature that if a single file is given as search path, then
-    " there will be no explicit filename in search result.
-    if len(ctrlsf#opt#GetOpt("path")) == 1
-        let path = ctrlsf#opt#GetOpt("path")[0]
-        if getftype(path) == 'file'
-            let current_file = path
-        endif
-    endif
-
     let result_lines = split(a:result, '\n')
 
-    let cur = 0
+    let current_file = ""
+    let cur          = 0
+
     while cur < len(result_lines)
         let buffer = []
-        let pre_ln = -1
+        let next_file = ''
+        let pre_ln    = -1
 
         while cur < len(result_lines)
             let line = result_lines[cur]
             let cur += 1
 
             " don't rely on division line any longer. ignore it.
-            if line =~ '^--$'
+            if line =~ '^--$' || line =~ '^$'
                 continue
             endif
 
-            let matched = matchlist(line, '\v^(\d+)[-:]')
+            let [fname, lnum, content] = s:DefactorizeLine(line, current_file)
 
-            " if line doesn't match [lnum:text] pattern, assume it is filename
-            if empty(matched)
-                let next_file = line
-
-                if current_file !=# next_file
-                    let cur -= 1
-                    break
-                else
-                    continue
-                endif
+            if fname !=# current_file
+                let next_file = fname
+                let cur -= 1
+                break
             endif
 
-            " else regard this line as content line
-            let cur_ln = matched[0]
-            if (pre_ln == -1) || (cur_ln == pre_ln + 1)
-                let pre_ln = cur_ln
+            if (pre_ln == -1) || (lnum == pre_ln + 1)
+                let pre_ln = lnum
                 call add(buffer, line)
             else
                 let cur -= 1
