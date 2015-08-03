@@ -56,7 +56,7 @@ In CtrlSF window:
 - `t` - Like `Enter` but open file in a new tab.
 - `p` - Like `Enter` but open file in a preview window.
 - `O` - Like `Enter` but always leave CtrlSF window opening.
-- `T` - Lkie `t` but focus CtrlSF window instead of new opened tab.
+- `T` - Like `t` but focus CtrlSF window instead of new opened tab.
 - `q` - Quit CtrlSF window.
 - `<C-J>` - Move cursor to next match.
 - `<C-K>` - Move cursor to previous match.
@@ -65,7 +65,7 @@ In preview window:
 
 - `q` - Close preview window.
 
-Some default defined keys may comflict with keys you have been used to when you are editing. But don't worry, you can customize your mapping by setting `g:ctrlsf_mapping`. `:h g:ctrlsf_mapping` for more information.
+Some default defined keys may conflict with keys you have been used to when you are editing. But don't worry, you can customize your mapping by setting `g:ctrlsf_mapping`. `:h g:ctrlsf_mapping` for more information.
 
 ## Use Your Own Map
 
@@ -122,7 +122,7 @@ inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
 
 - You can modify or delete lines but **you can't insert**. (If it turns out that inserting is really needed, I'll implement it later.)
 
-- If a file's content varies from last search, CtrlSF will refuse to write your changes to that file (for safty concern). As a rule of thumb, invoke a new search before editing, or just run `:CtrlSFUpdate`.
+- If a file's content varies from last search, CtrlSF will refuse to write your changes to that file (for safety concern). As a rule of thumb, invoke a new search before editing, or just run `:CtrlSFUpdate`.
 
 ## Arguments
 
@@ -160,7 +160,7 @@ Read `:h ctrlsf-arguments` for a full list of arguments.
 
 - CtrlSF searches pattern literally by default, which is different from Ack/Ag. If you need to search a regular expression pattern, run `:CtrlSF -R regex`. If you dislike this default behavior, turn it off by `let g:ctrlsf_regex_pattern = 1`.
 
-- By default, CtrlSF use working directory as search path when no path is specified. But CtrlSF can also use project root as its path if you set `g:ctrlsf_default_root` to `project`, CtrlSF does this by searching VCS directory (.git, .hg, etc.) upward from current file. It is usefule when you are working with files across multiple projects.
+- By default, CtrlSF use working directory as search path when no path is specified. But CtrlSF can also use project root as its path if you set `g:ctrlsf_default_root` to `project`, CtrlSF does this by searching VCS directory (.git, .hg, etc.) upward from current file. It is useful when you are working with files across multiple projects.
 
 - `-filetype` is useful when you only want to search in files of specific type. Read option `--type` in `ack`'s [manual][6] for more information.
 
@@ -174,7 +174,7 @@ Read `:h ctrlsf-arguments` for a full list of arguments.
     let g:ctrlsf_auto_close = 0
     ```
 
-- `g:ctrlsf_case_sensitive` defines default case-sensivivity in search. Possible values are `yes`, `no` and `smart`, `smart` works the same as it is in vim. The default value is `smart`.
+- `g:ctrlsf_case_sensitive` defines default case-sensitivity in search. Possible values are `yes`, `no` and `smart`, `smart` works the same as it is in vim. The default value is `smart`.
 
     ```vim
     let g:ctrlsf_case_sensitive = 'no'
@@ -197,7 +197,7 @@ Read `:h ctrlsf-arguments` for a full list of arguments.
     let g:ctrlsf_indent = 2
     ```
 
-- `g:ctrlsf_mapping` defines maps used in result window and preview window. Value of this option is a dictionary, where key is a method and value is a key for mapping. An empty value can disable that method. You can just defind a subset of full dictionary, those not defined functionalities will use default key mapping.
+- `g:ctrlsf_mapping` defines maps used in result window and preview window. Value of this option is a dictionary, where key is a method and value is a key for mapping. An empty value can disable that method. You can just define a subset of full dictionary, those not defined functionalities will use default key mapping.
 
     ```vim
     let g:ctrlsf_mapping = {
@@ -260,7 +260,7 @@ For those most frequently used arguments, an upper case short version is availab
 CtrlSF -I foo
 ```
 
-### Changelist
+### Change List
 
 - Brand new edit mode is added.
 - Literal searching becomes default.

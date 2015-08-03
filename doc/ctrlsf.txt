@@ -110,7 +110,7 @@ mode:
 >
     :CtrlSF {pattern} /path/to/dir
 <
-  2. Search case-insensitivly
+  2. Search case-insensitively
 >
     :CtrlSF -I {pattern}
 <
@@ -323,7 +323,7 @@ Defines how CtrlSF works if no explicit search path is given. Possible value
 is 'cwd' and 'project'. With 'cwd', CtrlSF uses current working directory as
 its search root. With 'project', CtrlSF will try to find project root of
 current file and use it. A project root is a directory which VCS folder is
-placed in, currently CtrlSF can recogonize .git, .hg, .svn, .bzr, _darcs.
+placed in, currently CtrlSF can recognize .git, .hg, .svn, .bzr, _darcs.
 >
     let g:ctrlsf_default_root = 'project'
 <
