@@ -85,13 +85,15 @@ endf
 "
 " Note: A subtle difference exists between ack's result and ag's, delimiter
 " between path and line number is always ':' in ag, but varies in ack
-" depending on whether line matches.
+" depending on whether this line matches.
 "
 func! s:DefactorizeLine(line, fname_guess) abort
     " filename
     let filename = ''
 
-    if a:fname_guess !=# '' && stridx(a:line, a:fname_guess) == 0
+    if a:fname_guess !=# ''
+            \ && stridx(a:line, a:fname_guess) == 0
+            \ && match(a:line, '^[-:]\d\+[-:]', strlen(a:fname_guess)) != -1
         let filename = a:fname_guess
     else
         let fname_end = 0
@@ -99,7 +101,7 @@ func! s:DefactorizeLine(line, fname_guess) abort
             let fname_end = match(a:line, '[-:]\d\+[-:]', fname_end + 1)
             let possible_fname = strpart(a:line, 0, fname_end)
 
-            " check possible filename aginst actual file to determine filename
+            " check possible filename aginst actual file to verify
             if filereadable(possible_fname) && !isdirectory(possible_fname)
                 let filename = possible_fname
                 break
