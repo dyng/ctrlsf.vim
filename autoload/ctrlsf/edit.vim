@@ -57,6 +57,7 @@ func! s:Diff(orig, modi) abort
                 \ "orig": file_orig,
                 \ "modi": file_modi
                 \ })
+            call ctrlsf#log#Debug("ChangedFile: %s", file_orig.file)
         endif
     endwh
 
@@ -67,13 +68,16 @@ endf
 "
 " Check if a file in resultset is different from its disk counterpart.
 "
-func! s:VerifyConsistent(buffer, orig)
-    for par in a:orig.paragraphs
+func! s:VerifyConsistent(on_disk, on_mem)
+    for par in a:on_mem.paragraphs
         for i in range(par.range())
             let ln = par.lnum() + i
             let line = par.lines[i]
 
-            if line.content !=# a:buffer[ln-1]
+            if line.content !=# a:on_disk[ln-1]
+                call ctrlsf#log#Debug("InconsistentContent: [Lnum]: %d,
+                            \ [FileInMem]: %s, [FileOnDisk]: %s",
+                            \ ln, line.content, a:on_disk[ln-1])
                 return 0
             endif
         endfo
