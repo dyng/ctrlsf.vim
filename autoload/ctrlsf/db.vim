@@ -116,7 +116,7 @@ func! s:DefactorizeLine(line, fname_guess) abort
     let content = strpart(a:line, strlen(filename) + strlen(lnum) + 2)
 
     call ctrlsf#log#Debug(
-                \ "Defactorize line into [%s, %s, %s], original: %s",
+                \ "DefactorizeLine: [Factor]: [%s, %s, %s], [Orig]: %s",
                 \ filename, lnum, content, a:line)
 
     return [filename, lnum, content]

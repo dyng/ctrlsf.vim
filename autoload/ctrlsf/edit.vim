@@ -176,7 +176,7 @@ func! s:SaveFile(orig, modi) abort
     if writefile(buffer, file) == -1
         call ctrlsf#log#Error("Failed to write file %s", file)
     else
-        call ctrlsf#log#Debug("Writing file %s succeed.", file)
+        call ctrlsf#log#Debug("WritingFile: %s succeed.", file)
     endif
 endf
 
