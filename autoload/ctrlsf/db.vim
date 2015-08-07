@@ -172,7 +172,9 @@ func! ctrlsf#db#ParseAckprgResult(result) abort
     let s:resultset = []
     call ctrlsf#db#ClearCache()
 
-    let result_lines = split(a:result, '\n')
+    " in case of mixed text from win-style files and unix-style files, breaks
+    " result into lines by both <CR><NL> and <NL>.
+    let result_lines = split(a:result, '\v(\r\n)|\n')
 
     let current_file = ""
     let cur          = 0

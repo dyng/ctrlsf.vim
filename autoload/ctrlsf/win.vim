@@ -90,6 +90,8 @@ endf
 " InitMainWindow()
 func! s:InitMainWindow() abort
     setl filetype=ctrlsf
+    setl fileformat=unix
+    setl fileencoding=utf-8
     setl noreadonly
     setl buftype=acwrite
     setl bufhidden=hide
