@@ -122,14 +122,17 @@ func! s:DefactorizeLine(line, fname_guess) abort
     return [filename, lnum, content]
 endf
 
-" s:ParseParagraph()
+" s:NewParagraph()
+"
+" Create a paragraph object based on parsed lines. Acceptable argument
+" 'buffer' is a list of defactorized line [fname, lnum, content].
 "
 " Notice that some fields are initialized with -1, which will be populated
 " in render processing.
 "
-func! s:ParseParagraph(buffer, file) abort
+func! s:NewParagraph(buffer) abort
     let paragraph = {
-        \ 'file'    : a:file,
+        \ 'file'    : a:buffer[0][0],
         \ 'lnum'    : function("ctrlsf#class#paragraph#Lnum"),
         \ 'vlnum'   : function("ctrlsf#class#paragraph#Vlnum"),
         \ 'range'   : function("ctrlsf#class#paragraph#Range"),
@@ -137,15 +140,13 @@ func! s:ParseParagraph(buffer, file) abort
         \ 'matches' : function("ctrlsf#class#paragraph#Matches"),
         \ }
 
-    for line in a:buffer
-        let matched = matchlist(line, '\v^(\d+)([-:])(.*)$', strlen(a:file) + 1)
-
+    for [fname, lnum, content] in a:buffer
         " add matched line to match list
         let match = {}
-        let mat_col = match(matched[3], ctrlsf#opt#GetOpt("_vimregex")) + 1
+        let mat_col = match(content, ctrlsf#opt#GetOpt("_vimregex")) + 1
         if mat_col > 0
             let match = {
-                \ 'lnum'  : matched[1],
+                \ 'lnum'  : lnum,
                 \ 'vlnum' : -1,
                 \ 'col'   : mat_col,
                 \ 'vcol'  : -1
@@ -156,9 +157,9 @@ func! s:ParseParagraph(buffer, file) abort
         call add(paragraph.lines, {
             \ 'matched' : function("ctrlsf#class#line#Matched"),
             \ 'match'   : match,
-            \ 'lnum'    : matched[1],
+            \ 'lnum'    : lnum,
             \ 'vlnum'   : -1,
-            \ 'content' : matched[3],
+            \ 'content' : content,
             \ })
     endfo
 
@@ -203,7 +204,7 @@ func! ctrlsf#db#ParseAckprgResult(result) abort
 
             if (pre_ln == -1) || (lnum == pre_ln + 1)
                 let pre_ln = lnum
-                call add(buffer, line)
+                call add(buffer, [fname, lnum, content])
             else
                 let cur -= 1
                 break
@@ -211,7 +212,7 @@ func! ctrlsf#db#ParseAckprgResult(result) abort
         endwh
 
         if len(buffer) > 0
-            let paragraph = s:ParseParagraph(buffer, current_file)
+            let paragraph = s:NewParagraph(buffer)
             call add(s:resultset, paragraph)
         endif
 
