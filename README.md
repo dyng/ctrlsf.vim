@@ -53,6 +53,7 @@ An ack/ag powered code search and view tool, like ack.vim or `:vimgrep` but toge
 In CtrlSF window:
 
 - `Enter` - Open corresponding file of current line in the window which CtrlSF is launched from.
+- `<C-O>` - Like `Enter` but open file in a horizontal split window.
 - `t` - Like `Enter` but open file in a new tab.
 - `p` - Like `Enter` but open file in a preview window.
 - `O` - Like `Enter` but always leave CtrlSF window opening.

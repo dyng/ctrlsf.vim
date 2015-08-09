@@ -24,6 +24,41 @@ func! ctrlsf#utils#Mirror(dicta, dictb) abort
     return a:dicta
 endf
 
+" SetMap()
+"
+func! ctrlsf#utils#SetMap(map, act_func_ref) abort
+    for act in keys(a:act_func_ref)
+        if empty(get(a:map, act, ""))
+            continue
+        endif
+
+        if type(a:map[act]) == 1
+            exec "nnoremap <silent><buffer> " . a:map[act]
+                \ . " :call " . a:act_func_ref[act] . "<CR>"
+        endif
+
+        if type(a:map[act]) == 3
+            for key in a:map[act]
+                exec "nnoremap <silent><buffer> " . key
+                    \ . " :call " . a:act_func_ref[act] . "<CR>"
+            endfo
+        endif
+    endfo
+endf
+
+" Time()
+"
+func! ctrlsf#utils#Time(command) abort
+    let [precmd_s, precmd_us] = reltime()
+    exec a:command
+    let [postcmd_s, postcmd_us] = reltime()
+
+    let t = (postcmd_s - precmd_s) +
+                \ (postcmd_us - precmd_us) * pow(0.1, len(postcmd_us))
+
+    echom printf("Time: %f, for command %s", t, a:command)
+endf
+
 """""""""""""""""""""""""""""""""
 " Airline Support
 """""""""""""""""""""""""""""""""

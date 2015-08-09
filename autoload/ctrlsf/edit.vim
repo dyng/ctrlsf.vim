@@ -177,10 +177,17 @@ func! s:SaveFile(orig, modi) abort
         let offset += s:WriteParagraph(buffer, opar, mpar, offset)
     endwh
 
+    " append <CR> to each line when file's format is 'dos'
+    if ctrlsf#fs#DetectFileFormat(file) == 'dos'
+        for i in range(len(buffer))
+            let buffer[i] .= "\r"
+        endfo
+    endif
+
     if writefile(buffer, file) == -1
         call ctrlsf#log#Error("Failed to write file %s", file)
     else
-        call ctrlsf#log#Debug("Writing file %s succeed.", file)
+        call ctrlsf#log#Debug("WritingFile: %s succeed.", file)
     endif
 endf
 
