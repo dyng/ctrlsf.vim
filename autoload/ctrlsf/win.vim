@@ -2,7 +2,7 @@
 " Description: An ack/ag powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 1.10
+" Version: 1.20
 " ============================================================================
 
 " ctrlsf buffer's name
@@ -109,7 +109,7 @@ func! s:InitMainWindow() abort
     call ctrlsf#hl#HighlightMatch('ctrlsfMatch')
 
     " map
-    " key 'prevw' is a deprecated key but here for backward-compatible
+    " key 'prevw' is a deprecated key but here for backward compatibility
     let act_func_ref = {
         \ "open"  : "ctrlsf#JumpTo('open')",
         \ "openb" : "ctrlsf#JumpTo('open_background')",
