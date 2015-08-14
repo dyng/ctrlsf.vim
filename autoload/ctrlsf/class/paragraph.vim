@@ -54,7 +54,8 @@ func! ctrlsf#class#paragraph#Matches() abort dict
     let matches = []
     for line in self.lines
         if line.matched()
-            call add(matches, line.match)
+            let dict = extend({'file': self.file}, {'text': line.content})
+            call add(matches, extend(line.match, dict))
         endif
     endfo
     return matches
