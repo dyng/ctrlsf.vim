@@ -134,6 +134,7 @@ let s:default_mapping = {
     \ "next"  : "<C-J>",
     \ "prev"  : "<C-K>",
     \ "pquit" : "q",
+    \ "llist" : "",
     \ }
 
 if !exists('g:ctrlsf_mapping')
