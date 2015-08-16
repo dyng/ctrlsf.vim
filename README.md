@@ -10,6 +10,24 @@ An ack/ag powered code search and view tool, like ack.vim or `:vimgrep` but toge
 
 ![ctrlsf_edit_demo](http://i.imgur.com/xMUm8Ii.gif)
 
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Basic Usage](#basic-usage)
+- [Key Maps](#key-maps)
+- [Use Your Own Map](#use-your-own-map)
+- [Edit Mode](#edit-mode)
+  - [Limitation](#limitation)
+- [Arguments](#arguments)
+  - [Example](#example)
+- [Tips](#tips)
+- [Configuration](#configuration)
+- [For user comes from pre v1.0](#for-user-comes-from-pre-v10)
+  - [Difference between v1.0 and pre-v1.0](#difference-between-v10-and-pre-v10)
+  - [Where and why backward compatibility is given up?](#where-and-why-backward-compatibility-is-given-up)
+  - [Change List](#change-list)
+
 ## Features
 
 - Search and display result in a user-friendly view with adjustable context.
