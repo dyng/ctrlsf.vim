@@ -12,10 +12,10 @@
 "
 func! ctrlsf#class#match#New(fname, lnum, col) abort
     return {
-        \ 'file'  : a:fname,
-        \ 'lnum'  : a:lnum,
-        \ 'vlnum' : -1,
-        \ 'col'   : a:col,
-        \ 'vcol'  : -1
+        \ 'filename' : a:fname,
+        \ 'lnum'     : a:lnum,
+        \ 'vlnum'    : -1,
+        \ 'col'      : a:col,
+        \ 'vcol'     : -1
         \ }
 endf

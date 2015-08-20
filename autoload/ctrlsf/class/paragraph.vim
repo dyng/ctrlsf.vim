@@ -14,12 +14,12 @@ func! ctrlsf#class#paragraph#New(buffer) abort
     let fname = a:buffer[0][0]
 
     let paragraph = {
-        \ 'file'    : fname,
-        \ 'lnum'    : function("ctrlsf#class#paragraph#Lnum"),
-        \ 'vlnum'   : function("ctrlsf#class#paragraph#Vlnum"),
-        \ 'range'   : function("ctrlsf#class#paragraph#Range"),
-        \ 'lines'   : [],
-        \ 'matches' : function("ctrlsf#class#paragraph#Matches"),
+        \ 'filename' : fname,
+        \ 'lnum'     : function("ctrlsf#class#paragraph#Lnum"),
+        \ 'vlnum'    : function("ctrlsf#class#paragraph#Vlnum"),
+        \ 'range'    : function("ctrlsf#class#paragraph#Range"),
+        \ 'lines'    : [],
+        \ 'matches'  : function("ctrlsf#class#paragraph#Matches"),
         \ }
 
     for [fname, lnum, content] in a:buffer

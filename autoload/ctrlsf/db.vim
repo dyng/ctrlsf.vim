@@ -28,11 +28,11 @@ func! ctrlsf#db#FileResultSet() abort
 
     let cur_file = ''
     for par in s:resultset
-        if cur_file !=# par.file
-            let cur_file = par.file
+        if cur_file !=# par.filename
+            let cur_file = par.filename
             call add(fileset, {
-                \ "file": cur_file,
-                \ "paragraphs": [],
+                \ "filename"   : cur_file,
+                \ "paragraphs" : [],
                 \ })
         endif
         call add(fileset[-1].paragraphs, par)

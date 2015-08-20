@@ -8,7 +8,7 @@
 " s:DiffFile()
 "
 func! s:DiffFile(orig, modi) abort
-    if a:orig.file !=# a:modi.file
+    if a:orig.filename !=# a:modi.filename
         \ || len(a:orig.paragraphs) != len(a:modi.paragraphs)
         throw 'InconsistentException'
     endif
@@ -57,7 +57,7 @@ func! s:Diff(orig, modi) abort
                 \ "orig": file_orig,
                 \ "modi": file_modi
                 \ })
-            call ctrlsf#log#Debug("ChangedFile: %s", file_orig.file)
+            call ctrlsf#log#Debug("ChangedFile: %s", file_orig.filename)
         endif
     endwh
 
@@ -149,7 +149,7 @@ endf
 " s:SaveFile()
 "
 func! s:SaveFile(orig, modi) abort
-    let file = a:orig.file
+    let file = a:orig.filename
 
     try
         let buffer = readfile(file)

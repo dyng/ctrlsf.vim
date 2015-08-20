@@ -13,7 +13,7 @@ endf
 
 func! s:Filename(paragraph) abort
     " empty line + filename
-    return ["", a:paragraph.file . ":"]
+    return ["", a:paragraph.filename . ":"]
 endf
 
 func! s:Ellipsis() abort
@@ -46,8 +46,8 @@ func! ctrlsf#view#Render() abort
     call extend(view, s:Summary(resultset))
 
     for par in resultset
-        if cur_file !=# par.file
-            let cur_file = par.file
+        if cur_file !=# par.filename
+            let cur_file = par.filename
             call extend(view, s:Filename(par))
         else
             call extend(view, s:Ellipsis())
@@ -93,7 +93,7 @@ func! ctrlsf#view#Reflect(vlnum) abort
         " if there is a corresponding line
         if a:vlnum <= par.vlnum() + par.range() - 1
             " fetch file
-            let ret[0] = par.file
+            let ret[0] = par.filename
 
             " fetch line object
             let line = par.lines[a:vlnum - par.vlnum()]
@@ -133,12 +133,12 @@ endf
 "
 func! s:DerenderParagraph(buffer, file) abort
     let paragraph = {
-        \ 'file'    : a:file,
-        \ 'lnum'    : function("ctrlsf#class#paragraph#Lnum"),
-        \ 'vlnum'   : function("ctrlsf#class#paragraph#Vlnum"),
-        \ 'range'   : function("ctrlsf#class#paragraph#Range"),
-        \ 'lines'   : [],
-        \ 'matches' : function("ctrlsf#class#paragraph#Matches"),
+        \ 'filename' : a:file,
+        \ 'lnum'     : function("ctrlsf#class#paragraph#Lnum"),
+        \ 'vlnum'    : function("ctrlsf#class#paragraph#Vlnum"),
+        \ 'range'    : function("ctrlsf#class#paragraph#Range"),
+        \ 'lines'    : [],
+        \ 'matches'  : function("ctrlsf#class#paragraph#Matches"),
         \ }
 
     let indent = ctrlsf#view#Indent()
@@ -191,15 +191,15 @@ func! ctrlsf#view#Derender(content) abort
             let paragraph = s:DerenderParagraph(buffer, current_file)
 
             " if derender failed, throw an exception
-            if empty(paragraph.file)
+            if empty(paragraph.filename)
                 throw 'BrokenBufferException'
             endif
 
-            if len(fileset) > 0 && fileset[-1].file ==# paragraph.file
+            if len(fileset) > 0 && fileset[-1].filename ==# paragraph.filename
                 call add(fileset[-1].paragraphs, paragraph)
             else
                 call add(fileset, {
-                    \ 'file': paragraph.file,
+                    \ 'filename': paragraph.filename,
                     \ 'paragraphs': [ paragraph ],
                     \ })
             endif
