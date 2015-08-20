@@ -88,62 +88,31 @@ endf
 
 " s:WriteParagraph()
 "
-" Function which does two things:
+" Write contents in paragraph to buffer.
 "
-" 1. modify, insert or/and delete lines in buffer
-" 2. update resultset to represent modified content
-"
-func! s:WriteParagraph(buffer, orig, modi, offset)
+func! s:WriteParagraph(buffer, orig, modi)
     let orig_count  = a:orig.range()
     let modi_count  = a:modi.range()
-    let start_lnum  = a:orig.lnum()
-    let start_vlnum = a:orig.vlnum()
+    let start_lnum  = a:modi.lnum()
 
     for i in range(modi_count)
         let mline = a:modi.lines[i]
-        let ln    = start_lnum + i + a:offset
-        let vln   = start_vlnum + i + a:offset
+        let ln    = start_lnum + i
 
-        " create new line object
-        let line_obj = {
-            \ 'matched' : function("ctrlsf#class#line#Matched"),
-            \ 'match'   : {},
-            \ 'lnum'    : ln,
-            \ 'vlnum'   : vln,
-            \ 'content' : mline.content
-            \ }
-
-        let mat_idx = match(line_obj.content, ctrlsf#opt#GetOpt("_vimregex"))
-        if mat_idx != -1
-            let match = {
-                \ 'lnum'  : line_obj.lnum,
-                \ 'vlnum' : line_obj.vlnum,
-                \ 'col'   : mat_idx + 1,
-                \ 'vcol'  : mat_idx + 1 + ctrlsf#view#Indent()
-                \ }
-            let line_obj.match = match
-        endif
-
-        " copy created line object to an existing line or insert it as new
         if i < orig_count
-            call ctrlsf#utils#Mirror(a:orig.lines[i], line_obj)
-            let a:buffer[ln-1] = line_obj.content
+            let a:buffer[ln-1] = mline.content
         else
-            call add(a:orig.lines, line_obj)
-            call insert(a:buffer, line_obj.content, ln-1)
+            call insert(a:buffer, mline.content, ln-1)
         endif
     endfo
 
     " remove deleted lines from paragraph
     if orig_count > modi_count
         for i in range(orig_count-1, modi_count, -1)
-            let ln = start_lnum + i + a:offset
-            call remove(a:orig.lines, i)
+            let ln = start_lnum + i
             call remove(a:buffer, ln-1)
         endfo
     endif
-
-    return modi_count - orig_count
 endf
 
 " s:SaveFile()
@@ -168,13 +137,12 @@ func! s:SaveFile(orig, modi) abort
     endif
 
     let i = 0
-    let offset = 0
     while i < len(a:orig.paragraphs)
         let opar = a:orig.paragraphs[i]
         let mpar = a:modi.paragraphs[i]
         let i += 1
 
-        let offset += s:WriteParagraph(buffer, opar, mpar, offset)
+        call s:WriteParagraph(buffer, opar, mpar)
     endwh
 
     " append <CR> to each line when file's format is 'dos'
@@ -195,11 +163,10 @@ endf
 "
 func! ctrlsf#edit#Save()
     let orig = ctrlsf#db#FileResultSet()
-    let modi = ctrlsf#view#Derender(getline(0, '$'))
+    let rs   = ctrlsf#view#Derender(getline(0, '$'))
+    let modi = ctrlsf#db#FileResultSetBy(rs)
 
-    " clear cache (not very clean code I should say)
-    call ctrlsf#db#ClearCache()
-
+    " check difference and validity
     try
         let changed = s:Diff(orig, modi)
     catch /InconsistentException/
@@ -224,6 +191,7 @@ func! ctrlsf#edit#Save()
         return -1
     endif
 
+    " start saving...
     let [saved, skipped] = [0, 0]
     for file in changed
         if s:SaveFile(file.orig, file.modi) > -1
@@ -232,6 +200,9 @@ func! ctrlsf#edit#Save()
             let skipped += 1
         endif
     endfo
+
+    " update resultset after saving
+    call ctrlsf#db#SetResultSet(rs)
 
     if skipped == 0
         call ctrlsf#log#Info("%s files are saved.", saved)

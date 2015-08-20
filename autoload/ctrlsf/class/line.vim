@@ -21,6 +21,7 @@ func! ctrlsf#class#line#New(fname, lnum, content) abort
         \ 'content' : a:content,
         \ 'match'   : match,
         \ 'matched' : function("ctrlsf#class#line#Matched"),
+        \ 'setlnum' : function("ctrlsf#class#line#SetLnum"),
         \ }
 endf
 
@@ -28,4 +29,13 @@ endf
 "
 func! ctrlsf#class#line#Matched() abort dict
     return !empty(self.match)
+endf
+
+" SetLnum()
+"
+func! ctrlsf#class#line#SetLnum(lnum) abort dict
+    let self.lnum = a:lnum
+    if self.matched()
+        call self.match.setlnum(a:lnum)
+    endif
 endf

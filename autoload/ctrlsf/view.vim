@@ -129,48 +129,31 @@ func! ctrlsf#view#FindNextMatch(vlnum, forward) abort
     return searchpos(regex, flag)
 endf
 
-" s:DerenderParagraph()
-"
-func! s:DerenderParagraph(buffer, file) abort
-    let paragraph = {
-        \ 'filename' : a:file,
-        \ 'lnum'     : function("ctrlsf#class#paragraph#Lnum"),
-        \ 'vlnum'    : function("ctrlsf#class#paragraph#Vlnum"),
-        \ 'range'    : function("ctrlsf#class#paragraph#Range"),
-        \ 'lines'    : [],
-        \ 'matches'  : function("ctrlsf#class#paragraph#Matches"),
-        \ }
-
-    let indent = ctrlsf#view#Indent()
-
-    for line in a:buffer
-        call add(paragraph.lines, {
-            \ 'matched' : function("ctrlsf#class#line#Matched"),
-            \ 'match'   : -1,
-            \ 'lnum'    : -1,
-            \ 'vlnum'   : -1,
-            \ 'content': strpart(line, indent),
-            \ })
-    endfo
-
-    return paragraph
-endf
-
 " Derender()
 "
-" Return a pseudo-fileset which is derendered from {content}.
+" Return a ResultSet which is derendered from {content}.
 "
 func! ctrlsf#view#Derender(content) abort
-    let lines = type(a:content) == 3 ? a:content : split(a:content, "\n")
+    let lines  = type(a:content) == 3 ? a:content : split(a:content, "\n")
+    let orig   = ctrlsf#db#ResultSet()
+    let indent = ctrlsf#view#Indent()
 
-    let fileset = []
+    let resultset = []
 
     let current_file = ''
     let next_file    = ''
+    let offset       = 0
+    let base_lnum    = -1
 
     let i = 0
     while i < len(lines)
         let buffer = []
+
+        if len(resultset) >= len(orig)
+            throw 'BrokenBufferException'
+        endif
+        let orig_para = orig[len(resultset)]
+        let base_lnum = orig_para.lnum()
 
         while i < len(lines)
             let line = lines[i]
@@ -183,30 +166,31 @@ func! ctrlsf#view#Derender(content) abort
                 let next_file = substitute(line, ':$', '', '')
                 break
             else
-                call add(buffer, line)
+                let lnum = base_lnum + len(buffer) + offset
+                let content = strpart(line, indent)
+                call add(buffer, [current_file, lnum, content])
             endif
         endwh
 
         if len(buffer) > 0
-            let paragraph = s:DerenderParagraph(buffer, current_file)
+            let paragraph = ctrlsf#class#paragraph#New(buffer)
 
             " if derender failed, throw an exception
-            if empty(paragraph.filename)
+            if empty(paragraph.filename) || empty(paragraph.lines)
                 throw 'BrokenBufferException'
             endif
 
-            if len(fileset) > 0 && fileset[-1].filename ==# paragraph.filename
-                call add(fileset[-1].paragraphs, paragraph)
-            else
-                call add(fileset, {
-                    \ 'filename': paragraph.filename,
-                    \ 'paragraphs': [ paragraph ],
-                    \ })
-            endif
+            let offset += paragraph.range() - orig_para.range()
+
+            call add(resultset, paragraph)
         endif
 
-        let current_file = next_file
+        " file boundary
+        if next_file !=# current_file
+            let offset = 0
+            let current_file = next_file
+        endif
     endwh
 
-    return fileset
+    return resultset
 endf

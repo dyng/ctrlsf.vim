@@ -16,6 +16,13 @@ func! ctrlsf#class#match#New(fname, lnum, col) abort
         \ 'lnum'     : a:lnum,
         \ 'vlnum'    : -1,
         \ 'col'      : a:col,
-        \ 'vcol'     : -1
+        \ 'vcol'     : -1,
+        \ 'setlnum'  : function("ctrlsf#class#match#SetLnum"),
         \ }
+endf
+
+" SetLnum()
+"
+func! ctrlsf#class#match#SetLnum(lnum) abort dict
+    let self.lnum = a:lnum
 endf

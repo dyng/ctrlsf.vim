@@ -20,6 +20,7 @@ func! ctrlsf#class#paragraph#New(buffer) abort
         \ 'range'    : function("ctrlsf#class#paragraph#Range"),
         \ 'lines'    : [],
         \ 'matches'  : function("ctrlsf#class#paragraph#Matches"),
+        \ 'setlnum'  : function("ctrlsf#class#paragraph#SetLnum"),
         \ }
 
     for [fname, lnum, content] in a:buffer
@@ -57,4 +58,14 @@ func! ctrlsf#class#paragraph#Matches() abort dict
         endif
     endfo
     return matches
+endf
+
+" SetLnum()
+"
+func! ctrlsf#class#paragraph#SetLnum(lnum) abort dict
+    let i = 0
+    for line in self.lines
+        call line.setlnum(a:lnum + i)
+        let i += 1
+    endfo
 endf
