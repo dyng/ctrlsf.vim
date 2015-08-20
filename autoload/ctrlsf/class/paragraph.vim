@@ -5,6 +5,30 @@
 " Version: 1.20
 " ============================================================================
 
+" New()
+"
+" Create a paragraph object based on parsed lines. Acceptable argument
+" 'buffer' is a list of defactorized line [fname, lnum, content].
+"
+func! ctrlsf#class#paragraph#New(buffer) abort
+    let fname = a:buffer[0][0]
+
+    let paragraph = {
+        \ 'file'    : fname,
+        \ 'lnum'    : function("ctrlsf#class#paragraph#Lnum"),
+        \ 'vlnum'   : function("ctrlsf#class#paragraph#Vlnum"),
+        \ 'range'   : function("ctrlsf#class#paragraph#Range"),
+        \ 'lines'   : [],
+        \ 'matches' : function("ctrlsf#class#paragraph#Matches"),
+        \ }
+
+    for [fname, lnum, content] in a:buffer
+        call add(paragraph.lines, ctrlsf#class#line#New(fname, lnum, content))
+    endfo
+
+    return paragraph
+endf
+
 " Lnum()
 "
 func! ctrlsf#class#paragraph#Lnum() abort dict

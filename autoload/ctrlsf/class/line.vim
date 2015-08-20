@@ -5,6 +5,25 @@
 " Version: 1.20
 " ============================================================================
 
+" New()
+"
+" Notice that some fields are initialized with -1, which will be populated
+" in render processing.
+"
+func! ctrlsf#class#line#New(fname, lnum, content) abort
+    let mat_col = match(a:content, ctrlsf#opt#GetOpt("_vimregex")) + 1
+    let match = (mat_col > 0)?
+        \ ctrlsf#class#match#New(a:fname, a:lnum, mat_col) : {}
+
+    return {
+        \ 'lnum'    : a:lnum,
+        \ 'vlnum'   : -1,
+        \ 'content' : a:content,
+        \ 'match'   : match,
+        \ 'matched' : function("ctrlsf#class#line#Matched"),
+        \ }
+endf
+
 " Matched()
 "
 func! ctrlsf#class#line#Matched() abort dict

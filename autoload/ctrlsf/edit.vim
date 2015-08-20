@@ -194,7 +194,7 @@ endf
 " Save()
 "
 func! ctrlsf#edit#Save()
-    let orig = ctrlsf#db#FileSet()
+    let orig = ctrlsf#db#FileResultSet()
     let modi = ctrlsf#view#Derender(getline(0, '$'))
 
     " clear cache (not very clean code I should say)
