@@ -92,6 +92,7 @@ func! s:InitMainWindow() abort
     setl filetype=ctrlsf
     setl fileformat=unix
     setl fileencoding=utf-8
+    setl iskeyword=@,48-57,_
     setl noreadonly
     setl buftype=acwrite
     setl bufhidden=hide
