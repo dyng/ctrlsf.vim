@@ -64,11 +64,26 @@ func! s:Diff(orig, modi) abort
     return changed_files
 endf
 
+" s:TrimPhantomLine()
+"
+" workaround an issue of ag:
+"
+" https://github.com/ggreer/the_silver_searcher/issues/685
+"
+func! s:TrimPhantomLine(buffer, orig) abort
+    let tail_par = a:orig.paragraphs[-1]
+    let tail_lnum = tail_par.lnum() + tail_par.range() - 1
+    if len(a:buffer) <= tail_lnum - 1
+        call ctrlsf#log#Debug("Remove phatom line in file: %s", a:orig.filename)
+        call tail_par.trim_tail()
+    endif
+endf
+
 " s:VerifyConsistent()
 "
 " Check if a file in resultset is different from its disk counterpart.
 "
-func! s:VerifyConsistent(on_disk, on_mem)
+func! s:VerifyConsistent(on_disk, on_mem) abort
     for par in a:on_mem.paragraphs
         for i in range(par.range())
             let ln = par.lnum() + i
@@ -90,7 +105,7 @@ endf
 "
 " Write contents in paragraph to buffer.
 "
-func! s:WriteParagraph(buffer, orig, modi)
+func! s:WriteParagraph(buffer, orig, modi) abort
     let orig_count  = a:orig.range()
     let modi_count  = a:modi.range()
     let start_lnum  = a:modi.lnum()
@@ -127,6 +142,9 @@ func! s:SaveFile(orig, modi) abort
         return -1
     endtry
 
+    " workaround an issue of ag
+    call s:TrimPhantomLine(buffer, a:orig)
+
     " if file is changed after searching thus shows differences against
     " resultset, skip writing and warn user.
     if !s:VerifyConsistent(buffer, a:orig)
@@ -161,7 +179,7 @@ endf
 
 " Save()
 "
-func! ctrlsf#edit#Save()
+func! ctrlsf#edit#Save() abort
     let orig = ctrlsf#db#FileResultSet()
     let rs   = ctrlsf#view#Derender(getline(0, '$'))
     let modi = ctrlsf#db#FileResultSetBy(rs)

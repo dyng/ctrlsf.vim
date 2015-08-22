@@ -14,13 +14,14 @@ func! ctrlsf#class#paragraph#New(buffer) abort
     let fname = a:buffer[0][0]
 
     let paragraph = {
-        \ 'filename' : fname,
-        \ 'lnum'     : function("ctrlsf#class#paragraph#Lnum"),
-        \ 'vlnum'    : function("ctrlsf#class#paragraph#Vlnum"),
-        \ 'range'    : function("ctrlsf#class#paragraph#Range"),
-        \ 'lines'    : [],
-        \ 'matches'  : function("ctrlsf#class#paragraph#Matches"),
-        \ 'setlnum'  : function("ctrlsf#class#paragraph#SetLnum"),
+        \ 'filename'  : fname,
+        \ 'lnum'      : function("ctrlsf#class#paragraph#Lnum"),
+        \ 'vlnum'     : function("ctrlsf#class#paragraph#Vlnum"),
+        \ 'range'     : function("ctrlsf#class#paragraph#Range"),
+        \ 'lines'     : [],
+        \ 'matches'   : function("ctrlsf#class#paragraph#Matches"),
+        \ 'setlnum'   : function("ctrlsf#class#paragraph#SetLnum"),
+        \ 'trim_tail' : function("ctrlsf#class#paragraph#TrimTail")
         \ }
 
     for [fname, lnum, content] in a:buffer
@@ -68,4 +69,12 @@ func! ctrlsf#class#paragraph#SetLnum(lnum) abort dict
         call line.setlnum(a:lnum + i)
         let i += 1
     endfo
+endf
+
+" TrimTail()
+"
+" This function is *only* for working around Ag's bug.
+"
+func! ctrlsf#class#paragraph#TrimTail() abort dict
+    call remove(self.lines, -1)
 endf
