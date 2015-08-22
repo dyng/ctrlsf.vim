@@ -107,8 +107,6 @@ func! s:InitMainWindow() abort
     setl nospell
     setl nofoldenable
 
-    call ctrlsf#hl#HighlightMatch('ctrlsfMatch')
-
     " map
     " key 'prevw' is a deprecated key but here for backward compatibility
     let act_func_ref = {

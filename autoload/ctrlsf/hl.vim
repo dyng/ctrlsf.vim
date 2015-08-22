@@ -7,7 +7,10 @@
 
 " HighlightMatch()
 "
-func! ctrlsf#hl#HighlightMatch(hlgroup) abort
+func! ctrlsf#hl#HighlightMatch(...) abort
+    " default: ctrlsfMatch
+    let hlgroup = a:0 > 0 ? a:1 : 'ctrlsfMatch'
+
     if !exists('b:current_syntax') || b:current_syntax !~# 'ctrlsf'
         return -1
     endif
@@ -15,7 +18,7 @@ func! ctrlsf#hl#HighlightMatch(hlgroup) abort
     let regex = printf('/%s/', escape(ctrlsf#opt#GetOpt("_vimhlregex"), '/'))
     call ctrlsf#log#Debug("HighlightRegex: %s", regex)
 
-    exec printf('2match none | 2match %s %s', a:hlgroup, regex)
+    exec printf('2match none | 2match %s %s', hlgroup, regex)
 endf
 
 " HighlightSelectedLine()

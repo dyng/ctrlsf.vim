@@ -38,6 +38,7 @@ func! s:ExecSearch(args) abort
     call ctrlsf#win#OpenMainWindow()
     call ctrlsf#win#Draw()
     call ctrlsf#buf#ClearUndoHistory()
+    call ctrlsf#hl#HighlightMatch()
     call cursor(1, 1)
 endf
 
@@ -69,6 +70,7 @@ endf
 "
 func! ctrlsf#Open() abort
     call ctrlsf#win#OpenMainWindow()
+    call ctrlsf#hl#HighlightMatch()
 endf
 
 " Redraw()
