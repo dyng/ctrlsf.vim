@@ -124,17 +124,17 @@ endif
 
 " g:ctrlsf_mapping {{{
 let s:default_mapping = {
-    \ "open"  : ["<CR>", "o"],
-    \ "openb" : "O",
-    \ "split" : "<C-O>",
-    \ "tab"   : "t",
-    \ "tabb"  : "T",
-    \ "popen" : "p",
-    \ "quit"  : "q",
-    \ "next"  : "<C-J>",
-    \ "prev"  : "<C-K>",
-    \ "pquit" : "q",
-    \ "llist" : "",
+    \ "open"    : ["<CR>", "o"],
+    \ "openb"   : "O",
+    \ "split"   : "<C-O>",
+    \ "tab"     : "t",
+    \ "tabb"    : "T",
+    \ "popen"   : "p",
+    \ "quit"    : "q",
+    \ "next"    : "<C-J>",
+    \ "prev"    : "<C-K>",
+    \ "pquit"   : "q",
+    \ "loclist" : "",
     \ }
 
 if !exists('g:ctrlsf_mapping')
@@ -144,6 +144,12 @@ else
         let g:ctrlsf_mapping[key] = get(g:ctrlsf_mapping, key,
             \ s:default_mapping[key])
     endfo
+endif
+" }}}
+
+" g:ctrlsf_populate_qflist {{{
+if !exists('g:ctrlsf_populate_qflist')
+    let g:ctrlsf_populate_qflist = 0
 endif
 " }}}
 

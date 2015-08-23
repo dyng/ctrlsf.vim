@@ -192,12 +192,6 @@ Read `:h ctrlsf-arguments` for a full list of arguments.
     let g:ctrlsf_default_root = 'project'
     ```
 
-- `g:ctrlsf_indent` defines how many spaces are placed between line number and content. Default value is 4.
-
-    ```vim
-    let g:ctrlsf_indent = 2
-    ```
-
 - `g:ctrlsf_mapping` defines maps used in result window and preview window. Value of this option is a dictionary, where key is a method and value is a key for mapping. An empty value can disable that method. You can just define a subset of full dictionary, those not defined functionalities will use default key mapping.
 
     ```vim
@@ -205,6 +199,12 @@ Read `:h ctrlsf-arguments` for a full list of arguments.
         \ "next": "n",
         \ "prev": "N",
         \ }
+    ```
+
+- `g:ctrlsf_populate_qflist` defines if CtrlSF will also feed quickfix and location list with search result. By default this feture is disabled but you can enable it by
+
+    ```vim
+    let g:ctrlsf_populate_qflist = 1
     ```
 
 - `g:ctrlsf_regex_pattern` defines CtrlSF using literal pattern or regular expression pattern as default. Default value is 0, which means literal pattern.

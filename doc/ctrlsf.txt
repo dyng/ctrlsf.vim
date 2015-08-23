@@ -349,16 +349,17 @@ keys. You can also disable a method by mapping it to an empty string.
 Default:
 >
     {
-        "open"  : ["<CR>", "o"],
-        "openb" : "O",
-        "split" : "<C-O>",
-        "tab"   : "t",
-        "tabb"  : "T",
-        "popen" : "p",
-        "quit"  : "q",
-        "next"  : "<C-J>",
-        "prev"  : "<C-K>",
-        "pquit" : "q",
+        "open"    : ["<CR>", "o"],
+        "openb"   : "O",
+        "split"   : "<C-O>",
+        "tab"     : "t",
+        "tabb"    : "T",
+        "popen"   : "p",
+        "quit"    : "q",
+        "next"    : "<C-J>",
+        "prev"    : "<C-K>",
+        "pquit"   : "q",
+        "loclist" : "",
     }
 <
 Example:
@@ -368,6 +369,14 @@ Example:
         \ "prev": "N",
         \ "openb": "",
         \ }
+<
+g:ctrlsf_populate_qflist                            *'g:ctrlsf_populate_qflist'*
+Default: 0
+Defines whether CtrlSF will feed quickfix and location list with search result.
+If you are used to vim builtin quickfix list and want to use |:cnext|,
+|:cprevious| for navigation, then you can set this option to 1:
+>
+    let g:ctrlsf_populate_qflist = 1
 <
 g:ctrlsf_position                                          *'g:ctrlsf_position'*
 Default: 'left'

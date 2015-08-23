@@ -36,12 +36,16 @@ func! s:ExecSearch(args) abort
 
     call ctrlsf#db#ParseAckprgResult(output)
     call ctrlsf#win#OpenMainWindow()
-    " add location list
-    call setloclist(winnr(), ctrlsf#db#MatchListQF())
     call ctrlsf#win#Draw()
     call ctrlsf#buf#ClearUndoHistory()
     call ctrlsf#hl#HighlightMatch()
     call cursor(1, 1)
+
+    " populate quickfix and location list
+    if g:ctrlsf_populate_qflist
+        call setqflist(ctrlsf#db#MatchListQF())
+    endif
+    call setloclist(0, ctrlsf#db#MatchListQF())
 endf
 
 " Search()
@@ -114,9 +118,9 @@ func! ctrlsf#Quit() abort
     call ctrlsf#win#CloseMainWindow()
 endf
 
-" QFList()
+" OpenLocList()
 "
-func! ctrlsf#QFList() abort
+func! ctrlsf#OpenLocList() abort
     lopen
 endf
 

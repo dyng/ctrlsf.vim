@@ -120,7 +120,7 @@ func! s:InitMainWindow() abort
         \ "quit"  : "ctrlsf#Quit()",
         \ "next"  : "ctrlsf#NextMatch(1)",
         \ "prev"  : "ctrlsf#NextMatch(0)",
-        \ "llist" : "ctrlsf#QFList()",
+        \ "llist" : "ctrlsf#OpenLocList()",
         \ }
     call ctrlsf#utils#SetMap(g:ctrlsf_mapping, act_func_ref)
 

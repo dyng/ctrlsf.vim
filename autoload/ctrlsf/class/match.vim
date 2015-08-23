@@ -10,13 +10,16 @@
 " Notice that some fields are initialized with -1, which will be populated
 " in render processing.
 "
-func! ctrlsf#class#match#New(fname, lnum, col) abort
+" This structure is designed to be suitable for argument of setqflist().
+"
+func! ctrlsf#class#match#New(fname, lnum, col, content) abort
     return {
         \ 'filename' : a:fname,
         \ 'lnum'     : a:lnum,
         \ 'vlnum'    : -1,
         \ 'col'      : a:col,
         \ 'vcol'     : -1,
+        \ 'text'     : a:content,
         \ 'setlnum'  : function("ctrlsf#class#match#SetLnum"),
         \ }
 endf
