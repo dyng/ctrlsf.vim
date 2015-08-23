@@ -36,6 +36,8 @@ func! s:ExecSearch(args) abort
 
     call ctrlsf#db#ParseAckprgResult(output)
     call ctrlsf#win#OpenMainWindow()
+    " add location list
+    call setloclist(winnr(), ctrlsf#db#MatchListQF())
     call ctrlsf#win#Draw()
     call ctrlsf#buf#ClearUndoHistory()
     call ctrlsf#hl#HighlightMatch()
@@ -110,6 +112,12 @@ endf
 func! ctrlsf#Quit() abort
     call ctrlsf#preview#ClosePreviewWindow()
     call ctrlsf#win#CloseMainWindow()
+endf
+
+" QFList()
+"
+func! ctrlsf#QFList() abort
+    lopen
 endf
 
 " Toggle()

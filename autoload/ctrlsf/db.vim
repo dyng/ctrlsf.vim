@@ -64,6 +64,23 @@ func! ctrlsf#db#MatchList() abort
     return matchlist
 endf
 
+func! ctrlsf#db#MatchListQF() abort
+    " return a list suitable for setqflist()
+    let qflist    = []
+    let qfitem    = {}
+    let matchlist = ctrlsf#db#MatchList()
+    for item in matchlist
+        let qfitem.filename = item.file
+        let qfitem.col      = item.col
+        let qfitem.lnum     = item.lnum
+        let qfitem.text     = item.text
+        call add(qflist, qfitem)
+        let qfitem = {}
+    endfor
+    return qflist
+endf
+
+
 func! ctrlsf#db#MaxLnum()
     if has_key(s:cache, 'maxlnum')
         return s:cache['maxlnum']

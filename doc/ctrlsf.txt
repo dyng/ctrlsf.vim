@@ -82,6 +82,9 @@ A typical workflow using CtrlSF is like this:
   It is free because it won't invoke a same but new search. A useful command
   |:CtrlSFToggle| is also available.
 
+Note: The result set will additionally be stored in a |location-list| of the
+CtrlSF window. Open it using |:lopen|
+
 --------------------------------------------------------------------------------
 2.2 Edit Mode                                                 *ctrlsf-edit-mode*
 
