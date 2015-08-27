@@ -369,9 +369,9 @@ Example:
 g:ctrlsf_position                                          *'g:ctrlsf_position'*
 Default: 'left'
 By default CtrlSF window will be opened at left. You can also specify for it to
-be opened 'above', 'right', or 'below'. E.g.:
+be opened 'top', 'right', or 'bottom'. E.g.:
 >
-    let g:ctrlsf_position = 'below'
+    let g:ctrlsf_position = 'bottom'
 <
 g:ctrlsf_regex_pattern                                *'g:ctrlsf_regex_pattern'*
 Default: 0
