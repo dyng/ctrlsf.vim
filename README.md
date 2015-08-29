@@ -26,7 +26,6 @@ An ack/ag powered code search and view tool, like ack.vim or `:vimgrep` but toge
 - [For user comes from pre v1.0](#for-user-comes-from-pre-v10)
   - [Difference between v1.0 and pre-v1.0](#difference-between-v10-and-pre-v10)
   - [Where and why backward compatibility is given up?](#where-and-why-backward-compatibility-is-given-up)
-  - [Change List](#change-list)
 
 ## Features
 
@@ -278,15 +277,6 @@ For those most frequently used arguments, an upper case short version is availab
 ```vim
 CtrlSF -I foo
 ```
-
-### Change List
-
-- Brand new edit mode is added.
-- Literal searching becomes default.
-- Mapping becomes customizable.
-- Smart case is added and turned on by default.
-- `g:ctrlsf_leading_space` is replaced by `g:ctrlsf_indent`.
-- etc...
 
 [1]: https://github.com/petdance/ack
 [2]: https://github.com/ggreer/the_silver_searcher
