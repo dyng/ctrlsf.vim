@@ -38,7 +38,14 @@ func! s:ExecSearch(args) abort
     call ctrlsf#win#OpenMainWindow()
     call ctrlsf#win#Draw()
     call ctrlsf#buf#ClearUndoHistory()
+    call ctrlsf#hl#HighlightMatch()
     call cursor(1, 1)
+
+    " populate quickfix and location list
+    if g:ctrlsf_populate_qflist
+        call setqflist(ctrlsf#db#MatchListQF())
+    endif
+    call setloclist(0, ctrlsf#db#MatchListQF())
 endf
 
 " Search()
@@ -69,6 +76,7 @@ endf
 "
 func! ctrlsf#Open() abort
     call ctrlsf#win#OpenMainWindow()
+    call ctrlsf#hl#HighlightMatch()
 endf
 
 " Redraw()
@@ -108,6 +116,12 @@ endf
 func! ctrlsf#Quit() abort
     call ctrlsf#preview#ClosePreviewWindow()
     call ctrlsf#win#CloseMainWindow()
+endf
+
+" OpenLocList()
+"
+func! ctrlsf#OpenLocList() abort
+    lopen
 endf
 
 " Toggle()

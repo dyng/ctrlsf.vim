@@ -92,6 +92,7 @@ func! s:InitMainWindow() abort
     setl filetype=ctrlsf
     setl fileformat=unix
     setl fileencoding=utf-8
+    setl iskeyword=@,48-57,_
     setl noreadonly
     setl buftype=acwrite
     setl bufhidden=hide
@@ -106,8 +107,6 @@ func! s:InitMainWindow() abort
     setl nospell
     setl nofoldenable
 
-    call ctrlsf#hl#HighlightMatch('ctrlsfMatch')
-
     " map
     " key 'prevw' is a deprecated key but here for backward compatibility
     let act_func_ref = {
@@ -121,6 +120,7 @@ func! s:InitMainWindow() abort
         \ "quit"  : "ctrlsf#Quit()",
         \ "next"  : "ctrlsf#NextMatch(1)",
         \ "prev"  : "ctrlsf#NextMatch(0)",
+        \ "llist" : "ctrlsf#OpenLocList()",
         \ }
     call ctrlsf#utils#SetMap(g:ctrlsf_mapping, act_func_ref)
 
