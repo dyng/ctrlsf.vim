@@ -55,11 +55,9 @@ func! s:BuildCommand(args) abort
     " pattern (including escape)
     call add(tokens, shellescape(ctrlsf#opt#GetOpt('pattern')))
 
-    " path (including escape)
+    " path
     if !empty(ctrlsf#opt#GetOpt('path'))
-        for path in ctrlsf#opt#GetOpt('path')
-            call add(tokens, shellescape(path))
-        endfo
+        call extend(tokens, ctrlsf#opt#GetOpt('path'))
     else
         let path = {
             \ 'project' : ctrlsf#fs#FindVcsRoot(),
