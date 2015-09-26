@@ -11,6 +11,7 @@ let s:option_list = {
     \ '-before'     : {'args': 1},
     \ '-context'    : {'args': 1},
     \ '-filetype'   : {'args': 1},
+    \ '-filematch'  : {'args': 1},
     \ '-ignorecase' : {'args': 0},
     \ '-literal'    : {'args': 0},
     \ '-matchcase'  : {'args': 0},
@@ -19,6 +20,7 @@ let s:option_list = {
     \ '-A': {'fullname': '-after'},
     \ '-B': {'fullname': '-before'},
     \ '-C': {'fullname': '-context'},
+    \ '-G': {'fullname': '-filematch'},
     \ '-I': {'fullname': '-ignorecase'},
     \ '-L': {'fullname': '-literal'},
     \ '-R': {'fullname': '-regex'},
@@ -120,6 +122,27 @@ func! ctrlsf#opt#GetCaseSensitive() abort
         \'yes'   : 'matchcase',
         \'no'    : 'ignorecase',
         \}[g:ctrlsf_case_sensitive]
+endf
+
+" GetPath()
+"
+" Return search path, if not specified, return default path depending
+" 'ctrlsf_default_root' setting.
+"
+func! ctrlsf#opt#GetPath() abort
+    if !empty(ctrlsf#opt#GetOpt('path'))
+        return ctrlsf#opt#GetOpt('path')
+    else
+        let path = {
+            \ 'project' : ctrlsf#fs#FindVcsRoot(),
+            \ 'cwd'     : getcwd(),
+            \ }[g:ctrlsf_default_root]
+        " If project root is not found, use current file
+        if empty(path)
+            let path = expand('%:p')
+        endif
+        return [path]
+    endif
 endf
 
 " GetRegex()

@@ -39,11 +39,36 @@ func! s:BuildCommand(args) abort
     call add(tokens, case)
 
     " regex
-    call add(tokens, ctrlsf#opt#GetRegex() ? '' : '--literal')
+    if !empty(ctrlsf#opt#GetRegex())
+        call add(tokens, '--literal')
+    endif
 
     " filetype
-    let filetype = ctrlsf#opt#GetOpt('filetype')
-    call add(tokens, empty(filetype) ? '' : '--' . filetype)
+    if !empty(ctrlsf#opt#GetOpt('filetype'))
+        call add(tokens, '--' . ctrlsf#opt#GetOpt('filetype'))
+    endif
+
+    " filematch
+    if !empty(ctrlsf#opt#GetOpt('filematch'))
+        if g:ctrlsf_ackprg =~# 'ag'
+            call extend(tokens, [
+                \ '--file-search-regex',
+                \ shellescape(ctrlsf#opt#GetOpt('filematch'))
+                \ ])
+        else
+            " pipe: 'ack -g ${filematch} ${path} |'
+            let pipe_tokens = [
+                \ g:ctrlsf_ackprg,
+                \ '-g',
+                \ shellescape(ctrlsf#opt#GetOpt('filematch'))
+                \ ]
+            call extend(pipe_tokens, ctrlsf#opt#GetPath())
+            call add(pipe_tokens, '|')
+
+            call insert(tokens, join(pipe_tokens, ' '))
+            call add(tokens, '--files-from=-')
+        endif
+    endif
 
     " default
     if g:ctrlsf_ackprg =~# 'ag'
@@ -56,19 +81,7 @@ func! s:BuildCommand(args) abort
     call add(tokens, shellescape(ctrlsf#opt#GetOpt('pattern')))
 
     " path
-    if !empty(ctrlsf#opt#GetOpt('path'))
-        call extend(tokens, ctrlsf#opt#GetOpt('path'))
-    else
-        let path = {
-            \ 'project' : ctrlsf#fs#FindVcsRoot(),
-            \ 'cwd'     : getcwd(),
-            \ }[g:ctrlsf_default_root]
-        " If project root is not found, use current file
-        if empty(path)
-            let path = expand('%:p')
-        endif
-        call add(tokens, path)
-    endif
+    call extend(tokens, ctrlsf#opt#GetPath())
 
     return join(tokens, ' ')
 endf
