@@ -49,5 +49,8 @@ func! s:PathComp(arglead, cmdline, cursorpos)
         endif
     endif
 
+    " escaping
+    call map(candidate, 'escape(v:val, " \\")')
+
     return candidate
 endf

@@ -57,7 +57,14 @@ func! s:BuildCommand(args) abort
 
     " path
     if !empty(ctrlsf#opt#GetOpt('path'))
-        call extend(tokens, ctrlsf#opt#GetOpt('path'))
+        for path in ctrlsf#opt#GetOpt('path')
+            " expand wildcards in path, e.g. ~, $HOME
+            let resolved_path = expand(path, 0, 1)
+
+            for r_path in resolved_path
+                call add(tokens, shellescape(r_path))
+            endfo
+        endfo
     else
         let path = {
             \ 'project' : ctrlsf#fs#FindVcsRoot(),
@@ -67,7 +74,7 @@ func! s:BuildCommand(args) abort
         if empty(path)
             let path = expand('%:p')
         endif
-        call add(tokens, path)
+        call add(tokens, shellescape(path))
     endif
 
     return join(tokens, ' ')
