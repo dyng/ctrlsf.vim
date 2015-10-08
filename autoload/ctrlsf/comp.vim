@@ -2,7 +2,7 @@
 " Description: An ack/ag powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 1.31
+" Version: 1.32
 " ============================================================================
 
 " Completion()
@@ -48,6 +48,9 @@ func! s:PathComp(arglead, cmdline, cursorpos)
             call map(candidate, 'fnamemodify(v:val, ":.")')
         endif
     endif
+
+    " escaping
+    call map(candidate, 'escape(v:val, " \\")')
 
     return candidate
 endf
