@@ -39,7 +39,7 @@ An ack/ag powered code search and view tool, like ack.vim or `:vimgrep` but toge
 
 ## Installation
 
-1. Make sure you have [ack][1] or [ag][2] installed.
+1. Make sure you have [ack][1] or [ag][2] installed. (Note: currently only Ack2 is supported by plan)
 
 2. An easy way to install CtrlSF is using a package manager, like [pathogen][3], [vundle][4] or [neobundle][5].
 
@@ -278,7 +278,7 @@ For those most frequently used arguments, an upper case short version is availab
 CtrlSF -I foo
 ```
 
-[1]: https://github.com/petdance/ack
+[1]: https://github.com/petdance/ack2
 [2]: https://github.com/ggreer/the_silver_searcher
 [3]: https://github.com/tpope/vim-pathogen
 [4]: https://github.com/gmarik/vundle
