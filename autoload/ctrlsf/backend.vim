@@ -39,7 +39,7 @@ func! s:BuildCommand(args) abort
     call add(tokens, case)
 
     " regex
-    if !empty(ctrlsf#opt#GetRegex())
+    if !ctrlsf#opt#GetRegex()
         call add(tokens, '--literal')
     endif
 
