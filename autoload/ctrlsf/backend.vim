@@ -39,43 +39,50 @@ func! s:BuildCommand(args) abort
     call add(tokens, case)
 
     " regex
-    call add(tokens, ctrlsf#opt#GetRegex() ? '' : '--literal')
+    if !ctrlsf#opt#GetRegex()
+        call add(tokens, '--literal')
+    endif
 
     " filetype
-    let filetype = ctrlsf#opt#GetOpt('filetype')
-    call add(tokens, empty(filetype) ? '' : '--' . filetype)
+    if !empty(ctrlsf#opt#GetOpt('filetype'))
+        call add(tokens, '--' . ctrlsf#opt#GetOpt('filetype'))
+    endif
+
+    " filematch
+    if !empty(ctrlsf#opt#GetOpt('filematch'))
+        if g:ctrlsf_ackprg =~# 'ag'
+            call extend(tokens, [
+                \ '--file-search-regex',
+                \ shellescape(ctrlsf#opt#GetOpt('filematch'))
+                \ ])
+        else
+            " pipe: 'ack -g ${filematch} ${path} |'
+            let pipe_tokens = [
+                \ g:ctrlsf_ackprg,
+                \ '-g',
+                \ shellescape(ctrlsf#opt#GetOpt('filematch'))
+                \ ]
+            call extend(pipe_tokens, ctrlsf#opt#GetPath())
+            call add(pipe_tokens, '|')
+
+            call insert(tokens, join(pipe_tokens, ' '))
+            call add(tokens, '--files-from=-')
+        endif
+    endif
 
     " default
     if g:ctrlsf_ackprg =~# 'ag'
         call add(tokens, '--noheading --nogroup --nocolor --nobreak')
     else
-        call add(tokens, '--noheading --nogroup --nocolor --nobreak --nocolumn')
+        call add(tokens, '--noheading --nogroup --nocolor --nobreak --nocolumn
+            \ --with-filename')
     endif
 
     " pattern (including escape)
     call add(tokens, shellescape(ctrlsf#opt#GetOpt('pattern')))
 
     " path
-    if !empty(ctrlsf#opt#GetOpt('path'))
-        for path in ctrlsf#opt#GetOpt('path')
-            " expand wildcards in path, e.g. ~, $HOME
-            let resolved_path = expand(path, 0, 1)
-
-            for r_path in resolved_path
-                call add(tokens, shellescape(r_path))
-            endfo
-        endfo
-    else
-        let path = {
-            \ 'project' : ctrlsf#fs#FindVcsRoot(),
-            \ 'cwd'     : getcwd(),
-            \ }[g:ctrlsf_default_root]
-        " If project root is not found, use current file
-        if empty(path)
-            let path = expand('%:p')
-        endif
-        call add(tokens, shellescape(path))
-    endif
+    call extend(tokens, ctrlsf#opt#GetPath())
 
     return join(tokens, ' ')
 endf
@@ -89,14 +96,16 @@ func! ctrlsf#backend#SelfCheck() abort
     endif
 
     if empty(g:ctrlsf_ackprg)
-        call ctrlsf#log#Error("Can not find ack or ag on this system.")
+        call ctrlsf#log#Error("Can not find ack/ag on this system, make sure
+            \ you have one of them installed.")
         return -99
     endif
 
     let prg = g:ctrlsf_ackprg
 
     if !executable(prg)
-        call ctrlsf#log#Error('Can not locate %s in PATH.', prg)
+        call ctrlsf#log#Error('Can not locate %s in PATH, make sure you have it
+            \ installed.', prg)
         return -2
     endif
 endf

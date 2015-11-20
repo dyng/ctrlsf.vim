@@ -125,9 +125,9 @@ mode:
 >
     :CtrlSF -A 3 -B 1 {pattern}
 <
-  5. Search in files of specific type
+  5. Search in files with specific extension
 >
-    :CtrlSF --filetype cpp {pattern}
+    :CtrlSF -G .*\.cpp {pattern}
 <
 ================================================================================
 3. Commands                                                    *ctrlsf-commands*
@@ -230,7 +230,7 @@ alias for '-before'.
 >
     :CtrlSF -B 5 foo
 <
-'-context', '-C'                            *ctrlsf_args_C* *ctrlsf_args_context*
+'-context', '-C'                           *ctrlsf_args_C* *ctrlsf_args_context*
 
 Defines how many lines around the matching line will be printed. '-C' is an
 alias for '-context'.
@@ -243,6 +243,12 @@ Defines which type of files should the search be restricted to. view
 `ack --help=typs` for all available types.
 >
     :CtrlSF -filetype vim foo
+<
+'-filematch', '-G'                       *ctrlsf_args_G* *ctrlsf_args_filematch*
+
+Defines a pattern that only files whose name is matching will be searched.
+>
+    :Ctrlsf -filematch .*\.wrproject foo
 <
 '-ignorecase', '-I'                     *ctrlsf_args_I* *ctrlsf_args_ignorecase*
 

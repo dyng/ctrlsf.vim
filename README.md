@@ -182,6 +182,8 @@ Read `:h ctrlsf-arguments` for a full list of arguments.
 
 - `-filetype` is useful when you only want to search in files of specific type. Read option `--type` in `ack`'s [manual][6] for more information.
 
+- If `-filetype` does not exactly match your need, there is an option `-filematch` with which you have more control on which files should be searched. `-filematch` accepts a pattern that only files match this pattern will be searched. Note the pattern is in syntax of your backend but not vim's. Also, a shortcut `-G` is available.
+
 - Running `:CtrlSF` without any argument or pattern will use word under cursor.
 
 ## Configuration
