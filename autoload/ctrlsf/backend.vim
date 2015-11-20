@@ -74,7 +74,8 @@ func! s:BuildCommand(args) abort
     if g:ctrlsf_ackprg =~# 'ag'
         call add(tokens, '--noheading --nogroup --nocolor --nobreak')
     else
-        call add(tokens, '--noheading --nogroup --nocolor --nobreak --nocolumn --with-filename')
+        call add(tokens, '--noheading --nogroup --nocolor --nobreak --nocolumn
+            \ --with-filename')
     endif
 
     " pattern (including escape)
@@ -95,14 +96,16 @@ func! ctrlsf#backend#SelfCheck() abort
     endif
 
     if empty(g:ctrlsf_ackprg)
-        call ctrlsf#log#Error("Can not find ack or ag on this system.")
+        call ctrlsf#log#Error("Can not find ack/ag on this system, make sure
+            \ you have one of them installed.")
         return -99
     endif
 
     let prg = g:ctrlsf_ackprg
 
     if !executable(prg)
-        call ctrlsf#log#Error('Can not locate %s in PATH.', prg)
+        call ctrlsf#log#Error('Can not locate %s in PATH, make sure you have it
+            \ installed.', prg)
         return -2
     endif
 endf
