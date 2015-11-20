@@ -2,7 +2,7 @@
 " Description: An ack/ag powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 1.31
+" Version: 1.32
 " ============================================================================
 
 " option list of CtrlSF
@@ -130,8 +130,17 @@ endf
 " 'ctrlsf_default_root' setting.
 "
 func! ctrlsf#opt#GetPath() abort
+    let path_tokens = []
+
     if !empty(ctrlsf#opt#GetOpt('path'))
-        return ctrlsf#opt#GetOpt('path')
+        for path in ctrlsf#opt#GetOpt('path')
+            " expand wildcards in path, e.g. ~, $HOME
+            let resolved_path = expand(path, 0, 1)
+
+            for r_path in resolved_path
+                call add(path_tokens, shellescape(r_path))
+            endfo
+        endfo
     else
         let path = {
             \ 'project' : ctrlsf#fs#FindVcsRoot(),
@@ -141,8 +150,10 @@ func! ctrlsf#opt#GetPath() abort
         if empty(path)
             let path = expand('%:p')
         endif
-        return [path]
+        call add(path_tokens, shellescape(path))
     endif
+
+    return path_tokens
 endf
 
 " GetRegex()
