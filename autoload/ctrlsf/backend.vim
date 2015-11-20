@@ -74,7 +74,7 @@ func! s:BuildCommand(args) abort
     if g:ctrlsf_ackprg =~# 'ag'
         call add(tokens, '--noheading --nogroup --nocolor --nobreak')
     else
-        call add(tokens, '--noheading --nogroup --nocolor --nobreak --nocolumn')
+        call add(tokens, '--noheading --nogroup --nocolor --nobreak --nocolumn --with-filename')
     endif
 
     " pattern (including escape)
