@@ -204,15 +204,15 @@ func! s:OpenFileInWindow(file, lnum, col, mode, split) abort
 
     let target_winnr = ctrlsf#win#FindTargetWindow(a:file)
     if target_winnr == 0
-        exec 'silent split ' . a:file
+        exec 'silent split ' . fnameescape(a:file)
     else
         exec target_winnr . 'wincmd w'
 
         if bufname('%') !~# a:file
             if a:split || (&modified && !&hidden)
-                exec 'silent split ' . a:file
+                exec 'silent split ' . fnameescape(a:file)
             else
-                exec 'silent edit ' . a:file
+                exec 'silent edit ' . fnameescape(a:file)
             endif
         endif
     endif
@@ -238,7 +238,7 @@ func! s:OpenFileInTab(file, lnum, col, mode) abort
         call ctrlsf#Quit()
     endif
 
-    exec 'silen tabedit ' . a:file
+    exec 'silen tabedit ' . fnameescape(a:file)
 
     call ctrlsf#win#MoveCentralCursor(a:lnum, a:col)
 
@@ -262,7 +262,7 @@ func! s:PreviewFile(file, lnum, col) abort
         call ctrlsf#buf#WriteFile(a:file)
 
         " trigger filetypedetect (syntax highlight)
-        exec 'doau filetypedetect BufRead ' . a:file
+        exec 'doau filetypedetect BufRead ' . fnameescape(a:file)
     endif
 
     call ctrlsf#win#MoveCentralCursor(a:lnum, a:col)
