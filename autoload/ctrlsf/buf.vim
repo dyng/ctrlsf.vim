@@ -27,7 +27,7 @@ func! ctrlsf#buf#WriteFile(file) abort
     let modifiable_bak = getbufvar('%', '&modifiable')
     setl modifiable
     silent %delete _
-    exec 'silent 0read ' . a:file
+    exec 'silent 0read ' . fnameescape(a:file)
     silent $delete _ " delete trailing empty line
     call setbufvar('%', '&modifiable', modifiable_bak)
     call setbufvar('%', '&modified', 0)
