@@ -345,7 +345,7 @@ placed in, currently CtrlSF can recognize .git, .hg, .svn, .bzr, _darcs.
 <
 g:ctrlsf_indent                                              *'g:ctrlsf_indent'*
 Default: 4
-Defines how many spaces are places between line number and line content. You
+Defines how many spaces are placed between line number and line content. You
 can set a sane small value for more compact view.
 >
     let g:ctrlsf_indent = 2
