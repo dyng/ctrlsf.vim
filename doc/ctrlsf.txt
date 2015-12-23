@@ -168,6 +168,11 @@ mode:
 
   Open the CtrlSF window if it is closed, or vice versa.
 
+:CtrlSFToggleMap                                              *:CtrlSFToggleMap*
+
+  Toggle CtrlSF's default key mapping. This command can be used in CtrlSF
+  window only.
+
 ================================================================================
 4. Key Maps                                                     *ctrlsf-keymaps*
 
@@ -413,6 +418,14 @@ can set it as
 >
     let g:ctrlsf_selected_line_hl = 'op'
 <
+g:ctrlsf_toggle_map_key                                *'g:ctrlsf_toggle_map_key'*
+Default: ''
+Key to temporarily enable/disable CtrlSF's default key mapping. By default
+this value is empty, means no key is mapped for this feature.
+>
+    let g:ctrlsf_toggle_map_key = '\t'
+<
+
 g:ctrlsf_winsize                                                *'g:ctrlsf_width'*
 Default: 'auto'
 Size of CtrlSF window. This is its width if the window opens vertically (to the

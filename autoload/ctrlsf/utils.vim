@@ -24,23 +24,43 @@ func! ctrlsf#utils#Mirror(dicta, dictb) abort
     return a:dicta
 endf
 
-" SetMap()
+" Nmap()
 "
-func! ctrlsf#utils#SetMap(map, act_func_ref) abort
+func! ctrlsf#utils#Nmap(map, act_func_ref) abort
     for act in keys(a:act_func_ref)
         if empty(get(a:map, act, ""))
             continue
         endif
 
         if type(a:map[act]) == 1
-            exec "nnoremap <silent><buffer> " . a:map[act]
+            exec "silent! nnoremap <silent><buffer> " . a:map[act]
                 \ . " :call " . a:act_func_ref[act] . "<CR>"
         endif
 
         if type(a:map[act]) == 3
             for key in a:map[act]
-                exec "nnoremap <silent><buffer> " . key
+                exec "silent! nnoremap <silent><buffer> " . key
                     \ . " :call " . a:act_func_ref[act] . "<CR>"
+            endfo
+        endif
+    endfo
+endf
+
+" Nunmap()
+"
+func! ctrlsf#utils#Nunmap(map, act_func_ref) abort
+    for act in keys(a:act_func_ref)
+        if empty(get(a:map, act, ""))
+            continue
+        endif
+
+        if type(a:map[act]) == 1
+            exec "nunmap <silent><buffer> " . a:map[act]
+        endif
+
+        if type(a:map[act]) == 3
+            for key in a:map[act]
+                exec "nunmap <silent><buffer> " . key
             endfo
         endif
     endfo

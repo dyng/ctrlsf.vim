@@ -180,6 +180,12 @@ if !exists('g:ctrlsf_selected_line_hl')
 endif
 " }}}
 
+" g:ctrlsf_toggle_map_key {{{2
+if !exists('g:ctrlsf_toggle_map_key')
+    let g:ctrlsf_toggle_map_key = ''
+endif
+" }}}
+
 " g:ctrlsf_winsize {{{2
 if !exists('g:ctrlsf_winsize')
     if exists('g:ctrlsf_width')

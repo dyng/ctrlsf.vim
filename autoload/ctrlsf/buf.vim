@@ -53,3 +53,43 @@ func! ctrlsf#buf#UndoAllChanges() abort
     endif
 endf
 
+" ToogleMap()
+"
+" Enable/disable maps in CtrlSF window.
+"
+" There are 3 possible values of argument:
+"
+"   - 0    : disable
+"   - 1    : enable
+"   - None : toggle
+"
+func! ctrlsf#buf#ToggleMap(...) abort
+    if a:0 > 0
+        let enable_map = a:1
+    else
+        let enable_map = !b:ctrlsf_map_enabled
+    endif
+
+    " key 'prevw' is a deprecated key but here for backward compatibility
+    let act_func_ref = {
+        \ "open"  : "ctrlsf#JumpTo('open')",
+        \ "openb" : "ctrlsf#JumpTo('open_background')",
+        \ "split" : "ctrlsf#JumpTo('split')",
+        \ "tab"   : "ctrlsf#JumpTo('tab')",
+        \ "tabb"  : "ctrlsf#JumpTo('tab_background')",
+        \ "prevw" : "ctrlsf#JumpTo('preview')",
+        \ "popen" : "ctrlsf#JumpTo('preview')",
+        \ "quit"  : "ctrlsf#Quit()",
+        \ "next"  : "ctrlsf#NextMatch(1)",
+        \ "prev"  : "ctrlsf#NextMatch(0)",
+        \ "llist" : "ctrlsf#OpenLocList()",
+        \ }
+
+    if enable_map
+        call ctrlsf#utils#Nmap(g:ctrlsf_mapping, act_func_ref)
+    else
+        call ctrlsf#utils#Nunmap(g:ctrlsf_mapping, act_func_ref)
+    endif
+
+    let b:ctrlsf_map_enabled = enable_map
+endf
