@@ -116,6 +116,12 @@ if !exists('g:ctrlsf_default_root')
 endif
 " }}}
 
+" g:ctrlsf_ignore_dir {{{2
+if !exists('g:ctrlsf_ignore_dir')
+    let g:ctrlsf_ignore_dir = []
+endif
+" }}}
+
 " g:ctrlsf_indent {{{2
 if !exists('g:ctrlsf_indent')
     let g:ctrlsf_indent = 4
