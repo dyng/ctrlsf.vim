@@ -65,7 +65,7 @@ func! s:InitPreviewWindow() abort
     let act_func_ref = {
         \ "pquit": "ctrlsf#preview#ClosePreviewWindow()"
         \ }
-    call ctrlsf#utils#SetMap(g:ctrlsf_mapping, act_func_ref)
+    call ctrlsf#utils#Nmap(g:ctrlsf_mapping, act_func_ref)
 
     augroup ctrlsfp
         au!

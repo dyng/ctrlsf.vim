@@ -38,6 +38,12 @@ func! s:BuildCommand(args) abort
     endif
     call add(tokens, case)
 
+    " ignore (dir, file)
+    let ignore_dir = ctrlsf#opt#GetIgnoreDir()
+    for dir in ignore_dir
+        call add(tokens, "--ignore-dir " . dir)
+    endfor
+
     " regex
     if !ctrlsf#opt#GetRegex()
         call add(tokens, '--literal')

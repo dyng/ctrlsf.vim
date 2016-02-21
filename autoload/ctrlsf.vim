@@ -279,3 +279,15 @@ endf
 func! ctrlsf#ClearSelectedLine() abort
     call ctrlsf#hl#ClearSelectedLine()
 endf
+
+" ToggleMap()
+"
+func! ctrlsf#ToggleMap() abort
+    call ctrlsf#buf#ToggleMap()
+
+    if b:ctrlsf_map_enabled
+        echo "Maps enabled."
+    else
+        echo "Maps disabled."
+    endif
+endf

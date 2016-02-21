@@ -13,6 +13,7 @@ let s:option_list = {
     \ '-filetype'   : {'args': 1},
     \ '-filematch'  : {'args': 1},
     \ '-ignorecase' : {'args': 0},
+    \ '-ignoredir'  : {'args': 1},
     \ '-literal'    : {'args': 0},
     \ '-matchcase'  : {'args': 0},
     \ '-regex'      : {'args': 0},
@@ -170,6 +171,12 @@ func! ctrlsf#opt#GetRegex() abort
     else
         return g:ctrlsf_regex_pattern
     endif
+endf
+
+" GetIgnoreDir()
+"
+func! ctrlsf#opt#GetIgnoreDir() abort
+    return add(copy(g:ctrlsf_ignore_dir), ctrlsf#opt#GetOpt("ignoredir"))
 endf
 
 """""""""""""""""""""""""""""""""

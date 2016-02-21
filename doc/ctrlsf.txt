@@ -168,6 +168,11 @@ mode:
 
   Open the CtrlSF window if it is closed, or vice versa.
 
+:CtrlSFToggleMap                                              *:CtrlSFToggleMap*
+
+  Toggle CtrlSF's default key mapping. This command can be used in CtrlSF
+  window only.
+
 ================================================================================
 4. Key Maps                                                     *ctrlsf-keymaps*
 
@@ -237,7 +242,7 @@ alias for '-context'.
 >
     :CtrlSF -C 0 foo
 <
-'-filetype'                                               *ctrlsf_args_filetype*
+'-filetype'                                             *ctrlsf_args_filetype*
 
 Defines which type of files should the search be restricted to. view
 `ack --help=typs` for all available types.
@@ -255,6 +260,14 @@ Defines a pattern that only files whose name is matching will be searched.
 Make this search be case-insensitive.
 >
     :CtrlSF -I foo
+<
+'-ignoredir'                                           *ctrlsf_args_ignoredir*
+
+Defines pattern of directories that should be ignored. The behavior of this
+option depends on what backend you are using. The actual option used
+here is '--ignore' for ag and '--ignore-dir' for ack.
+>
+    :CtrlSF -ignoredir "bower_components" 'console.log'
 <
 '-literal', '-L'                           *ctrlsf_args_L* *ctrlsf_args_literal*
 
@@ -274,7 +287,7 @@ Use pattern as regular expression.
 >
     :CtrlSF -R foo.*
 <
-'-smartcase'                                             *ctrlsf_args_smartcase*
+'-smartcase'                                           *ctrlsf_args_smartcase*
 
 Make this search be smart-cased.
 >
@@ -338,9 +351,17 @@ placed in, currently CtrlSF can recognize .git, .hg, .svn, .bzr, _darcs.
 >
     let g:ctrlsf_default_root = 'project'
 <
+g:ctrlsf_ignore_dir                                      *'g:ctrlsf_ignore_dir'*
+Default: ''
+Defines directories that will be ignored by default. It's useful for backend
+that does not respect to '.gitignore'.
+>
+    let g:ctrlsf_ignore_dir = ['bower_components', 'npm_modules']
+<
+
 g:ctrlsf_indent                                              *'g:ctrlsf_indent'*
 Default: 4
-Defines how many spaces are places between line number and line content. You
+Defines how many spaces are placed between line number and line content. You
 can set a sane small value for more compact view.
 >
     let g:ctrlsf_indent = 2
@@ -413,6 +434,14 @@ can set it as
 >
     let g:ctrlsf_selected_line_hl = 'op'
 <
+g:ctrlsf_toggle_map_key                                *'g:ctrlsf_toggle_map_key'*
+Default: ''
+Key to temporarily enable/disable CtrlSF's default key mapping. By default
+this value is empty, means no key is mapped for this feature.
+>
+    let g:ctrlsf_toggle_map_key = '\t'
+<
+
 g:ctrlsf_winsize                                                *'g:ctrlsf_width'*
 Default: 'auto'
 Size of CtrlSF window. This is its width if the window opens vertically (to the
