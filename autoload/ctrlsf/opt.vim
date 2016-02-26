@@ -176,7 +176,11 @@ endf
 " GetIgnoreDir()
 "
 func! ctrlsf#opt#GetIgnoreDir() abort
-    return add(copy(g:ctrlsf_ignore_dir), ctrlsf#opt#GetOpt("ignoredir"))
+    let ignore_dir = copy(g:ctrlsf_ignore_dir)
+    if ctrlsf#opt#IsOptGiven("ignoredir")
+        call add(ignore_dir, ctrlsf#opt#GetOpt("ignoredir"))
+    endif
+    return ignore_dir
 endf
 
 """""""""""""""""""""""""""""""""
