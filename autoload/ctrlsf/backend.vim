@@ -103,6 +103,11 @@ func! s:BuildCommand(args) abort
             \ --with-filename')
     endif
 
+    " user custom arguments
+    if !empty(g:ctrlsf_extra_backend_args)
+        call add(tokens, g:ctrlsf_extra_backend_args)
+    endif
+
     " pattern (including escape)
     call add(tokens, shellescape(ctrlsf#opt#GetOpt('pattern')))
 
