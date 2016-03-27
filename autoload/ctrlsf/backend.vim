@@ -30,8 +30,10 @@ func! s:BuildCommand(args) abort
     elseif case_sensitive ==# 'ignorecase'
         let case = '--ignore-case'
     else
-        if g:ctrlsf_ackprg =~# 'ag'
+        if ctrlsf#backend#Runner() ==# 'ag'
             let case = '--case-sensitive'
+        elseif ctrlsf#backend#Runner() ==# 'pt'
+            let case = ''
         else
             let case = '--no-smart-case'
         endif
@@ -41,26 +43,41 @@ func! s:BuildCommand(args) abort
     " ignore (dir, file)
     let ignore_dir = ctrlsf#opt#GetIgnoreDir()
     for dir in ignore_dir
-        call add(tokens, "--ignore-dir " . shellescape(dir))
+        if ctrlsf#backend#Runner() ==# 'pt'
+            call add(tokens, "--ignore " . shellescape(dir))
+        else
+            call add(tokens, "--ignore-dir " . shellescape(dir))
+        endif
     endfor
 
     " regex
-    if !ctrlsf#opt#GetRegex()
-        call add(tokens, '--literal')
+    if ctrlsf#opt#GetRegex()
+        if ctrlsf#backend#Runner() ==# 'pt'
+            call add(tokens, '-e')
+        endif
+    else
+        if ctrlsf#backend#Runner() !=# 'pt'
+            call add(tokens, '--literal')
+        endif
     endif
 
     " filetype
     if !empty(ctrlsf#opt#GetOpt('filetype'))
-        call add(tokens, '--' . ctrlsf#opt#GetOpt('filetype'))
+        if ctrlsf#backend#Runner() !=# 'pt'
+            call add(tokens, '--' . ctrlsf#opt#GetOpt('filetype'))
+        endif
     endif
 
     " filematch
     if !empty(ctrlsf#opt#GetOpt('filematch'))
-        if g:ctrlsf_ackprg =~# 'ag'
+        if ctrlsf#backend#Runner() ==# 'ag'
             call extend(tokens, [
                 \ '--file-search-regex',
                 \ shellescape(ctrlsf#opt#GetOpt('filematch'))
                 \ ])
+        elseif ctrlsf#backend#Runner() ==# 'pt'
+            call add(tokens, printf("--file-search-regex=%s",
+                \ shellescape(ctrlsf#opt#GetOpt('filematch'))))
         else
             " pipe: 'ack -g ${filematch} ${path} |'
             let pipe_tokens = [
@@ -77,8 +94,10 @@ func! s:BuildCommand(args) abort
     endif
 
     " default
-    if g:ctrlsf_ackprg =~# 'ag'
+    if ctrlsf#backend#Runner() ==# 'ag'
         call add(tokens, '--noheading --nogroup --nocolor --nobreak')
+    elseif ctrlsf#backend#Runner() ==# 'pt'
+        call add(tokens, '--nogroup --nocolor')
     else
         call add(tokens, '--noheading --nogroup --nocolor --nobreak --nocolumn
             \ --with-filename')
@@ -96,14 +115,9 @@ endf
 " SelfCheck()
 "
 func! ctrlsf#backend#SelfCheck() abort
-    if !exists('g:ctrlsf_ackprg')
-        call ctrlsf#log#Error("Option 'g:ctrlsf_ackprg' is not defined.")
-        return -99
-    endif
-
-    if empty(g:ctrlsf_ackprg)
-        call ctrlsf#log#Error("Can not find ack/ag on this system, make sure
-            \ you have one of them installed.")
+    if !exists('g:ctrlsf_ackprg') || empty(g:ctrlsf_ackprg)
+        call ctrlsf#log#Error("Option 'g:ctrlsf_ackprg' is not defined or empty
+            \ .")
         return -99
     endif
 
@@ -123,6 +137,10 @@ func! ctrlsf#backend#Detect()
         return 'ag'
     endif
 
+    if executable('pt')
+        return 'pt'
+    endif
+
     if executable('ack-grep')
         return 'ack-grep'
     endif
@@ -134,9 +152,27 @@ func! ctrlsf#backend#Detect()
     return ''
 endf
 
+" Runner()
+"
+func! ctrlsf#backend#Runner()
+    if !exists('g:ctrlsf_ackprg')
+        return ''
+    elseif g:ctrlsf_ackprg =~# 'ag'
+        return 'ag'
+    elseif g:ctrlsf_ackprg =~# 'pt'
+        return 'pt'
+    elseif g:ctrlsf_ackprg =~# 'ack-grep'
+        return 'ack'
+    elseif g:ctrlsf_ackprg =~# 'ack'
+        return 'ack'
+    else
+        return ''
+    endif
+endf
+
 " Run()
 "
-" Execute Ack/Ag.
+" Execute backend.
 "
 " Parameters
 " {args} arguments for execution
