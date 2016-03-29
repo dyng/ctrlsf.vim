@@ -352,11 +352,14 @@ placed in, currently CtrlSF can recognize .git, .hg, .svn, .bzr, _darcs.
     let g:ctrlsf_default_root = 'project'
 <
 g:ctrlsf_extra_backend_args                      *'g:ctrlsf_extra_backend_args'*
-Default: ''
+Default: {}
 Defines extra arguments that will be passed **literally** to backend. It's
-useful when you are needing backend-specific features.
+useful when you are needing backend-specific features. Acceptable keys are
+'ack', 'ag', 'pt'.
 >
-    let g:ctrlsf_extra_backend_args = '--home-ptignore'
+    let g:ctrlsf_extra_backend_args = {
+        \ 'pt': '--home-ptignore'
+        \ }
 <
 g:ctrlsf_ignore_dir                                      *'g:ctrlsf_ignore_dir'*
 Default: ''

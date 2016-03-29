@@ -118,7 +118,7 @@ endif
 
 " g:ctrlsf_extra_backend_args {{{2
 if !exists('g:ctrlsf_extra_backend_args')
-    let g:ctrlsf_extra_backend_args = ''
+    let g:ctrlsf_extra_backend_args = {}
 endif
 " }}}
 

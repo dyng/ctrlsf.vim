@@ -104,8 +104,9 @@ func! s:BuildCommand(args) abort
     endif
 
     " user custom arguments
-    if !empty(g:ctrlsf_extra_backend_args)
-        call add(tokens, g:ctrlsf_extra_backend_args)
+    let extra_args = get(g:ctrlsf_extra_backend_args, ctrlsf#backend#Runner(), "")
+    if !empty(extra_args)
+        call add(tokens, extra_args)
     endif
 
     " pattern (including escape)

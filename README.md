@@ -211,10 +211,12 @@ Read `:h ctrlsf-arguments` for a full list of arguments.
     let g:ctrlsf_default_root = 'project'
     ```
 
-- `g:ctrlsf_extra_backend_args` defines extra arguments that will be passed *literally* to backend, especially useful when you have your favorite backend and need some backend-specific features. For example, using `ptignore` file for [pt][8] should be like
+- `g:ctrlsf_extra_backend_args` is a dictionary that defines extra arguments that will be passed *literally* to backend, especially useful when you have your favorite backend and need some backend-specific features. For example, using `ptignore` file for [pt][8] should be like
 
     ```vim
-    let g:ctrlsf_extra_backend_args = '--home-ptignore'
+    let g:ctrlsf_extra_backend_args = {
+        \ 'pt': '--home-ptignore'
+        \ }
     ```
 
 - `g:ctrlsf_mapping` defines maps used in result window and preview window. Value of this option is a dictionary, where key is a method and value is a key for mapping. An empty value can disable that method. You can just define a subset of full dictionary, those not defined functionalities will use default key mapping.
