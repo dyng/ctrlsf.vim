@@ -1,6 +1,6 @@
 # ctrlsf.vim
 
-An ack/ag powered code search and view tool, like ack.vim or `:vimgrep` but together with more context, and let you edit in-place with powerful edit mode.
+An ack/ag/pt powered code search and view tool, like ack.vim or `:vimgrep` but together with more context, and let you edit in-place with powerful edit mode.
 
 ### Search and Explore
 
@@ -39,7 +39,7 @@ An ack/ag powered code search and view tool, like ack.vim or `:vimgrep` but toge
 
 ## Installation
 
-1. Make sure you have [ack][1] or [ag][2] installed. (Note: currently only Ack2 is supported by plan)
+1. Make sure you have [ack][1], [ag][2] or [pt][8] installed. (Note: currently only Ack2 is supported by plan)
 
 2. An easy way to install CtrlSF is using a package manager, like [pathogen][3], [vundle][4] or [neobundle][5].
 
@@ -211,6 +211,14 @@ Read `:h ctrlsf-arguments` for a full list of arguments.
     let g:ctrlsf_default_root = 'project'
     ```
 
+- `g:ctrlsf_extra_backend_args` is a dictionary that defines extra arguments that will be passed *literally* to backend, especially useful when you have your favorite backend and need some backend-specific features. For example, using `ptignore` file for [pt][8] should be like
+
+    ```vim
+    let g:ctrlsf_extra_backend_args = {
+        \ 'pt': '--home-ptignore'
+        \ }
+    ```
+
 - `g:ctrlsf_mapping` defines maps used in result window and preview window. Value of this option is a dictionary, where key is a method and value is a key for mapping. An empty value can disable that method. You can just define a subset of full dictionary, those not defined functionalities will use default key mapping.
 
     ```vim
@@ -287,3 +295,4 @@ CtrlSF -I foo
 [5]: https://github.com/Shougo/neobundle.vim
 [6]: https://github.com/gabesoft/vim-ags
 [7]: https://github.com/terryma/vim-multiple-cursors
+[8]: https://github.com/monochromegane/the_platinum_searcher

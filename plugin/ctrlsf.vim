@@ -1,8 +1,8 @@
 " ============================================================================
-" Description: An ack/ag powered code search and view tool.
+" Description: An ack/ag/pt powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 1.5.0
+" Version: 1.6.0
 " ============================================================================
 
 " Loading Guard {{{1
@@ -113,6 +113,12 @@ endif
 " g:ctrlsf_default_root {{{2
 if !exists('g:ctrlsf_default_root')
     let g:ctrlsf_default_root = 'cwd'
+endif
+" }}}
+
+" g:ctrlsf_extra_backend_args {{{2
+if !exists('g:ctrlsf_extra_backend_args')
+    let g:ctrlsf_extra_backend_args = {}
 endif
 " }}}
 

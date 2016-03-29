@@ -1,8 +1,8 @@
 " ============================================================================
-" Description: An ack/ag powered code search and view tool.
+" Description: An ack/ag/pt powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 1.5.0
+" Version: 1.6.0
 " ============================================================================
 
 " Meta folder of several typical version control systems
