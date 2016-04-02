@@ -466,6 +466,14 @@ Example:
 >
     let g:ctrlsf_winsize = '30%'
 <
+g:CtrlSFAftermainWindowInit                 *'g:CtrlSFAftermainWindowInit'*
+'g:CtrlSFAftermainWindowInit' defines a function will be called after CtrlSF
+window initialized. It can be used to override default window setting.
+>
+    function! g:CtrlSFAftermainWindowInit()
+        setl wrap
+    endfunction
+<
 ================================================================================
 7. About                                                          *ctrlsf-about*
 

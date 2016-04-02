@@ -138,6 +138,9 @@ func! s:InitMainWindow() abort
         au BufHidden,BufUnload <buffer> call ctrlsf#buf#UndoAllChanges()
     augroup END
 
+    if exists("*g:CtrlSFAftermainWindowInit")
+        silent! call g:CtrlSFAftermainWindowInit()
+    end
     let b:ctrlsf_initialized = 1
 endf
 
