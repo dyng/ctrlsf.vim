@@ -64,6 +64,17 @@ func! s:SearchVwordCmd(to_exec)
 endf
 " }}}
 
+" s:SearchVwordCmdLocation() {{{2
+" Within evaluation of a expression typed visual map, we can not get
+" current visual selection normally, so I need to workaround it.
+func! s:SearchVwordCmdLocation(to_exec)
+    let keys = '":\<C-U>CtrlSFLocation " . g:CtrlSFGetVisualSelection()'
+    let keys .= a:to_exec ? '."\r"' : '." "'
+    let cmd = ":\<C-U>call feedkeys(" . keys . ", 'n')\r"
+    return cmd
+endf
+" }}}
+
 " s:SearchPwordCmd() {{{2
 func! s:SearchPwordCmd(to_exec)
     let cmd = ":\<C-U>CtrlSF " . @/
@@ -215,6 +226,7 @@ com! -n=0                                         CtrlSFUpdate  call ctrlsf#Upda
 com! -n=0                                         CtrlSFClose   call ctrlsf#Quit()
 com! -n=0                                         CtrlSFClearHL call ctrlsf#ClearSelectedLine()
 com! -n=0                                         CtrlSFToggle  call ctrlsf#Toggle()
+com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSFLocation call ctrlsf#SearchLocation(<q-args>)
 " }}}
 
 " Maps {{{1
@@ -225,6 +237,9 @@ vnoremap <expr> <Plug>CtrlSFVwordPath <SID>SearchVwordCmd(0)
 vnoremap <expr> <Plug>CtrlSFVwordExec <SID>SearchVwordCmd(1)
 nnoremap <expr> <Plug>CtrlSFPwordPath <SID>SearchPwordCmd(0)
 nnoremap <expr> <Plug>CtrlSFPwordExec <SID>SearchPwordCmd(1)
+nnoremap        <Plug>CtrlSFLocationPrompt :CtrlSFLocation<Space>
+vnoremap <expr> <Plug>CtrlSFVwordPathLocation <SID>SearchVwordCmdLocation(0)
+vnoremap <expr> <Plug>CtrlSFVwordExecLocation <SID>SearchVwordCmdLocation(1)
 " }}}
 
 " modeline {{{1
