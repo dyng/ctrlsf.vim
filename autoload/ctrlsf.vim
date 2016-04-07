@@ -16,7 +16,7 @@ let s:current_query = ''
 "
 " Basic process: query, parse, render and display.
 "
-func! s:ExecSearch(args) abort
+func! s:ExecSearch(args, only_location) abort
     try
         call ctrlsf#opt#ParseOptions(a:args)
     catch /ParseOptionsException/
@@ -35,6 +35,14 @@ func! s:ExecSearch(args) abort
     endif
 
     call ctrlsf#db#ParseAckprgResult(output)
+
+    " Only populate and open the quickfix window
+    if a:only_location
+      call setqflist(ctrlsf#db#MatchListQF())
+      copen
+      return
+    endif
+
     call ctrlsf#win#OpenMainWindow()
     call ctrlsf#win#Draw()
     call ctrlsf#buf#ClearUndoHistory()
@@ -48,38 +56,9 @@ func! s:ExecSearch(args) abort
     call setloclist(0, ctrlsf#db#MatchListQF())
 endf
 
-" s:ExecSearchLocation()
-"
-" Basic process: query, parse, open quickfix and display.
-"
-func! s:ExecSearchLocation(args) abort
-    try
-        call ctrlsf#opt#ParseOptions(a:args)
-    catch /ParseOptionsException/
-        return -1
-    endtry
-
-    if ctrlsf#backend#SelfCheck() < 0
-        return -1
-    endif
-
-    let [success, output] = ctrlsf#backend#Run(a:args)
-    if !success
-        call ctrlsf#log#Error('Failed to call backend. Error messages: %s',
-            \ output)
-        return -1
-    endif
-
-    call ctrlsf#db#ParseAckprgResult(output)
-    " populate quickfix and location list then open
-    call setqflist(ctrlsf#db#MatchListQF())
-    call setloclist(0, ctrlsf#db#MatchListQF())
-    copen
-endf
-
 " Search()
 "
-func! ctrlsf#Search(args) abort
+func! ctrlsf#Search(args, only_location) abort
     let args = a:args
 
     " If no pattern is given, use word under the cursor
@@ -89,31 +68,16 @@ func! ctrlsf#Search(args) abort
 
     let s:current_query = args
 
-    call s:ExecSearch(s:current_query)
-endf
-
-" SearchLocation()
-"
-func! ctrlsf#SearchLocation(args) abort
-    let args = a:args
-
-    " If no pattern is given, use word under the cursor
-    if empty(args)
-        let args = expand('<cword>')
-    endif
-
-    let s:current_query = args
-
-    call s:ExecSearchLocation(s:current_query)
+    call s:ExecSearch(s:current_query, a:only_location)
 endf
 
 " Update()
 "
-func! ctrlsf#Update() abort
+func! ctrlsf#Update(only_location) abort
     if empty(s:current_query)
         return -1
     endif
-    call s:ExecSearch(s:current_query)
+    call s:ExecSearch(s:current_query, a:only_location)
 endf
 
 " Open()
