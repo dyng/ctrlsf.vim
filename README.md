@@ -35,6 +35,8 @@ An ack/ag/pt powered code search and view tool, like ack.vim or `:vimgrep` but t
 
 - Preview mode for fast exploring.
 
+- View location results in a quickfix window.
+
 - Various options for customized search, view and edit.
 
 ## Installation
@@ -65,6 +67,8 @@ An ack/ag/pt powered code search and view tool, like ack.vim or `:vimgrep` but t
 
 6. `:CtrlSFOpen` can reopen CtrlSF window when you have closed CtrlSF window. It is free because it won't invoke a same but new search. A handy command `:CtrlSFToggle` is also available.
 
+7. Alternatively run `:CtrlSFLocation [pattern]`, it will only open a quickfix window to show search result.
+
 ## Key Maps
 
 In CtrlSF window:
@@ -89,25 +93,25 @@ Some default defined keys may conflict with keys you have been used to when you 
 
 There are also some useful maps need to be mentioned.
 
-- `<Plug>CtrlSFPrompt`
+- `<Plug>CtrlSFPrompt` / `<Plug>CtrlSFLocationPrompt`
 
-    Input `:CtrlSF ` in command line for you, just a handy shortcut.
+    Input `:CtrlSF ` or `:CtrlSFLocation ` in command line for you, just a handy shortcut.
 
-- `<Plug>CtrlSFVwordPath`
+- `<Plug>CtrlSFVwordPath` / `<Plug>CtrlSFVwordPathLocation`
 
-    Input `:CtrlSF foo ` in command line where `foo` is the current visual selected word, waiting for further input.
+    Input `:CtrlSF foo ` or `:CtrlSFLocation foo ` in command line where `foo` is the current visual selected word, waiting for further input.
 
-- `<Plug>CtrlSFVwordExec`
+- `<Plug>CtrlSFVwordExec` / `<Plug>CtrlSFVwordExecLocation`
 
-    Like `<Plug>CtrlSFVwordPath`, but execute it immediately.
+    Like `<Plug>CtrlSFVwordPath`/`<Plug>CtrlSFVwordPathLocation`, but execute it immediately.
 
-- `<Plug>CtrlSFCwordPath`
+- `<Plug>CtrlSFCwordPath` / `<Plug>CtrlSFCwordPathLocation`
 
-    Input `:CtrlSF foo ` in command line where `foo` is word under the cursor.
+    Input `:CtrlSF foo ` or `:CtrlSFLocation foo ` in command line where `foo` is word under the cursor.
 
-- `<Plug>CtrlSFPwordPath`
+- `<Plug>CtrlSFPwordPath` / `<Plug>CtrlSFPwordPathLocation`
 
-    Input `:CtrlSF foo ` in command line where `foo` is the last search pattern of vim.
+    Input `:CtrlSF foo `  or `:CtrlSFLocation foo `in command line where `foo` is the last search pattern of vim.
 
 For a full list of maps, please refer to the document.
 
@@ -124,6 +128,9 @@ nmap     <C-F>p <Plug>CtrlSFPwordPath
 nnoremap <C-F>o :CtrlSFOpen<CR>
 nnoremap <C-F>t :CtrlSFToggle<CR>
 inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
+nmap     <C-F>l <Plug>CtrlSFLocationPrompt
+vmap     <C-F>l <Plug>CtrlSFVwordPathLocation
+vmap     <C-F>L <Plug>CtrlSFVwordExecLocation
 ```
 
 ## Edit Mode

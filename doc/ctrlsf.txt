@@ -82,6 +82,9 @@ A typical workflow using CtrlSF is like this:
   It is free because it won't invoke a same but new search. A useful command
   |:CtrlSFToggle| is also available.
 
+  7. Alternatively run `:CtrlSFLocation [pattern]`, it will only open a
+  quickfix window to show search results.
+
 Note: The result set will additionally be stored in a |location-list| of the
 CtrlSF window. Open it using |:lopen|
 
@@ -144,6 +147,12 @@ mode:
   is given, the default directory is used, which is specified by
   |g:ctrlsf_default_root|.
 
+:CtrlSFLocation [arguments] {pattern} [path] ...                *:CtrlSFLocation*
+
+  Similar to |:CtrlSF|. Search {pattern}. Default is search by literal. Show
+  result in a quickfix window if there is no existing one, otherwise reuse
+  that one.
+
 :CtrlSFOpen                                                        *:CtrlSFOpen*
 
   If CtrlSF window is closed (by <q> or |:CtrlSFClose|), reopen it. If the
@@ -181,20 +190,42 @@ mode:
     <Plug>CtrlSFPrompt      Input 'CtrlSF' in command line and waiting, just a
                             handy shortcut.
 
+    <Plug>CtrlSFLocationPrompt  Input 'CtrlSFLocation' in command line and
+                                waiting, just a handy shortcut to reveal in a
+                                quickfix window.
+
     <Plug>CtrlSFVwordPath   Input current visual selected word in command line
                             and waiting for any other user input.
 
+                            Use <Plug>CtrlSFVwordPathLocation for quickfix
+                            only window.
+
     <Plug>CtrlSFVwordExec   Similar to above, but execute it immediately.
+
+                            Use <Plug>CtrlSFVwordExecLocation for quickfix
+                            only window.
 
     <Plug>CtrlSFCwordPath   Input word in the cursor in command line and
                             waiting.
 
+                            Use <Plug>CtrlSFCwordPathLocation for quickfix
+                            only window.
+
     <Plug>CtrlSFCwordExec   Similar to above, but execute it immediately.
+
+                            Use <Plug>CtrlSFCwordExecLocation for quickfix
+                            only window.
 
     <Plug>CtrlSFPwordPath   Input last search pattern in command line and
                             waiting.
 
+                            Use <Plug>CtrlSFPwordPathLocation for quickfix
+                            only window.
+
     <Plug>CtrlSFPwordExec   Similar to above, but execute it immediately.
+
+                            Use <Plug>CtrlSFPwordExecLocation for quickfix
+                            only window.
 
   Maps by default in CtrlSF window:
 

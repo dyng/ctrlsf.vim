@@ -46,8 +46,8 @@ endf
 " }}}
 
 " s:SearchCwordCmd() {{{2
-func! s:SearchCwordCmd(to_exec)
-    let cmd = ":\<C-U>CtrlSF " . expand('<cword>')
+func! s:SearchCwordCmd(type, to_exec)
+    let cmd = ":\<C-U>" . a:type . " " . expand('<cword>')
     let cmd .= a:to_exec ? "\r" : " "
     return cmd
 endf
@@ -56,8 +56,8 @@ endf
 " s:SearchVwordCmd() {{{2
 " Within evaluation of a expression typed visual map, we can not get
 " current visual selection normally, so I need to workaround it.
-func! s:SearchVwordCmd(to_exec)
-    let keys = '":\<C-U>CtrlSF " . g:CtrlSFGetVisualSelection()'
+func! s:SearchVwordCmd(type, to_exec)
+    let keys = '":\<C-U>'. a:type .' " . g:CtrlSFGetVisualSelection()'
     let keys .= a:to_exec ? '."\r"' : '." "'
     let cmd = ":\<C-U>call feedkeys(" . keys . ", 'n')\r"
     return cmd
@@ -65,8 +65,8 @@ endf
 " }}}
 
 " s:SearchPwordCmd() {{{2
-func! s:SearchPwordCmd(to_exec)
-    let cmd = ":\<C-U>CtrlSF " . @/
+func! s:SearchPwordCmd(type, to_exec)
+    let cmd = ":\<C-U>" . a:type . " " . @/
     let cmd .= a:to_exec ? "\r" : " "
     return cmd
 endf
@@ -209,9 +209,10 @@ endif
 " }}}
 
 " Commands {{{1
-com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSF        call ctrlsf#Search(<q-args>)
+com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSF        call ctrlsf#Search(<q-args>, 0)
+com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSFLocation call ctrlsf#Search(<q-args>, 1)
 com! -n=0                                         CtrlSFOpen    call ctrlsf#Open()
-com! -n=0                                         CtrlSFUpdate  call ctrlsf#Update()
+com! -n=0                                         CtrlSFUpdate  call ctrlsf#Update(0)
 com! -n=0                                         CtrlSFClose   call ctrlsf#Quit()
 com! -n=0                                         CtrlSFClearHL call ctrlsf#ClearSelectedLine()
 com! -n=0                                         CtrlSFToggle  call ctrlsf#Toggle()
@@ -219,12 +220,20 @@ com! -n=0                                         CtrlSFToggle  call ctrlsf#Togg
 
 " Maps {{{1
 nnoremap        <Plug>CtrlSFPrompt    :CtrlSF<Space>
-nnoremap <expr> <Plug>CtrlSFCwordPath <SID>SearchCwordCmd(0)
-nnoremap <expr> <Plug>CtrlSFCwordExec <SID>SearchCwordCmd(1)
-vnoremap <expr> <Plug>CtrlSFVwordPath <SID>SearchVwordCmd(0)
-vnoremap <expr> <Plug>CtrlSFVwordExec <SID>SearchVwordCmd(1)
-nnoremap <expr> <Plug>CtrlSFPwordPath <SID>SearchPwordCmd(0)
-nnoremap <expr> <Plug>CtrlSFPwordExec <SID>SearchPwordCmd(1)
+nnoremap <expr> <Plug>CtrlSFCwordPath <SID>SearchCwordCmd('CtrlSF', 0)
+nnoremap <expr> <Plug>CtrlSFCwordExec <SID>SearchCwordCmd('CtrlSF', 1)
+vnoremap <expr> <Plug>CtrlSFVwordPath <SID>SearchVwordCmd('CtrlSF', 0)
+vnoremap <expr> <Plug>CtrlSFVwordExec <SID>SearchVwordCmd('CtrlSF', 1)
+nnoremap <expr> <Plug>CtrlSFPwordPath <SID>SearchPwordCmd('CtrlSF', 0)
+nnoremap <expr> <Plug>CtrlSFPwordExec <SID>SearchPwordCmd('CtrlSF', 1)
+
+nnoremap        <Plug>CtrlSFLocationPrompt :CtrlSFLocation<Space>
+nnoremap <expr> <Plug>CtrlSFCwordPathLocation <SID>SearchCwordCmd('CtrlSFLocation', 0)
+nnoremap <expr> <Plug>CtrlSFCwordExecLocation <SID>SearchCwordCmd('CtrlSFLocation', 1)
+vnoremap <expr> <Plug>CtrlSFVwordPathLocation <SID>SearchVwordCmd('CtrlSFLocation', 0)
+vnoremap <expr> <Plug>CtrlSFVwordExecLocation <SID>SearchVwordCmd('CtrlSFLocation', 1)
+nnoremap <expr> <Plug>CtrlSFPwordPathLocation <SID>SearchPwordCmd('CtrlSFLocation', 0)
+nnoremap <expr> <Plug>CtrlSFPwordExecLocation <SID>SearchPwordCmd('CtrlSFLocation', 1)
 " }}}
 
 " modeline {{{1
