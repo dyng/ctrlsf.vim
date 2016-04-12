@@ -17,7 +17,7 @@ let s:only_quickfix = 0
 "
 " Basic process: query, parse, render and display.
 "
-func! s:ExecSearch(args) abort
+func! s:ExecSearch(args, only_quickfix) abort
     try
         call ctrlsf#opt#ParseOptions(a:args)
     catch /ParseOptionsException/
@@ -38,7 +38,7 @@ func! s:ExecSearch(args) abort
     call ctrlsf#db#ParseAckprgResult(output)
 
     " Only populate and open the quickfix window
-    if s:only_quickfix
+    if a:only_quickfix
       call setqflist(ctrlsf#db#MatchListQF())
       copen
       return
@@ -70,7 +70,7 @@ func! ctrlsf#Search(args, only_quickfix) abort
     let s:current_query = args
     let s:only_quickfix = a:only_quickfix
 
-    call s:ExecSearch(s:current_query)
+    call s:ExecSearch(s:current_query, s:only_quickfix)
 endf
 
 " Update()
@@ -79,7 +79,7 @@ func! ctrlsf#Update() abort
     if empty(s:current_query)
         return -1
     endif
-    call s:ExecSearch(s:current_query, s:only_location)
+    call s:ExecSearch(s:current_query, s:only_quickfix)
 endf
 
 " Open()
