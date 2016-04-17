@@ -21,18 +21,17 @@ If you can't find out why things do not work or can be sure it's a bug of CtrlSF
 | backend |             *ag 0.31.0*              |
 | locale  |            *en_US.UTF-8*             |
 
-- file:
+- log:
 
-    ```shell
-    # please tell me something about files that CtrlSF doesn't work as you expect.
-    # if the content of file is sensitive, at least tell me its encoding.
-    # it's important in some case!
-    name: ctrlsf/plugin.vim
-    encoding: utf-8
-    content:
-    # your file's content is here.
+    ```vim
+    " attach here CtrlSF's debug mode log
+    " you can pipe logs into a file by vim's :redir command
+    :let g:ctrlsf_debug_mode = 1
+    :redir >/tmp/ctrlsf.log
+    :CtrlSF something...
+    :redir END
     ```
-    
+
 - vimrc:
 
     ```vim
@@ -45,13 +44,16 @@ If you can't find out why things do not work or can be sure it's a bug of CtrlSF
         \ }
     ```
 
-- log:
 
-    ```vim
-    " attach here CtrlSF's debug mode log
-    " you can pipe logs into a file by vim's :redir command
-    :let g:ctrlsf_debug_mode = 1
-    :redir >/tmp/ctrlsf.log
-    :CtrlSF something...
-    :redir END
+- file:
+
+    ```shell
+    # please tell me something about files that CtrlSF doesn't work as you expect.
+    # if the content of file is sensitive, at least tell me its encoding.
+    # it's important in some case!
+    name: ctrlsf/plugin.vim
+    encoding: utf-8
+    content:
+    # your file's content is here.
     ```
+    
