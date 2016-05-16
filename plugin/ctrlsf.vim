@@ -48,7 +48,7 @@ endf
 " s:SearchCwordCmd() {{{2
 func! s:SearchCwordCmd(type, to_exec)
     let cmd = ":\<C-U>" . a:type . " " . expand('<cword>')
-    let cmd .= a:to_exec ? "\r" : " "
+    let cmd .= a:to_exec ? "\<CR>" : " "
     return cmd
 endf
 " }}}
@@ -58,8 +58,8 @@ endf
 " current visual selection normally, so I need to workaround it.
 func! s:SearchVwordCmd(type, to_exec)
     let keys = '":\<C-U>'. a:type .' " . g:CtrlSFGetVisualSelection()'
-    let keys .= a:to_exec ? '."\r"' : '." "'
-    let cmd = ":\<C-U>call feedkeys(" . keys . ", 'n')\r"
+    let keys .= a:to_exec ? '."\<CR>"' : '." "'
+    let cmd = ":\<C-U>call feedkeys(" . keys . ", 'n')\<CR>"
     return cmd
 endf
 " }}}
@@ -67,7 +67,7 @@ endf
 " s:SearchPwordCmd() {{{2
 func! s:SearchPwordCmd(type, to_exec)
     let cmd = ":\<C-U>" . a:type . " " . @/
-    let cmd .= a:to_exec ? "\r" : " "
+    let cmd .= a:to_exec ? "\<CR>" : " "
     return cmd
 endf
 " }}}
@@ -219,21 +219,21 @@ com! -n=0                                         CtrlSFToggle  call ctrlsf#Togg
 " }}}
 
 " Maps {{{1
-nnoremap        <Plug>CtrlSFPrompt    :CtrlSF<Space>
+nnoremap <Plug>CtrlSFPrompt    :CtrlSF<Space>
 nnoremap <expr> <Plug>CtrlSFCwordPath <SID>SearchCwordCmd('CtrlSF', 0)
-nnoremap <expr> <Plug>CtrlSFCwordExec <SID>SearchCwordCmd('CtrlSF', 1)
+nnoremap <silent> <expr> <Plug>CtrlSFCwordExec <SID>SearchCwordCmd('CtrlSF', 1)
 vnoremap <expr> <Plug>CtrlSFVwordPath <SID>SearchVwordCmd('CtrlSF', 0)
-vnoremap <expr> <Plug>CtrlSFVwordExec <SID>SearchVwordCmd('CtrlSF', 1)
+vnoremap <silent> <expr> <Plug>CtrlSFVwordExec <SID>SearchVwordCmd('CtrlSF', 1)
 nnoremap <expr> <Plug>CtrlSFPwordPath <SID>SearchPwordCmd('CtrlSF', 0)
-nnoremap <expr> <Plug>CtrlSFPwordExec <SID>SearchPwordCmd('CtrlSF', 1)
+nnoremap <silent> <expr> <Plug>CtrlSFPwordExec <SID>SearchPwordCmd('CtrlSF', 1)
 
-nnoremap        <Plug>CtrlSFQuickfixPrompt :CtrlSFQuickfix<Space>
+nnoremap <Plug>CtrlSFQuickfixPrompt :CtrlSFQuickfix<Space>
 nnoremap <expr> <Plug>CtrlSFQuickfixCwordPath <SID>SearchCwordCmd('CtrlSFQuickfix', 0)
-nnoremap <expr> <Plug>CtrlSFQuickfixCwordExec <SID>SearchCwordCmd('CtrlSFQuickfix', 1)
+nnoremap <silent> <expr> <Plug>CtrlSFQuickfixCwordExec <SID>SearchCwordCmd('CtrlSFQuickfix', 1)
 vnoremap <expr> <Plug>CtrlSFQuickfixVwordPath <SID>SearchVwordCmd('CtrlSFQuickfix', 0)
-vnoremap <expr> <Plug>CtrlSFQuickfixVwordExec <SID>SearchVwordCmd('CtrlSFQuickfix', 1)
+vnoremap <silent> <expr> <Plug>CtrlSFQuickfixVwordExec <SID>SearchVwordCmd('CtrlSFQuickfix', 1)
 nnoremap <expr> <Plug>CtrlSFQuickfixPwordPath <SID>SearchPwordCmd('CtrlSFQuickfix', 0)
-nnoremap <expr> <Plug>CtrlSFQuickfixPwordExec <SID>SearchPwordCmd('CtrlSFQuickfix', 1)
+nnoremap <silent> <expr> <Plug>CtrlSFQuickfixPwordExec <SID>SearchPwordCmd('CtrlSFQuickfix', 1)
 " }}}
 
 " modeline {{{1
