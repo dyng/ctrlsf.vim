@@ -211,28 +211,28 @@ endif
 " Commands {{{1
 com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSF         call ctrlsf#Search(<q-args>, 0)
 com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSFQuickfix call ctrlsf#Search(<q-args>, 1)
-com! -n=0                                         CtrlSFOpen    call ctrlsf#Open()
-com! -n=0                                         CtrlSFUpdate  call ctrlsf#Update()
-com! -n=0                                         CtrlSFClose   call ctrlsf#Quit()
-com! -n=0                                         CtrlSFClearHL call ctrlsf#ClearSelectedLine()
-com! -n=0                                         CtrlSFToggle  call ctrlsf#Toggle()
+com! -n=0                                         CtrlSFOpen     call ctrlsf#Open()
+com! -n=0                                         CtrlSFUpdate   call ctrlsf#Update()
+com! -n=0                                         CtrlSFClose    call ctrlsf#Quit()
+com! -n=0                                         CtrlSFClearHL  call ctrlsf#ClearSelectedLine()
+com! -n=0                                         CtrlSFToggle   call ctrlsf#Toggle()
 " }}}
 
 " Maps {{{1
-nnoremap <Plug>CtrlSFPrompt    :CtrlSF<Space>
-nnoremap <expr> <Plug>CtrlSFCwordPath <SID>SearchCwordCmd('CtrlSF', 0)
+nnoremap                 <Plug>CtrlSFPrompt    :CtrlSF<Space>
+nnoremap          <expr> <Plug>CtrlSFCwordPath <SID>SearchCwordCmd('CtrlSF', 0)
 nnoremap <silent> <expr> <Plug>CtrlSFCwordExec <SID>SearchCwordCmd('CtrlSF', 1)
-vnoremap <expr> <Plug>CtrlSFVwordPath <SID>SearchVwordCmd('CtrlSF', 0)
+vnoremap          <expr> <Plug>CtrlSFVwordPath <SID>SearchVwordCmd('CtrlSF', 0)
 vnoremap <silent> <expr> <Plug>CtrlSFVwordExec <SID>SearchVwordCmd('CtrlSF', 1)
-nnoremap <expr> <Plug>CtrlSFPwordPath <SID>SearchPwordCmd('CtrlSF', 0)
+nnoremap          <expr> <Plug>CtrlSFPwordPath <SID>SearchPwordCmd('CtrlSF', 0)
 nnoremap <silent> <expr> <Plug>CtrlSFPwordExec <SID>SearchPwordCmd('CtrlSF', 1)
 
-nnoremap <Plug>CtrlSFQuickfixPrompt :CtrlSFQuickfix<Space>
-nnoremap <expr> <Plug>CtrlSFQuickfixCwordPath <SID>SearchCwordCmd('CtrlSFQuickfix', 0)
+nnoremap                 <Plug>CtrlSFQuickfixPrompt    :CtrlSFQuickfix<Space>
+nnoremap          <expr> <Plug>CtrlSFQuickfixCwordPath <SID>SearchCwordCmd('CtrlSFQuickfix', 0)
 nnoremap <silent> <expr> <Plug>CtrlSFQuickfixCwordExec <SID>SearchCwordCmd('CtrlSFQuickfix', 1)
-vnoremap <expr> <Plug>CtrlSFQuickfixVwordPath <SID>SearchVwordCmd('CtrlSFQuickfix', 0)
+vnoremap          <expr> <Plug>CtrlSFQuickfixVwordPath <SID>SearchVwordCmd('CtrlSFQuickfix', 0)
 vnoremap <silent> <expr> <Plug>CtrlSFQuickfixVwordExec <SID>SearchVwordCmd('CtrlSFQuickfix', 1)
-nnoremap <expr> <Plug>CtrlSFQuickfixPwordPath <SID>SearchPwordCmd('CtrlSFQuickfix', 0)
+nnoremap          <expr> <Plug>CtrlSFQuickfixPwordPath <SID>SearchPwordCmd('CtrlSFQuickfix', 0)
 nnoremap <silent> <expr> <Plug>CtrlSFQuickfixPwordExec <SID>SearchPwordCmd('CtrlSFQuickfix', 1)
 " }}}
 
