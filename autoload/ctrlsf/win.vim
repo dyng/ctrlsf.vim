@@ -56,7 +56,7 @@ func! ctrlsf#win#OpenMainWindow() abort
           \ 'top'    : 'topleft',  'left'  : 'topleft vertical',
           \ 'bottom' : 'botright', 'right' : 'botright vertical'}
           \[g:ctrlsf_position] . ' '
-    exec 'silent keepalt ' . openpos . winsize . 'split ' . '__CtrlSF__'
+    exec 'silent keepalt ' . openpos . winsize . 'split ' . (bufnr('__CtrlSF__') != -1 ? '+b'.bufnr('__CtrlSF__') : '__CtrlSF__')
 
     call s:InitMainWindow()
 
