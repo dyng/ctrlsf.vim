@@ -40,7 +40,7 @@ func! s:ExecSearch(args, only_quickfix) abort
     " Only populate and open the quickfix window
     if a:only_quickfix
       call setqflist(ctrlsf#db#MatchListQF())
-      copen
+      botright copen
       return
     endif
 
