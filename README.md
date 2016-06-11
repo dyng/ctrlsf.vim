@@ -43,12 +43,12 @@ An ack/ag/pt powered code search and view tool, like ack.vim or `:vimgrep` but t
 
 1. Make sure you have [ack][1], [ag][2] or [pt][8] installed. (Note: currently only Ack2 is supported by plan)
 
-2. An easy way to install CtrlSF is using a package manager, like [pathogen][3], [vundle][4] or [neobundle][5].
+2. An easy way to install CtrlSF is using a package manager, like [pathogen][3], [vundle][4], [neobundle][5] or [vim-plug][9].
 
-    In vundle:
+    In vim-plug:
 
     ```vim
-    Bundle 'dyng/ctrlsf.vim'
+    Plug 'dyng/ctrlsf.vim'
     ```
 
 3. Read *Basic Usage* for how to use.
@@ -304,3 +304,4 @@ CtrlSF -I foo
 [6]: https://github.com/gabesoft/vim-ags
 [7]: https://github.com/terryma/vim-multiple-cursors
 [8]: https://github.com/monochromegane/the_platinum_searcher
+[9]: https://github.com/junegunn/vim-plug
