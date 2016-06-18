@@ -196,9 +196,9 @@ func! ctrlsf#edit#Save() abort
 
     " prompt to confirm save
     if g:ctrlsf_confirm_save
-        let mes = printf("%s files will be saved. Confirm? (Y/n)", len(changed))
-        let confirm = input(mes) | redraw
-        if !(confirm ==? 'y' || confirm ==? '')
+        echo printf("%s files will be saved. Confirm? (Y/n)", len(changed))
+        let confirm = nr2char(getchar()) | redraw
+        if !(confirm ==? "y" || confirm ==? "\r")
             call ctrlsf#log#Info("Cancelled.")
             return -1
         endif
