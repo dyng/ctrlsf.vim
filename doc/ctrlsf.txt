@@ -375,10 +375,19 @@ when something does not work as you expected.
 g:ctrlsf_default_root                                  *'g:ctrlsf_default_root'*
 Default: 'cwd'
 Defines how CtrlSF works if no explicit search path is given. Possible value
-is 'cwd' and 'project'. With 'cwd', CtrlSF uses current working directory as
-its search root. With 'project', CtrlSF will try to find project root of
-current file and use it. A project root is a directory which VCS folder is
-placed in, currently CtrlSF can recognize .git, .hg, .svn, .bzr, _darcs.
+is 'cwd','project' and 'project+cwd'.
+
+Explanation for each option:
+
+'cwd'         - Use current working directory.
+'project'     - CtrlSF will try to find project root from current file to
+                its ancestors. A project root is a directory with VCS
+                folder is placed in. Currently CtrlSF can recognize .git,
+                .hg, .svn, .bzr, _darcs.
+'project+cwd' - Same as 'project'. But if a project root is not found, then
+                search again from current working directory, if CtrlSF still
+                can not find a project root, use current working directory as
+                search root.
 >
     let g:ctrlsf_default_root = 'project'
 <
