@@ -143,14 +143,25 @@ func! ctrlsf#opt#GetPath() abort
             endfo
         endfo
     else
-        let path = {
-            \ 'project' : ctrlsf#fs#FindVcsRoot(),
-            \ 'cwd'     : getcwd(),
-            \ }[g:ctrlsf_default_root]
-        " If project root is not found, use current file
-        if empty(path)
-            let path = expand('%:p')
+        let path = ''
+
+        if g:ctrlsf_default_root ==# 'cwd'
+            let path = getcwd()
+        elseif g:ctrlsf_default_root ==# 'project'
+            let path = ctrlsf#fs#FindVcsRoot()
+            if empty(path)
+                let path = expand('%:p')
+            endif
+        elseif g:ctrlsf_default_root ==# 'project+cwd'
+            let path = ctrlsf#fs#FindVcsRoot()
+            if empty(path)
+                let path = ctrlsf#fs#FindVcsRoot(getcwd())
+            endif
+            if empty(path)
+                let path = getcwd()
+            endif
         endif
+
         call add(path_tokens, shellescape(path))
     endif
 
