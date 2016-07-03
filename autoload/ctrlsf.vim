@@ -48,6 +48,9 @@ func! s:ExecSearch(args, only_quickfix) abort
     call ctrlsf#win#Draw()
     call ctrlsf#buf#ClearUndoHistory()
     call ctrlsf#hl#HighlightMatch()
+
+    " scroll up to top line
+    1normal z<CR>
     call ctrlsf#NextMatch(0, 1)
 
     " populate quickfix and location list
