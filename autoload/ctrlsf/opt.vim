@@ -147,18 +147,31 @@ func! ctrlsf#opt#GetPath() abort
 
         if g:ctrlsf_default_root ==# 'cwd'
             let path = getcwd()
-        elseif g:ctrlsf_default_root ==# 'project'
-            let path = ctrlsf#fs#FindVcsRoot()
-            if empty(path)
-                let path = expand('%:p')
+        else
+            " default value for 'project'
+            let opt_sroot = 'f'
+            let opt_fbroot = 'f'
+
+            let opt_idx = stridx(g:ctrlsf_default_root, '+')
+            if opt_idx > -1
+                let opt_sroot = strpart(g:ctrlsf_default_root, opt_idx+1, 1)
+                let opt_fbroot = strpart(g:ctrlsf_default_root, opt_idx+2, 1)
             endif
-        elseif g:ctrlsf_default_root ==# 'project+cwd'
-            let path = ctrlsf#fs#FindVcsRoot()
-            if empty(path)
+
+            " try to find project root
+            if opt_sroot ==# 'f'
+                let path = ctrlsf#fs#FindVcsRoot()
+            elseif opt_sroot ==# 'w'
                 let path = ctrlsf#fs#FindVcsRoot(getcwd())
             endif
+
+            " fallback to specified root
             if empty(path)
-                let path = getcwd()
+                if opt_fbroot ==# 'f'
+                    let path = expand('%:p')
+                elseif opt_fbroot ==# 'w'
+                    let path = getcwd()
+                endif
             endif
         endif
 

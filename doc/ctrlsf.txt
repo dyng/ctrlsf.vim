@@ -375,7 +375,7 @@ when something does not work as you expected.
 g:ctrlsf_default_root                                  *'g:ctrlsf_default_root'*
 Default: 'cwd'
 Defines how CtrlSF works if no explicit search path is given. Possible value
-is 'cwd','project' and 'project+cwd'.
+is 'cwd','project' and 'project+xx'.('xx' is two sub-options for 'project'.)
 
 Explanation for each option:
 
@@ -384,12 +384,23 @@ Explanation for each option:
                 its ancestors. A project root is a directory with VCS
                 folder is placed in. Currently CtrlSF can recognize .git,
                 .hg, .svn, .bzr, _darcs.
-'project+cwd' - Same as 'project'. But if a project root is not found, then
-                search again from current working directory, if CtrlSF still
-                can not find a project root, use current working directory as
-                search root.
+'project+xx'  - Same as 'project'. But you can have more control about how
+                project directory is found and fallback root if no project
+                root is found.
+
+    First 'x' defines from where to search project root. It has 2 possible
+    values:
+        'f' - search from current file.
+        'w' - search from current working directory.
+
+    Second 'x' defines the fallback search root for the case project root is
+    not found. It has 2 possible values:
+        'f' - current file is fallback search root.
+        'w' - current working directory is fallback search root.
+
+    Option 'project' is identical to 'project+ff'.
 >
-    let g:ctrlsf_default_root = 'project'
+    let g:ctrlsf_default_root = 'project+fw'
 <
 g:ctrlsf_extra_backend_args                      *'g:ctrlsf_extra_backend_args'*
 Default: {}
