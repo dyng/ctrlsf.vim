@@ -10,10 +10,16 @@ let s:vcs_folder = ['.git', '.hg', '.svn', '.bzr', '_darcs']
 
 " FindVcsRoot()
 "
-func! ctrlsf#fs#FindVcsRoot() abort
+func! ctrlsf#fs#FindVcsRoot(...) abort
+    if a:0 > 0
+        let start_dir = a:1
+    else
+        let start_dir = expand('%:p:h')
+    endif
+
     let vsc_dir = ''
     for vcs in s:vcs_folder
-        let vsc_dir = finddir(vcs, expand('%:p:h').';')
+        let vsc_dir = finddir(vcs, start_dir.';')
         if !empty(vsc_dir)
             break
         endif
