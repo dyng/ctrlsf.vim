@@ -35,7 +35,12 @@ func! s:ExecSearch(args, only_quickfix) abort
         return -1
     endif
 
-    call ctrlsf#db#ParseAckprgResult(output)
+    let success = ctrlsf#db#ParseAckprgResult(output)
+    if !success
+        let errors = ctrlsf#db#LastErrors()
+        call ctrlsf#log#Error("Errors found in backend's result. Error messages:\n%s",
+            \ join(errors, "\n"))
+    endif
 
     " Only populate and open the quickfix window
     if a:only_quickfix

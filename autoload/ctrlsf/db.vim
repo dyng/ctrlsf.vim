@@ -8,6 +8,9 @@
 " List of paragraphs, paragraph is main object which stores parsed query result
 let s:resultset = []
 
+" List of errors collected from backend's result
+let s:errors = []
+
 " cache contains ALL cacheable result
 let s:cache = {}
 
@@ -95,6 +98,12 @@ func! ctrlsf#db#MaxLnum()
     return max
 endf
 
+" LastErrors()
+"
+func! ctrlsf#db#LastErrors()
+    return s:errors
+endf
+
 """""""""""""""""""""""""""""""""
 " Setter
 """""""""""""""""""""""""""""""""
@@ -152,11 +161,34 @@ func! s:DefactorizeLine(line, fname_guess) abort
     return [filename, lnum, content]
 endf
 
+" CollectErrorMessage()
+"
+func! s:CollectErrorMessage(line) abort
+    if !has_key(s:cache, "runner")
+        let s:cache["runner"] = ctrlsf#backend#Runner()
+    endif
+    let runner = s:cache["runner"]
+
+    if runner ==# 'ag' && a:line =~# '^ERR: '
+        call add(s:errors, a:line)
+        return 1
+    elseif runner ==# 'pt' && a:line =~# '^\v\d{4}/\d{2}/\d{2}'
+        call add(s:errors, a:line)
+        return 1
+    elseif runner ==# 'ack' && a:line =~# '^ack: '
+        call add(s:errors, a:line)
+        return 1
+    else
+        return 0
+    endif
+endf
+
 " ParseAckprgResult()
 "
 func! ctrlsf#db#ParseAckprgResult(result) abort
     " reset
     let s:resultset = []
+    let s:errors = []
     call ctrlsf#db#ClearCache()
 
     " in case of mixed text from win-style files and unix-style files, breaks
@@ -177,6 +209,11 @@ func! ctrlsf#db#ParseAckprgResult(result) abort
 
             " don't rely on division line any longer. ignore it.
             if line =~ '^--$' || line =~ '^$'
+                continue
+            endif
+
+            " collect error message from this line (if any)
+            if s:CollectErrorMessage(line)
                 continue
             endif
 
@@ -204,6 +241,12 @@ func! ctrlsf#db#ParseAckprgResult(result) abort
 
         let current_file = next_file
     endwh
+
+    if !empty(s:errors)
+        return 0
+    else
+        return 1
+    endif
 endf
 
 """""""""""""""""""""""""""""""""
