@@ -115,6 +115,9 @@ func! s:BuildCommand(args) abort
     " path
     call extend(tokens, ctrlsf#opt#GetPath())
 
+    " ignore stderr
+    call add(tokens, " 2>/dev/null")
+
     return join(tokens, ' ')
 endf
 
