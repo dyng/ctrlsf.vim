@@ -193,10 +193,18 @@ func! ctrlsf#backend#Run(args) abort
     " A windows user reports CtrlSF doesn't work well when 'shelltemp' is
     " turned off. Although I can't reproduce it, I think forcing 'shelltemp'
     " would not do something really bad.
-    let stmp_bak = &shelltemp
+    let shtmp_bak = &shelltemp
     set shelltemp
+
+    " Redirect error message to dedicated error file
+    let shrd_bak = &shellredir
+    let &shellredir='1>%s\ 2>~/.ctrlsf_error_file'
+
     let output = system(command)
-    let &shelltemp = stmp_bak
+
+    " Restore previous values
+    let &shelltemp = shtmp_bak
+    let &shellredir = shrd_bak
 
     if v:shell_error && !empty(output)
         return [0, output]
