@@ -92,6 +92,12 @@ if !exists('g:ctrlsf_case_sensitive')
 endif
 " }}}
 
+" g:ctrlsf_cmd_error_file {{{2
+if !exists('g:ctrlsf_cmd_error_file')
+    let g:ctrlsf_cmd_error_file = '~/.ctrlsf_cmd_error_file'
+endif
+" }}}
+
 " g:ctrlsf_confirm_save {{{2
 if !exists('g:ctrlsf_confirm_save')
     let g:ctrlsf_confirm_save = 1

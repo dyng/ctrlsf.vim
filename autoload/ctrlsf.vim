@@ -35,6 +35,15 @@ func! s:ExecSearch(args, only_quickfix) abort
         return -1
     endif
 
+    " Print error messages from backend (Debug Mode)
+    try
+        let err_msg = join(readfile(expand(g:ctrlsf_cmd_error_file), "\n"))
+        call ctrlsf#log#Debug("Errors reported by backend:\n%s", err_msg)
+    catch
+        call ctrlsf#log#Debug("Exception caught: %s", v:exception)
+    endtry
+
+    " Parsing
     call ctrlsf#db#ParseAckprgResult(output)
 
     " Only populate and open the quickfix window

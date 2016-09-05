@@ -196,13 +196,11 @@ func! ctrlsf#backend#Run(args) abort
     let shtmp_bak = &shelltemp
     set shelltemp
 
-    " Redirect error message to dedicated error file
     let shrd_bak = &shellredir
-    let &shellredir='1>%s\ 2>~/.ctrlsf_error_file'
+    let &shellredir='1>%s 2>'.g:ctrlsf_cmd_error_file
 
     let output = system(command)
 
-    " Restore previous values
     let &shelltemp = shtmp_bak
     let &shellredir = shrd_bak
 
