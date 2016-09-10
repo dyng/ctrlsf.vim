@@ -139,6 +139,7 @@ let s:default_mapping = {
     \ "open"    : ["<CR>", "o"],
     \ "openb"   : "O",
     \ "split"   : "<C-O>",
+    \ "vsplit"  : "<C-o>",
     \ "tab"     : "t",
     \ "tabb"    : "T",
     \ "popen"   : "p",

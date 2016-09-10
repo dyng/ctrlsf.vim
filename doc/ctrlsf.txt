@@ -440,6 +440,7 @@ Default:
         "open"    : ["<CR>", "o"],
         "openb"   : "O",
         "split"   : "<C-O>",
+        "vsplit"  : "<C-o>",
         "tab"     : "t",
         "tabb"    : "T",
         "popen"   : "p",
