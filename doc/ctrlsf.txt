@@ -2,7 +2,7 @@
 
 Author:  Ye Ding <dygvirus@gmail.com>
 Licence: Vim licence, see |license|
-Version: 1.7.3
+Version: 1.7.4
 
 
            .-') _   _  .-')              .-')               
