@@ -179,7 +179,9 @@ func! ctrlsf#JumpTo(mode) abort
     elseif a:mode ==# 'tab_background'
         call s:OpenFileInTab(file, lnum, col, 2)
     elseif a:mode ==# 'preview'
-        call s:PreviewFile(file, lnum, col)
+        call s:PreviewFile(file, lnum, col, 0)
+    elseif a:mode ==# 'preview_foreground'
+        call s:PreviewFile(file, lnum, col, 1)
     endif
 endf
 
@@ -279,7 +281,7 @@ endf
 
 " s:PreviewFile()
 "
-func! s:PreviewFile(file, lnum, col) abort
+func! s:PreviewFile(file, lnum, col, follow) abort
     call ctrlsf#preview#OpenPreviewWindow()
 
     if !exists('b:ctrlsf_file') || b:ctrlsf_file !=# a:file
@@ -297,7 +299,9 @@ func! s:PreviewFile(file, lnum, col) abort
         call ctrlsf#hl#HighlightSelectedLine()
     endif
 
-    call ctrlsf#win#FocusMainWindow()
+    if !a:follow
+        call ctrlsf#win#FocusMainWindow()
+    endif
 endf
 
 " ClearSelectedLine()

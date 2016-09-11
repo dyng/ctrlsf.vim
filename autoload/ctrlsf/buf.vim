@@ -70,19 +70,20 @@ func! ctrlsf#buf#ToggleMap(...) abort
         let enable_map = !b:ctrlsf_map_enabled
     endif
 
-    " key 'prevw' is a deprecated key but here for backward compatibility
+    " key 'prevw' is deprecated but remains for backward compatibility
     let act_func_ref = {
-        \ "open"  : "ctrlsf#JumpTo('open')",
-        \ "openb" : "ctrlsf#JumpTo('open_background')",
-        \ "split" : "ctrlsf#JumpTo('split')",
-        \ "tab"   : "ctrlsf#JumpTo('tab')",
-        \ "tabb"  : "ctrlsf#JumpTo('tab_background')",
-        \ "prevw" : "ctrlsf#JumpTo('preview')",
-        \ "popen" : "ctrlsf#JumpTo('preview')",
-        \ "quit"  : "ctrlsf#Quit()",
-        \ "next"  : "ctrlsf#NextMatch(-1, 1)",
-        \ "prev"  : "ctrlsf#NextMatch(-1, 0)",
-        \ "llist" : "ctrlsf#OpenLocList()",
+        \ "open"   : "ctrlsf#JumpTo('open')",
+        \ "openb"  : "ctrlsf#JumpTo('open_background')",
+        \ "split"  : "ctrlsf#JumpTo('split')",
+        \ "tab"    : "ctrlsf#JumpTo('tab')",
+        \ "tabb"   : "ctrlsf#JumpTo('tab_background')",
+        \ "prevw"  : "ctrlsf#JumpTo('preview')",
+        \ "popen"  : "ctrlsf#JumpTo('preview')",
+        \ "popenf" : "ctrlsf#JumpTo('preview_foreground')",
+        \ "quit"   : "ctrlsf#Quit()",
+        \ "next"   : "ctrlsf#NextMatch(-1, 1)",
+        \ "prev"   : "ctrlsf#NextMatch(-1, 0)",
+        \ "llist"  : "ctrlsf#OpenLocList()",
         \ }
 
     if enable_map
