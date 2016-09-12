@@ -75,6 +75,7 @@ func! ctrlsf#buf#ToggleMap(...) abort
         \ "open"  : "ctrlsf#JumpTo('open')",
         \ "openb" : "ctrlsf#JumpTo('open_background')",
         \ "split" : "ctrlsf#JumpTo('split')",
+        \ "vsplit": "ctrlsf#JumpTo('vsplit')",
         \ "tab"   : "ctrlsf#JumpTo('tab')",
         \ "tabb"  : "ctrlsf#JumpTo('tab_background')",
         \ "prevw" : "ctrlsf#JumpTo('preview')",

@@ -174,6 +174,8 @@ func! ctrlsf#JumpTo(mode) abort
         call s:OpenFileInWindow(file, lnum, col, 2, 0)
     elseif a:mode ==# 'split'
         call s:OpenFileInWindow(file, lnum, col, 1, 1)
+    elseif a:mode ==# 'vsplit'
+        call s:OpenFileInWindow(file, lnum, col, 1, 2)
     elseif a:mode ==# 'tab'
         call s:OpenFileInTab(file, lnum, col, 1)
     elseif a:mode ==# 'tab_background'
@@ -221,7 +223,8 @@ endf
 " About split:
 "
 " '0' means don't split by default unless there exists unsaved changes.
-" '1' means split in any case.
+" '1' means split horizontally.
+" '2' means split vertically
 "
 func! s:OpenFileInWindow(file, lnum, col, mode, split) abort
     if a:mode == 1 && g:ctrlsf_auto_close
@@ -236,7 +239,11 @@ func! s:OpenFileInWindow(file, lnum, col, mode, split) abort
 
         if bufname('%') !~# a:file
             if a:split || (&modified && !&hidden)
-                exec 'silent split ' . fnameescape(a:file)
+                if a:split == 2
+                    exec 'silent vertical split ' . fnameescape(a:file)
+                else
+                    exec 'silent split ' . fnameescape(a:file)
+                endif
             else
                 exec 'silent edit ' . fnameescape(a:file)
             endif
