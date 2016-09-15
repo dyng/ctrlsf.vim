@@ -132,8 +132,12 @@ endf
 " Quit()
 "
 func! ctrlsf#Quit() abort
-    call ctrlsf#preview#ClosePreviewWindow()
-    call ctrlsf#win#CloseMainWindow()
+    if g:ctrlsf_confirm_unsaving_quit &&
+                \ !ctrlsf#buf#WarnIfChanged()
+        return
+    endif
+
+    call s:Quit()
 endf
 
 " OpenLocList()
@@ -158,6 +162,11 @@ func! ctrlsf#JumpTo(mode) abort
     let [file, line, match] = ctrlsf#view#Reflect(line('.'))
 
     if empty(file) || empty(line)
+        return
+    endif
+
+    if g:ctrlsf_confirm_unsaving_quit &&
+                \ !ctrlsf#buf#WarnIfChanged()
         return
     endif
 
@@ -226,7 +235,7 @@ endf
 "
 func! s:OpenFileInWindow(file, lnum, col, mode, split) abort
     if a:mode == 1 && g:ctrlsf_auto_close
-        call ctrlsf#Quit()
+        call s:Quit()
     endif
 
     let target_winnr = ctrlsf#win#FindTargetWindow(a:file)
@@ -266,7 +275,7 @@ endf
 "
 func! s:OpenFileInTab(file, lnum, col, mode) abort
     if a:mode == 1 && g:ctrlsf_auto_close
-        call ctrlsf#Quit()
+        call s:Quit()
     endif
 
     exec 'silen tabedit ' . fnameescape(a:file)
@@ -305,6 +314,13 @@ func! s:PreviewFile(file, lnum, col, follow) abort
     if !a:follow
         call ctrlsf#win#FocusMainWindow()
     endif
+endf
+
+" s:Quit()
+"
+func! s:Quit() abort
+    call ctrlsf#preview#ClosePreviewWindow()
+    call ctrlsf#win#CloseMainWindow()
 endf
 
 " ClearSelectedLine()
