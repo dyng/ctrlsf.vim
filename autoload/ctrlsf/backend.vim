@@ -5,6 +5,9 @@
 " Version: 1.7.4
 " ============================================================================
 
+" Log file that collects error messages from backend
+let s:backend_error_log_file = tempname()
+
 " BuildCommand()
 "
 func! s:BuildCommand(args) abort
@@ -176,6 +179,18 @@ func! ctrlsf#backend#Runner()
     endif
 endf
 
+" LastErrors()
+"
+func! ctrlsf#backend#LastErrors()
+    try
+        return join(readfile(expand(s:backend_error_log_file)), "\n")
+    catch
+        call ctrlsf#log#Debug("Exception caught in reading error los: %s",
+                    \ v:exception)
+        return ""
+    endtry
+endf
+
 " Run()
 "
 " Execute backend.
@@ -197,7 +212,7 @@ func! ctrlsf#backend#Run(args) abort
     set shelltemp
 
     let shrd_bak = &shellredir
-    let &shellredir='1>%s 2>'.g:ctrlsf_cmd_error_file
+    let &shellredir='1>%s 2>'.s:backend_error_log_file
 
     let output = system(command)
 
