@@ -143,6 +143,7 @@ let s:default_mapping = {
     \ "tab"     : "t",
     \ "tabb"    : "T",
     \ "popen"   : "p",
+    \ "popenf"  : "P",
     \ "quit"    : "q",
     \ "next"    : "<C-J>",
     \ "prev"    : "<C-K>",
