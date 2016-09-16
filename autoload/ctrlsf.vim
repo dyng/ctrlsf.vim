@@ -165,7 +165,11 @@ func! ctrlsf#JumpTo(mode) abort
         return
     endif
 
-    if g:ctrlsf_confirm_unsaving_quit &&
+    if (a:mode ==# "open"
+                \ || a:mode ==# "split"
+                \ || a:mode ==# "vsplit"
+                \ || a:mode ==# "tab") &&
+                \ g:ctrlsf_confirm_unsaving_quit &&
                 \ !ctrlsf#buf#WarnIfChanged()
         return
     endif

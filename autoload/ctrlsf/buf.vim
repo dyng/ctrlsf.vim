@@ -38,7 +38,7 @@ endf
 func! ctrlsf#buf#WarnIfChanged() abort
     if getbufvar('%', '&modified')
         call ctrlsf#log#Warn("Will discard ALL unsaved changes, continue? (Y/n)")
-        let confirm = nr2char(getchar()) | redraw
+        let confirm = nr2char(getchar()) | redraw!
         if !(confirm ==? "y" || confirm ==? "\r")
             return 0
         endif
