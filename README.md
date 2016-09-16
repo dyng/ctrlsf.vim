@@ -78,6 +78,7 @@ In CtrlSF window:
 - `<C-O>` - Like `Enter` but open file in a horizontal split window.
 - `t` - Like `Enter` but open file in a new tab.
 - `p` - Like `Enter` but open file in a preview window.
+- `P` - Like `Enter` but open file in a preview window and switch focus to it.
 - `O` - Like `Enter` but always leave CtrlSF window opening.
 - `T` - Like `t` but focus CtrlSF window instead of new opened tab.
 - `q` - Quit CtrlSF window.
