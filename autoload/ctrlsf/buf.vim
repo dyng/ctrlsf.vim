@@ -33,6 +33,19 @@ func! ctrlsf#buf#WriteFile(file) abort
     call setbufvar('%', '&modified', 0)
 endf
 
+" WarnIfChanged()
+"
+func! ctrlsf#buf#WarnIfChanged() abort
+    if getbufvar('%', '&modified')
+        call ctrlsf#log#Warn("Will discard ALL unsaved changes, continue? (Y/n)")
+        let confirm = nr2char(getchar()) | redraw!
+        if !(confirm ==? "y" || confirm ==? "\r")
+            return 0
+        endif
+    endif
+    return 1
+endf
+
 " ClearUndoHistory()
 "
 func! ctrlsf#buf#ClearUndoHistory() abort

@@ -97,6 +97,12 @@ if !exists('g:ctrlsf_confirm_save')
     let g:ctrlsf_confirm_save = 1
 endif
 " }}}
+"
+" g:ctrlsf_confirm_unsaving_quit {{{2
+if !exists('g:ctrlsf_confirm_unsaving_quit')
+    let g:ctrlsf_confirm_unsaving_quit = 1
+endif
+" }}}
 
 " g:ctrlsf_context {{{2
 if !exists('g:ctrlsf_context')
