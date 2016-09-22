@@ -36,9 +36,10 @@ func! s:TranslateRegex(pattern) abort
     let pattern = substitute(pattern, '\v\(\?\>(.{-})\)', '(\1)@>', 'g')
 
     " '\b' word boundary
-    let pattern = substitute(pattern, '\\b', '(<|>)', 'g')
+    let pattern = substitute(pattern, '\C\\b', '(<|>)', 'g')
 
-    " TODO:'\B' support
+    " '\B' non-word boundary (just remove it)
+    let pattern = substitute(pattern, '\C\\B', '', 'g')
 
     return pattern
 endf
