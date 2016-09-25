@@ -2,7 +2,7 @@
 " Description: An ack/ag/pt powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 1.8.1
+" Version: 1.8.2
 " ============================================================================
 
 " Log file that collects error messages from backend
