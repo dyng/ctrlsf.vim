@@ -219,8 +219,13 @@ func! ctrlsf#backend#Run(args) abort
     let &shelltemp = shtmp_bak
     let &shellredir = shrd_bak
 
-    if v:shell_error && !empty(output)
-        return [0, output]
+    if v:shell_error
+        let errmsg = ctrlsf#backend#LastErrors()
+        if !empty(errmsg)
+            return [0, errmsg]
+        else
+            return [1, output]
+        endif
     else
         return [1, output]
     endif
