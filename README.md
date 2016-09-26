@@ -6,7 +6,9 @@ An ack/ag/pt powered code search and view tool, like ack.vim or `:vimgrep` but t
 
 ![ctrlsf demo](http://i.imgur.com/NOy8gwj.gif)
 
-### Edit Mode (with [vim-multiple-cursors][7])
+### Edit Mode
+
+Here we rename a method named `MoveCursor()` to `Cursor()` in multiple files, using [vim-multiple-cursors][7].
 
 ![ctrlsf_edit_demo](http://i.imgur.com/xMUm8Ii.gif)
 
@@ -14,11 +16,12 @@ An ack/ag/pt powered code search and view tool, like ack.vim or `:vimgrep` but t
 
 - [Features](#features)
 - [Installation](#installation)
-- [Basic Usage](#basic-usage)
+- [Quick Start](#quick-start)
 - [Key Maps](#key-maps)
 - [Use Your Own Map](#use-your-own-map)
 - [Edit Mode](#edit-mode)
   - [Limitation](#limitation)
+- [Quickfix Mode](#quickfix-mode)
 - [Arguments](#arguments)
   - [Example](#example)
 - [Tips](#tips)
@@ -31,11 +34,11 @@ An ack/ag/pt powered code search and view tool, like ack.vim or `:vimgrep` but t
 
 - Search and display result in a user-friendly view with adjustable context.
 
-- Edit mode which is incredible useful when you are doing refactoring. (Inspired by [vim-ags][6])
+- Edit mode which is incredible useful when you are doing project-wide refactoring. (Inspired by [vim-ags][6])
 
 - Preview mode for fast exploring.
 
-- View location results in a quickfix window.
+- View results in a quickfix window if you feel more familiar with quickfix window.
 
 - Various options for customized search, view and edit.
 
@@ -51,9 +54,9 @@ An ack/ag/pt powered code search and view tool, like ack.vim or `:vimgrep` but t
     Plug 'dyng/ctrlsf.vim'
     ```
 
-3. Read *Basic Usage* for how to use.
+3. Read *Quick Start* for how to use.
 
-## Basic Usage
+## Quick Start
 
 1. Run `:CtrlSF [pattern]`, it will split a new window to show search result.
 
@@ -93,27 +96,33 @@ Some default defined keys may conflict with keys you have been used to when you 
 
 ## Use Your Own Map
 
-There are also some useful maps need to be mentioned.
+CtrlSF provides many maps you can use for quick accessing all features, here I list some most used maps.
 
-- `<Plug>CtrlSFPrompt` / `<Plug>CtrlSFQuickfixPrompt`
+- `<Plug>CtrlSFPrompt`
 
-    Input `:CtrlSF ` or `:CtrlSFQuickfix ` in command line for you, just a handy shortcut.
+    Input `:CtrlSF ` in command line for you, just a handy shortcut.
 
-- `<Plug>CtrlSFVwordPath` / `<Plug>CtrlSFQuickfixVwordPath`
+- `<Plug>CtrlSFVwordPath`
 
-    Input `:CtrlSF foo ` or `:CtrlSFQuickfix foo ` in command line where `foo` is the current visual selected word, waiting for further input.
+    Input `:CtrlSF foo ` in command line where `foo` is the current visual selected word, waiting for further input.
 
-- `<Plug>CtrlSFVwordExec` / `<Plug>CtrlSFQuickfixVwordExec`
+- `<Plug>CtrlSFVwordExec`
 
-    Like `<Plug>CtrlSFVwordPath` / `<Plug>CtrlSFQuickfixVwordPath`, but execute it immediately.
+    Like `<Plug>CtrlSFVwordPath`, but execute it immediately.
 
-- `<Plug>CtrlSFCwordPath` / `<Plug>CtrlSFQuickfixCwordPath`
+- `<Plug>CtrlSFCwordPath`
 
-    Input `:CtrlSF foo ` or `:CtrlSFQuickfix foo ` in command line where `foo` is word under the cursor.
+    Input `:CtrlSF foo ` in command line where `foo` is word under the cursor.
 
-- `<Plug>CtrlSFPwordPath` / `<Plug>CtrlSFQuickfixPwordPath`
+- `<Plug>CtrlSFPwordPath`
 
-    Input `:CtrlSF foo ` or `:CtrlSFQuickfix foo ` in command line where `foo` is the last search pattern of vim.
+    Input `:CtrlSF foo ` in command line where `foo` is the last search pattern of vim.
+
+There are also some maps for quickfix mode, for example:
+
+- `<Plug>CtrlsfQuickfixPrompt`
+
+    like `<Plug>CtrlSFPrompt` but instead invoking `:CtrlSFQuickfix`.
 
 For a full list of maps, please refer to the document.
 
@@ -150,6 +159,24 @@ vmap     <C-F>L <Plug>CtrlSFQuickfixVwordExec
 - You can modify or delete lines but **you can't insert**. (If it turns out that inserting is really needed, I'll implement it later.)
 
 - If a file's content varies from last search, CtrlSF will refuse to write your changes to that file (for safety concern). As a rule of thumb, invoke a new search before editing, or just run `:CtrlSFUpdate`.
+
+## Quickfix Mode
+
+The primary motivation of creating CtrlSF is being tired of small, context free quickfix window, so there is no Quickfix Mode in CtrlSF at first. But some users requested for Quickfix Mode as they need it in some cases, I accepted, Quickfix Mode was then finally added into CtrlSF (#94).
+
+You can access Quickfix Mode by commands and maps.
+
+Command:
+
+- `:CtrlSFQuickfix [pattern]`
+
+Maps:
+
+- <Plug>CtrlSFQuickfixPrompt
+- <Plug>CtrlSFQuickfixVwordPath
+- <Plug>CtrlSFQuickfixVwordExec
+
+But, **as I've no idea about reinventing another ack.vim, only minimum features are implemented in Quickfix Mode. Actually no customization beyond normal quickfix window is applied currently, I choose to leave it to users.**
 
 ## Arguments
 
