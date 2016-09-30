@@ -51,7 +51,7 @@ let s:backend_args_map = {
         \ },
     \ 'rg': {
         \ 'ignorecase': {
-            \ 'smartcase': '',
+            \ 'smartcase': '--smart-case',
             \ 'ignorecase': '--ignore-case',
             \ 'matchcase': ''
             \ },
