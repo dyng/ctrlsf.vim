@@ -1,6 +1,6 @@
 # ctrlsf.vim
 
-An ack/ag/pt powered code search and view tool, like ack.vim or `:vimgrep` but together with more context, and let you edit in-place with powerful edit mode.
+An ack/ag/pt/rg powered code search and view tool, like ack.vim or `:vimgrep` but together with more context, and let you edit in-place with powerful edit mode.
 
 ### Search and Explore
 

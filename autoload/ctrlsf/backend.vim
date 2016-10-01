@@ -1,5 +1,5 @@
 " ============================================================================
-" Description: An ack/ag/pt powered code search and view tool.
+" Description: An ack/ag/pt/rg powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
 " Version: 1.8.2
@@ -8,10 +8,67 @@
 " Log file that collects error messages from backend
 let s:backend_error_log_file = tempname()
 
+let s:backend_args_map = {
+    \ 'ag': {
+        \ 'ignorecase': {
+            \ 'smartcase': '--smart-case',
+            \ 'ignorecase': '--ignore-case',
+            \ 'matchcase': '--case-sensitive'
+            \ },
+        \ 'ignoredir': '--ignore-dir',
+        \ 'regex': {
+            \ '1': '',
+            \ '0': '--literal'
+            \ },
+        \ 'default': '--noheading --nogroup --nocolor --nobreak'
+        \ },
+    \ 'ack': {
+        \ 'ignorecase': {
+            \ 'smartcase': '--smart-case',
+            \ 'ignorecase': '--ignore-case',
+            \ 'matchcase': '--no-smart-case'
+            \ },
+        \ 'ignoredir': '--ignore-dir',
+        \ 'regex': {
+            \ '1': '',
+            \ '0': '--literal'
+            \ },
+        \ 'default': '--noheading --nogroup --nocolor --nobreak --nocolumn
+            \ --with-filename'
+        \ },
+    \ 'pt': {
+        \ 'ignorecase': {
+            \ 'smartcase': '--smart-case',
+            \ 'ignorecase': '--ignore-case',
+            \ 'matchcase': ''
+            \ },
+        \ 'ignoredir': '--ignore',
+        \ 'regex': {
+            \ '1': '-e',
+            \ '0': ''
+            \ },
+        \ 'default': '--nogroup --nocolor'
+        \ },
+    \ 'rg': {
+        \ 'ignorecase': {
+            \ 'smartcase': '--smart-case',
+            \ 'ignorecase': '--ignore-case',
+            \ 'matchcase': ''
+            \ },
+        \ 'ignoredir': '',
+        \ 'regex': {
+            \ '1': '',
+            \ '0': '--fixed-strings'
+            \ },
+        \ 'default': '--no-heading --color never --line-number'
+        \ }
+    \ }
+
 " BuildCommand()
 "
 func! s:BuildCommand(args) abort
     let tokens = []
+    let runner = ctrlsf#backend#Runner()
 
     " add executable file
     call add(tokens, g:ctrlsf_ackprg)
@@ -27,61 +84,42 @@ func! s:BuildCommand(args) abort
 
     " ignorecase
     let case_sensitive = ctrlsf#opt#GetCaseSensitive()
-    let case = ''
-    if case_sensitive ==# 'smartcase'
-        let case = '--smart-case'
-    elseif case_sensitive ==# 'ignorecase'
-        let case = '--ignore-case'
-    else
-        if ctrlsf#backend#Runner() ==# 'ag'
-            let case = '--case-sensitive'
-        elseif ctrlsf#backend#Runner() ==# 'pt'
-            let case = ''
-        else
-            let case = '--no-smart-case'
-        endif
-    endif
+    let case = s:backend_args_map[runner]['ignorecase'][case_sensitive]
     call add(tokens, case)
 
     " ignore (dir, file)
     let ignore_dir = ctrlsf#opt#GetIgnoreDir()
-    for dir in ignore_dir
-        if ctrlsf#backend#Runner() ==# 'pt'
-            call add(tokens, "--ignore " . shellescape(dir))
-        else
-            call add(tokens, "--ignore-dir " . shellescape(dir))
-        endif
-    endfor
-
-    " regex
-    if ctrlsf#opt#GetRegex()
-        if ctrlsf#backend#Runner() ==# 'pt'
-            call add(tokens, '-e')
-        endif
-    else
-        if ctrlsf#backend#Runner() !=# 'pt'
-            call add(tokens, '--literal')
-        endif
+    let arg_name = s:backend_args_map[runner]['ignoredir']
+    if !empty(arg_name)
+        for dir in ignore_dir
+            call add(tokens, arg_name . ' ' . shellescape(dir))
+        endfor
     endif
 
-    " filetype
+    " regex
+    call add(tokens,
+        \ s:backend_args_map[runner]['regex'][ctrlsf#opt#GetRegex()])
+
+    " filetype (NOT SUPPORTED BY ALL BACKEND)
+    " support backend: ag, ack
     if !empty(ctrlsf#opt#GetOpt('filetype'))
-        if ctrlsf#backend#Runner() !=# 'pt'
+        if runner ==# 'ag' || runner ==# 'ack'
             call add(tokens, '--' . ctrlsf#opt#GetOpt('filetype'))
         endif
     endif
 
-    " filematch
+    " filematch (NOT SUPPORTED BY ALL BACKEND)
+    " support backend: ag, ack, pt
     if !empty(ctrlsf#opt#GetOpt('filematch'))
-        if ctrlsf#backend#Runner() ==# 'ag'
+        if runner ==# 'ag'
             call extend(tokens, [
                 \ '--file-search-regex',
                 \ shellescape(ctrlsf#opt#GetOpt('filematch'))
                 \ ])
-        elseif ctrlsf#backend#Runner() ==# 'pt'
+        elseif runner ==# 'pt'
             call add(tokens, printf("--file-search-regex=%s",
                 \ shellescape(ctrlsf#opt#GetOpt('filematch'))))
-        else
+        elseif runner ==# 'ack'
             " pipe: 'ack -g ${filematch} ${path} |'
             let pipe_tokens = [
                 \ g:ctrlsf_ackprg,
@@ -97,17 +135,11 @@ func! s:BuildCommand(args) abort
     endif
 
     " default
-    if ctrlsf#backend#Runner() ==# 'ag'
-        call add(tokens, '--noheading --nogroup --nocolor --nobreak')
-    elseif ctrlsf#backend#Runner() ==# 'pt'
-        call add(tokens, '--nogroup --nocolor')
-    else
-        call add(tokens, '--noheading --nogroup --nocolor --nobreak --nocolumn
-            \ --with-filename')
-    endif
+    call add(tokens,
+        \ s:backend_args_map[runner]['default'])
 
     " user custom arguments
-    let extra_args = get(g:ctrlsf_extra_backend_args, ctrlsf#backend#Runner(), "")
+    let extra_args = get(g:ctrlsf_extra_backend_args, runner, "")
     if !empty(extra_args)
         call add(tokens, extra_args)
     endif
@@ -146,16 +178,20 @@ func! ctrlsf#backend#Detect()
         return 'ag'
     endif
 
+    if executable('ack')
+        return 'ack'
+    endif
+
+    if executable('rg')
+        return 'rg'
+    endif
+
     if executable('pt')
         return 'pt'
     endif
 
     if executable('ack-grep')
         return 'ack-grep'
-    endif
-
-    if executable('ack')
-        return 'ack'
     endif
 
     return ''
@@ -168,11 +204,13 @@ func! ctrlsf#backend#Runner()
         return ''
     elseif g:ctrlsf_ackprg =~# 'ag'
         return 'ag'
+    elseif g:ctrlsf_ackprg =~# 'ack'
+        return 'ack'
+    elseif g:ctrlsf_ackprg =~# 'rg'
+        return 'rg'
     elseif g:ctrlsf_ackprg =~# 'pt'
         return 'pt'
     elseif g:ctrlsf_ackprg =~# 'ack-grep'
-        return 'ack'
-    elseif g:ctrlsf_ackprg =~# 'ack'
         return 'ack'
     else
         return ''
