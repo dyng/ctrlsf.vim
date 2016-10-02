@@ -78,7 +78,8 @@ func! s:BuildCommand(args) abort
     let ctx_options = ctrlsf#opt#GetContext()
     let context = ''
     for opt in keys(ctx_options)
-        let context .= printf("--%s=%s ", opt, ctx_options[opt])
+        let context .= printf("-%s %s ", toupper(strpart(opt, 0, 1)),
+            \ ctx_options[opt])
     endfo
     call add(tokens, context)
 
