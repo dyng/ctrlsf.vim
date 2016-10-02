@@ -331,9 +331,11 @@ Make this search be smart-cased.
 
 g:ctrlsf_ackprg                                              *'g:ctrlsf_ackprg'*
 Default: auto
+Available: 'ag', 'ack', 'pt', 'rg'
 'g:ctrlsf_ackprg' defines the path of ack/ag which CtrlSF will use as its
-backend. If nothing is given, CtrlSF will try 'ag' first and fallback to
-'ack' if 'ag' is not available. You can also explicitly set it by
+backend. If nothing is given, CtrlSF will try to figure out a proper backend.
+Preferred order is 'ag' > 'ack' > 'rg' > 'pt' > 'ack-grep'. You can also
+explicitly set it by
 >
     let g:ctrlsf_ackprg = '/usr/local/bin/ag'
 <
@@ -347,6 +349,7 @@ prevent this behavior by setting this option to 0
 <
 g:ctrlsf_case_sensitive                              *'g:ctrlsf_case_sensitive'*
 Default: 'smart'
+Available: 'smart', 'yes', 'no'
 Defines the default case-sensitivity in search. Possible values are 'yes',
 'no' and 'smart'. 'yes' and 'no' works exactly as its meaning. 'smart' means
 smart-case, which is as same as it is in Vim.
@@ -384,6 +387,7 @@ when something does not work as you expected.
 <
 g:ctrlsf_default_root                                  *'g:ctrlsf_default_root'*
 Default: 'cwd'
+Available: 'cwd', 'project', 'project+xx'
 Defines how CtrlSF works if no explicit search path is given. Possible value
 is 'cwd','project' and 'project+xx'.('xx' is two sub-options for 'project'.)
 
@@ -416,7 +420,7 @@ g:ctrlsf_extra_backend_args                      *'g:ctrlsf_extra_backend_args'*
 Default: {}
 Defines extra arguments that will be passed **literally** to backend. It's
 useful when you are needing backend-specific features. Acceptable keys are
-'ack', 'ag', 'pt'.
+'ack', 'ag', 'pt', 'rg'.
 >
     let g:ctrlsf_extra_backend_args = {
         \ 'pt': '--home-ptignore'
@@ -479,6 +483,7 @@ If you are used to vim builtin quickfix list and want to use |:cnext|,
 <
 g:ctrlsf_position                                          *'g:ctrlsf_position'*
 Default: 'left'
+Available: 'left', 'right', 'top', 'bottom'
 By default CtrlSF window will be opened at left. You can also specify for it to
 be opened 'top', 'right', or 'bottom'. E.g.:
 >
@@ -516,6 +521,7 @@ this value is empty, means no key is mapped for this feature.
 
 g:ctrlsf_winsize                                                *'g:ctrlsf_width'*
 Default: 'auto'
+Available: 'auto', 'xx%', 'xx'
 Size of CtrlSF window. This is its width if the window opens vertically (to the
 left or right), or height if it opens horizontally (above or below). It accepts
 string as its value and there are 3 types of argument:
