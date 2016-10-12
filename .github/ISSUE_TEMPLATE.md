@@ -1,8 +1,8 @@
-## Before submitting your issue
+## Before submitting your issue（请在提交 issue 前一定要检查以下项目！）
 
 1. Update to the latest version of CtrlSF.
-2. Update your backend(ag/ack/pt) to their latest version.
-2. Enable debug mode to find what is going wrong. You can enable debug mode by `let g:ctrlsf_debug_mode = 1`.
+2. Update your backend(ag/ack/pt/rg) to their latest version.
+3. Enable debug mode to try to find what is going wrong yourself. You can enable debug mode by `let g:ctrlsf_debug_mode = 1`.
 
 If you can't find out why things do not work or can be sure it's a bug of CtrlSF, please fulfill below issue template. Thanks in advance!
 
@@ -10,9 +10,9 @@ If you can't find out why things do not work or can be sure it's a bug of CtrlSF
 
 #### Issue description
 
-*You can describe your issue here.*
+*You can describe your issue here.（请将你的 issue 内容填写于此）*
 
-#### Things about your system and environment
+#### Things about your system and environment（请在此填写你的系统信息）
 
 |  field  |                value                 |
 |:-------:|:------------------------------------:|
@@ -24,7 +24,7 @@ If you can't find out why things do not work or can be sure it's a bug of CtrlSF
 - log:
 
     ```vim
-    " attach here CtrlSF's debug mode log
+    " attach debug-mode log here
     " you can pipe logs into a file by vim's :redir command
     :let g:ctrlsf_debug_mode = 1
     :redir >/tmp/ctrlsf.log
@@ -48,12 +48,11 @@ If you can't find out why things do not work or can be sure it's a bug of CtrlSF
 - file:
 
     ```shell
-    # please tell me something about files that CtrlSF doesn't work as you expect.
-    # if the content of file is sensitive, at least tell me its encoding.
+    # please tell me something about files that CtrlSF doesn't work on.
+    # if the content of file is private information, its encoding should be helpful.
     # it's important in some case!
     name: ctrlsf/plugin.vim
     encoding: utf-8
     content:
     # your file's content is here.
     ```
-    
