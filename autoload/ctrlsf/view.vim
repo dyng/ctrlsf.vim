@@ -82,11 +82,7 @@ endf
 "
 func! ctrlsf#view#Reflect(vlnum) abort
     let resultset = ctrlsf#db#ResultSet()
-
-    let ret = s:BSearch(resultset, 0, len(resultset) - 1, a:vlnum)
-    call ctrlsf#log#Debug("Reflect: vlnum: %s, result: %s", a:vlnum, string(ret))
-
-    return ret
+    return s:BSearch(resultset, 0, len(resultset) - 1, a:vlnum)
 endf
 
 func! s:BSearch(resultset, left, right, vlnum) abort
