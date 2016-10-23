@@ -18,6 +18,7 @@ let s:option_list = {
     \ '-matchcase'  : {'args': 0},
     \ '-regex'      : {'args': 0},
     \ '-smartcase'  : {'args': 0},
+    \ '-word'       : {'args': 0},
     \ '-A': {'fullname': '-after'},
     \ '-B': {'fullname': '-before'},
     \ '-C': {'fullname': '-context'},
@@ -26,6 +27,7 @@ let s:option_list = {
     \ '-L': {'fullname': '-literal'},
     \ '-R': {'fullname': '-regex'},
     \ '-S': {'fullname': '-matchcase'},
+    \ '-w': {'fullname': '-word'},
     \ }
 
 " default values to options
@@ -62,7 +64,7 @@ func! ctrlsf#opt#GetOpt(name) abort
     if has_key(s:options, a:name)
         return s:options[a:name]
     else
-        return get(s:default, 'a:name', '')
+        return get(s:default, a:name, '')
     endif
 endf
 
