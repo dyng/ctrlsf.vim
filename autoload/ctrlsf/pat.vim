@@ -71,6 +71,11 @@ func! ctrlsf#pat#Regex() abort
         let pattern = escape(pattern, '\')
     endif
 
+    " word
+    if ctrlsf#backend#Runner() ==# 'ag' && !empty(ctrlsf#opt#GetOpt('word'))
+        let pattern = pattern . '\>'
+    endif
+
     return printf('%s%s%s', magic, case, pattern)
 endf
 
