@@ -16,6 +16,7 @@ let s:backend_args_map = {
             \ 'matchcase': '--case-sensitive'
             \ },
         \ 'ignoredir': '--ignore-dir',
+        \ 'word': '--word-regexp',
         \ 'regex': {
             \ '1': '',
             \ '0': '--literal'
@@ -84,8 +85,10 @@ func! s:BuildCommand(args) abort
     call add(tokens, context)
 
     " whole world match
-    if runner ==# 'ag' && !empty(ctrlsf#opt#GetOpt('word'))
-        call add(tokens, '-w')
+    if !empty(ctrlsf#opt#GetOpt('word'))
+        if runner ==# 'ag'
+            call add(tokens, s:backend_args_map[runner]['word'])
+        endif
     endif
 
     " ignorecase
