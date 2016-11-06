@@ -114,6 +114,10 @@ CtrlSF provides many maps you can use for quick accessing all features, here I l
 
     Input `:CtrlSF foo ` in command line where `foo` is word under the cursor.
 
+- `<Plug>CtrlSFCCwordPath`
+
+    Like `<Plug>CtrlSFCwordPath`, but also add word boundary around searching word.
+
 - `<Plug>CtrlSFPwordPath`
 
     Input `:CtrlSF foo ` in command line where `foo` is the last search pattern of vim.
