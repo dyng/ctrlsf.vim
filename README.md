@@ -264,7 +264,7 @@ Read `:h ctrlsf-arguments` for a full list of arguments.
         \ }
     ```
 
-- `g:ctrlsf_populate_qflist` defines if CtrlSF will also feed quickfix and location list with search result. By default this feture is disabled but you can enable it by
+- `g:ctrlsf_populate_qflist` defines if CtrlSF will also feed quickfix and location list with search result. By default this feature is disabled but you can enable it by
 
     ```vim
     let g:ctrlsf_populate_qflist = 1
