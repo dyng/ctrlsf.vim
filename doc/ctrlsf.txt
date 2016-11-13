@@ -194,38 +194,49 @@ mode:
                                 waiting, just a handy shortcut to reveal in a
                                 quickfix window.
 
-    <Plug>CtrlSFVwordPath   Input current visual selected word in command line
-                            and waiting for any other user input.
+    <Plug>CtrlSFVwordPath    Input current visual selected word in command line
+                             and waiting for any other user input.
 
-                            Use <Plug>CtrlSFQuickfixVwordPath for quickfix
-                            only window.
+                             Use <Plug>CtrlSFQuickfixVwordPath for quickfix
+                             only window.
 
-    <Plug>CtrlSFVwordExec   Similar to above, but execute it immediately.
+    <Plug>CtrlSFVwordExec    Similar to above, but execute it immediately.
 
-                            Use <Plug>CtrlSFQuickfixVwordExec for quickfix
-                            only window.
+                             Use <Plug>CtrlSFQuickfixVwordExec for quickfix
+                             only window.
 
-    <Plug>CtrlSFCwordPath   Input word in the cursor in command line and
-                            waiting.
+    <Plug>CtrlSFCwordPath    Input word in the cursor in command line and
+                             waiting.
 
-                            Use <Plug>CtrlSFQuickfixCwordPath for quickfix
-                            only window.
+                             Use <Plug>CtrlSFQuickfixCwordPath for quickfix
+                             only window.
 
-    <Plug>CtrlSFCwordExec   Similar to above, but execute it immediately.
+    <Plug>CtrlSFCwordExec    Similar to above, but execute it immediately.
 
-                            Use <Plug>CtrlSFQuickfixCwordExec for quickfix
-                            only window.
+                             Use <Plug>CtrlSFQuickfixCwordExec for quickfix
+                             only window.
 
-    <Plug>CtrlSFPwordPath   Input last search pattern in command line and
-                            waiting.
+    <Plug>CtrlSFCCwordPath   Similar to <Plug>CtrlSFCwordPath but will add word
+                             boundary around searching word.
 
-                            Use <Plug>CtrlSFQuickfixPwordPath for quickfix
-                            only window.
+                             Use <Plug>CtrlSFQuickfixCCwordPath for quickfix
+                             only window.
 
-    <Plug>CtrlSFPwordExec   Similar to above, but execute it immediately.
+    <Plug>CtrlSFCCwordExec   Similar to above, but execute it immediately.
 
-                            Use <Plug>CtrlSFQuickfixPwordExec for quickfix
-                            only window.
+                             Use <Plug>CtrlSFQuickfixCCwordExec for quickfix
+                             only window.
+
+    <Plug>CtrlSFPwordPath    Input last search pattern in command line and
+                             waiting.
+
+                             Use <Plug>CtrlSFQuickfixPwordPath for quickfix
+                             only window.
+
+    <Plug>CtrlSFPwordExec    Similar to above, but execute it immediately.
+
+                             Use <Plug>CtrlSFQuickfixPwordExec for quickfix
+                             only window.
 
   Maps by default in CtrlSF window:
 
