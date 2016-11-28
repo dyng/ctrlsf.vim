@@ -84,5 +84,10 @@ endf
 " Simplify filename into a relative path if possible
 "
 func! s:ShortenFilename(filename) abort
-    return substitute(a:filename, '^'.getcwd().'[\\/]', '', '')
+    let i = stridx(a:filename, getcwd())
+    if i != 0
+        return a:filename
+    else
+        return strpart(a:filename, i+strlen(getcwd())+1)
+    endif
 endf
