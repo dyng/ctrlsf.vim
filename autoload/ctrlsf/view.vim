@@ -124,18 +124,19 @@ endf
 
 " FindNextMatch()
 "
-" Find next match. Wrapping around or not depends on value of 'wrapscan'.
+" Find next match.
 "
 " Parameters
-" {vlnum}   the line number of search base
 " {forward} true or false
+" {wrapscan} true or false
 "
 " Returns
 " [vlnum, vcol] line number and column number of next match
 "
-func! ctrlsf#view#FindNextMatch(vlnum, forward) abort
+func! ctrlsf#view#FindNextMatch(forward, wrapscan) abort
     let regex = ctrlsf#pat#MatchPerLineRegex()
     let flag  = a:forward ? 'n' : 'nb'
+    let flag .= a:wrapscan ? 'w' : 'W'
     return searchpos(regex, flag)
 endf
 

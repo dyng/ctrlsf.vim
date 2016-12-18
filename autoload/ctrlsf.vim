@@ -56,7 +56,7 @@ func! s:ExecSearch(args, only_quickfix) abort
 
     " scroll up to top line
     1normal z<CR>
-    call ctrlsf#NextMatch(0, 1)
+    call ctrlsf#NextMatch(1)
 
     " populate quickfix and location list
     if g:ctrlsf_populate_qflist
@@ -198,19 +198,17 @@ endf
 
 " s:NextMatch()
 "
-" Move cursor to the next match after a line specified by 'lnum'.
+" Move cursor to the next match after current cursor position.
 "
-" If given line number is -1, use current line instead.
-"
-func! ctrlsf#NextMatch(lnum, forward) abort
-    let cur_vlnum     = a:lnum == -1 ? line('.') : a:lnum
-    let [vlnum, vcol] = ctrlsf#view#FindNextMatch(cur_vlnum, a:forward)
+func! ctrlsf#NextMatch(forward) abort
+    let [_, cur_vlnum, cur_vcol, _] = getpos('.')
+    let [vlnum, vcol] = ctrlsf#view#FindNextMatch(a:forward, &wrapscan)
 
     if vlnum > 0
-        if a:forward && vlnum <= cur_vlnum
+        if a:forward && (vlnum < cur_vlnum || (vlnum == cur_vlnum && vcol < cur_vcol))
             redraw!
             call ctrlsf#log#Notice("search hit BOTTOM, continuing at TOP")
-        elseif !a:forward && vlnum >= cur_vlnum
+        elseif !a:forward && (vlnum > cur_vlnum || (vlnum == cur_vlnum && vcol > cur_vcol))
             redraw!
             call ctrlsf#log#Notice("search hit TOP, continuing at BOTTOM")
         else
