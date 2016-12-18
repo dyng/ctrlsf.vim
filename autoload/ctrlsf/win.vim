@@ -270,15 +270,29 @@ func! ctrlsf#win#MoveCursor(wlnum, lnum, col) abort
     normal zv
 endf
 
-" MoveCentralCursor()
+" MoveCursorCentral()
 "
-func! ctrlsf#win#MoveCentralCursor(lnum, col) abort
+func! ctrlsf#win#MoveCursorCentral(lnum, col) abort
     " Move cursor to specific position
     exec 'keepjumps normal ' . a:lnum . 'z.'
     call cursor(a:lnum, a:col)
 
     " Open fold
     normal zv
+endf
+
+" MoveCursorCurrentLineMatch()
+"
+" This method is used to work around a weird behavior of vim.
+" If user reopens ctrlsf window, cursor is in the same line when window
+" exitting, but this is not true for column, which is always in column 1
+"
+func! ctrlsf#win#MoveCursorCurrentLineMatch() abort
+    let cur_vlnum = line('.')
+    let [vlnum, vcol] = ctrlsf#view#FindNextMatch(1, 0)
+    if cur_vlnum == vlnum
+        call cursor(vlnum, vcol)
+    endif
 endf
 
 """""""""""""""""""""""""""""""""

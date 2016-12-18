@@ -95,6 +95,7 @@ endf
 func! ctrlsf#Open() abort
     call ctrlsf#win#OpenMainWindow()
     call ctrlsf#hl#HighlightMatch()
+    call ctrlsf#win#MoveCursorCurrentLineMatch()
 endf
 
 " Redraw()
@@ -259,7 +260,7 @@ func! s:OpenFileInWindow(file, lnum, col, mode, split) abort
         endif
     endif
 
-    call ctrlsf#win#MoveCentralCursor(a:lnum, a:col)
+    call ctrlsf#win#MoveCursorCentral(a:lnum, a:col)
 
     if g:ctrlsf_selected_line_hl =~ 'o'
         call ctrlsf#hl#HighlightSelectedLine()
@@ -282,7 +283,7 @@ func! s:OpenFileInTab(file, lnum, col, mode) abort
 
     exec 'silen tabedit ' . fnameescape(a:file)
 
-    call ctrlsf#win#MoveCentralCursor(a:lnum, a:col)
+    call ctrlsf#win#MoveCursorCentral(a:lnum, a:col)
 
     if g:ctrlsf_selected_line_hl =~ 'o'
         call ctrlsf#hl#HighlightSelectedLine()
@@ -307,7 +308,7 @@ func! s:PreviewFile(file, lnum, col, follow) abort
         exec 'doau filetypedetect BufRead ' . fnameescape(a:file)
     endif
 
-    call ctrlsf#win#MoveCentralCursor(a:lnum, a:col)
+    call ctrlsf#win#MoveCursorCentral(a:lnum, a:col)
 
     if g:ctrlsf_selected_line_hl =~ 'p'
         call ctrlsf#hl#HighlightSelectedLine()
