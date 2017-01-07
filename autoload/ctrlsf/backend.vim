@@ -102,10 +102,12 @@ func! s:BuildCommand(args) abort
         \ s:backend_args_map[runner]['regex'][ctrlsf#opt#GetRegex()])
 
     " filetype (NOT SUPPORTED BY ALL BACKEND)
-    " support backend: ag, ack
+    " support backend: ag, ack, rg
     if !empty(ctrlsf#opt#GetOpt('filetype'))
         if runner ==# 'ag' || runner ==# 'ack'
             call add(tokens, '--' . ctrlsf#opt#GetOpt('filetype'))
+        elseif runner ==# 'rg'
+            call add(tokens, '--type ' . ctrlsf#opt#GetOpt('filetype'))
         endif
     endif
 
