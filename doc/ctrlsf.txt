@@ -442,7 +442,7 @@ Default: ''
 Defines directories that will be ignored by default. It's useful for backend
 that does not respect to '.gitignore'.
 >
-    let g:ctrlsf_ignore_dir = ['bower_components', 'npm_modules']
+    let g:ctrlsf_ignore_dir = ['bower_components', 'node_modules']
 <
 
 g:ctrlsf_indent                                              *'g:ctrlsf_indent'*
