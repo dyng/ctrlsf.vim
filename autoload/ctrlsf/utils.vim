@@ -92,7 +92,7 @@ endf
 " Show filename of which cursor is currently placed in
 "
 func! ctrlsf#utils#SectionC()
-    let [file, _, _] = ctrlsf#view#Reflect(line('.'))
+    let [file, _, _] = ctrlsf#view#Locate(line('.'))
     return empty(file) ? '' : file
 endf
 
@@ -101,7 +101,7 @@ endf
 " Show total number of matches and current matching
 "
 func! ctrlsf#utils#SectionX()
-    let [file, line, match] = ctrlsf#view#Reflect(line('.'))
+    let [file, line, match] = ctrlsf#view#Locate(line('.'))
     if !empty(match)
         let matchlist = ctrlsf#db#MatchList()
         let total     = len(matchlist)

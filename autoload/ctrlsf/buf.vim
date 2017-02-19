@@ -96,6 +96,7 @@ func! ctrlsf#buf#ToggleMap(...) abort
         \ "quit"    : "ctrlsf#Quit()",
         \ "next"    : "ctrlsf#NextMatch(1)",
         \ "prev"    : "ctrlsf#NextMatch(0)",
+        \ "chgmode" : "ctrlsf#SwitchViewMode()",
         \ "loclist" : "ctrlsf#OpenLocList()",
         \ "prevw"   : "ctrlsf#JumpTo('preview')",
         \ }

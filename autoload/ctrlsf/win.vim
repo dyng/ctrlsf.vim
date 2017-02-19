@@ -36,27 +36,40 @@ func! ctrlsf#win#OpenMainWindow() abort
     " be sure doing this only when *opening new window*
     call ctrlsf#win#BackupAllWinSize()
 
-    if g:ctrlsf_winsize =~ '\d\{1,2}%'
-        if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
-            let winsize = &columns * str2nr(g:ctrlsf_winsize) / 100
+    let mode = ctrlsf#CurrentMode()
+
+    if mode ==# 'normal'
+        " normal mode
+        if g:ctrlsf_winsize =~ '\d\{1,2}%'
+            if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
+                let winsize = &columns * str2nr(g:ctrlsf_winsize) / 100
+            else
+                let winsize = &lines * str2nr(g:ctrlsf_winsize) / 100
+            endif
+        elseif g:ctrlsf_winsize =~ '\d\+'
+            let winsize = str2nr(g:ctrlsf_winsize)
         else
-            let winsize = &lines * str2nr(g:ctrlsf_winsize) / 100
+            if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
+                let winsize = &columns / 2
+            else
+                let winsize = &lines / 2
+            endif
         endif
-    elseif g:ctrlsf_winsize =~ '\d\+'
-        let winsize = str2nr(g:ctrlsf_winsize)
+
+        let openpos = {
+              \ 'top'    : 'topleft',  'left'  : 'topleft vertical',
+              \ 'bottom' : 'botright', 'right' : 'botright vertical'}
+              \[g:ctrlsf_position] . ' '
     else
-        if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
-            let winsize = &columns / 2
-        else
-            let winsize = &lines / 2
-        endif
+        " compact mode: fixed window size and position
+        let winsize = 10
+        let openpos = 'botright'
     endif
 
-    let openpos = {
-          \ 'top'    : 'topleft',  'left'  : 'topleft vertical',
-          \ 'bottom' : 'botright', 'right' : 'botright vertical'}
-          \[g:ctrlsf_position] . ' '
-    exec 'silent keepalt ' . openpos . winsize . 'split ' . (bufnr('__CtrlSF__') != -1 ? '+b'.bufnr('__CtrlSF__') : '__CtrlSF__')
+
+    " open window
+    exec 'silent keepalt ' . openpos . winsize . 'split ' .
+                \ (bufnr('__CtrlSF__') != -1 ? '+b'.bufnr('__CtrlSF__') : '__CtrlSF__')
 
     call s:InitMainWindow()
 
@@ -129,7 +142,8 @@ func! s:InitMainWindow() abort
     endif
 
     " cmd
-    command! -buffer CtrlSFToggleMap call ctrlsf#ToggleMap()
+    command! -buffer CtrlSFToggleMap      call ctrlsf#ToggleMap()
+    command! -buffer CtrlSFSwitchViewMode call ctrlsf#SwitchViewMode()
 
     " autocmd
     augroup ctrlsf
@@ -145,7 +159,6 @@ func! s:InitMainWindow() abort
 
     let b:ctrlsf_initialized = 1
 endf
-
 
 """""""""""""""""""""""""""""""""
 " Window Navigation

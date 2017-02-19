@@ -37,3 +37,9 @@ endf
 func! ctrlsf#hl#ClearSelectedLine() abort
     silent! call matchdelete(w:ctrlsf_line_hlid)
 endf
+
+" ReloadSyntax()
+"
+func! ctrlsf#hl#ReloadSyntax() abort
+    runtime syntax/ctrlsf.vim
+endf

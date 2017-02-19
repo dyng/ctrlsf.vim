@@ -10,6 +10,7 @@
 """""""""""""""""""""""""""""""""
 
 " remember what user is searching
+let s:current_mode = ''
 let s:current_query = ''
 let s:only_quickfix = 0
 
@@ -49,14 +50,7 @@ func! s:ExecSearch(args, only_quickfix) abort
       return
     endif
 
-    call ctrlsf#win#OpenMainWindow()
-    call ctrlsf#win#Draw()
-    call ctrlsf#buf#ClearUndoHistory()
-    call ctrlsf#hl#HighlightMatch()
-
-    " scroll up to top line
-    1normal z<CR>
-    call ctrlsf#NextMatch(1)
+    call s:OpenAndDraw()
 
     " populate quickfix and location list
     if g:ctrlsf_populate_qflist
@@ -76,6 +70,7 @@ func! ctrlsf#Search(args, only_quickfix) abort
     endif
 
     let s:current_query = args
+    let s:current_mode  = g:ctrlsf_default_view_mode
     let s:only_quickfix = a:only_quickfix
 
     call s:ExecSearch(s:current_query, s:only_quickfix)
@@ -104,6 +99,19 @@ func! ctrlsf#Redraw() abort
     let [wlnum, lnum, col] = [line('w0'), line('.'), col('.')]
     call ctrlsf#win#Draw()
     call ctrlsf#win#MoveCursor(wlnum, lnum, col)
+endf
+
+" SwitchViewMode()
+"
+func! ctrlsf#SwitchViewMode() abort
+    let next = ctrlsf#CurrentMode() ==# 'normal' ? 'compact' : 'normal'
+
+    " set current view mode
+    let s:current_mode = next
+
+    call ctrlsf#Quit()
+    call s:OpenAndDraw()
+    call ctrlsf#hl#ReloadSyntax()
 endf
 
 " Save()
@@ -157,10 +165,28 @@ func! ctrlsf#Toggle() abort
     endif
 endf
 
+" ClearSelectedLine()
+"
+func! ctrlsf#ClearSelectedLine() abort
+    call ctrlsf#hl#ClearSelectedLine()
+endf
+
+" ToggleMap()
+"
+func! ctrlsf#ToggleMap() abort
+    call ctrlsf#buf#ToggleMap()
+
+    if b:ctrlsf_map_enabled
+        echo "Maps enabled."
+    else
+        echo "Maps disabled."
+    endif
+endf
+
 " JumpTo()
 "
 func! ctrlsf#JumpTo(mode) abort
-    let [file, line, match] = ctrlsf#view#Reflect(line('.'))
+    let [file, line, match] = ctrlsf#view#Locate(line('.'))
 
     if empty(file) || empty(line)
         return
@@ -218,6 +244,14 @@ func! ctrlsf#NextMatch(forward) abort
 
         call cursor(vlnum, vcol)
     endif
+endf
+
+" CurrentMode()
+"
+func! ctrlsf#CurrentMode()
+    let mode = empty(s:current_mode) ? 'normal' : s:current_mode
+    call ctrlsf#log#Debug("Current Mode: %s", mode)
+    return mode
 endf
 
 " OpenFileInWindow()
@@ -319,27 +353,22 @@ func! s:PreviewFile(file, lnum, col, follow) abort
     endif
 endf
 
+" s:OpenAndDraw()
+"
+func! s:OpenAndDraw() abort
+    call ctrlsf#win#OpenMainWindow()
+    call ctrlsf#win#Draw()
+    call ctrlsf#buf#ClearUndoHistory()
+    call ctrlsf#hl#HighlightMatch()
+
+    " scroll up to top line
+    1normal z<CR>
+    call ctrlsf#NextMatch(1)
+endf
+
 " s:Quit()
 "
 func! s:Quit() abort
     call ctrlsf#preview#ClosePreviewWindow()
     call ctrlsf#win#CloseMainWindow()
-endf
-
-" ClearSelectedLine()
-"
-func! ctrlsf#ClearSelectedLine() abort
-    call ctrlsf#hl#ClearSelectedLine()
-endf
-
-" ToggleMap()
-"
-func! ctrlsf#ToggleMap() abort
-    call ctrlsf#buf#ToggleMap()
-
-    if b:ctrlsf_map_enabled
-        echo "Maps enabled."
-    else
-        echo "Maps disabled."
-    endif
 endf

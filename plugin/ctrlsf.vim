@@ -127,6 +127,12 @@ if !exists('g:ctrlsf_default_root')
 endif
 " }}}
 
+" g:ctrlsf_default_view_mode {{{2
+if !exists('g:ctrlsf_default_view_mode')
+    let g:ctrlsf_default_view_mode = 'normal'
+endif
+" }}}
+
 " g:ctrlsf_extra_backend_args {{{2
 if !exists('g:ctrlsf_extra_backend_args')
     let g:ctrlsf_extra_backend_args = {}
@@ -158,6 +164,7 @@ let s:default_mapping = {
     \ "quit"    : "q",
     \ "next"    : "<C-J>",
     \ "prev"    : "<C-K>",
+    \ "chgmode" : "<C-S>",
     \ "pquit"   : "q",
     \ "loclist" : "",
     \ }
