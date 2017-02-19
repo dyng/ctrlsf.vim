@@ -82,8 +82,8 @@ A typical workflow using CtrlSF is like this:
   It is free because it won't invoke a same but new search. A useful command
   |:CtrlSFToggle| is also available.
 
-  7. Alternatively run `:CtrlSFQuickfix [pattern]`, it will only open a
-  quickfix window to show search results.
+  7. If you prefer a quickfix-like result window, just try to press `M` in
+  CtrlSF window.
 
 Note: The result set will additionally be stored in a |location-list| of the
 CtrlSF window. Open it using |:lopen|
@@ -147,12 +147,6 @@ mode:
   is given, the default directory is used, which is specified by
   |g:ctrlsf_default_root|.
 
-:CtrlSFQuickfix [arguments] {pattern} [path] ...               *:CtrlSFQuickfix*
-
-  Similar to |:CtrlSF|. Search {pattern}. Default is search by literal. Show
-  result in a quickfix window if there is no existing one, otherwise reuse
-  that one.
-
 :CtrlSFOpen                                                        *:CtrlSFOpen*
 
   If CtrlSF window is closed (by <q> or |:CtrlSFClose|), reopen it. If the
@@ -190,53 +184,25 @@ mode:
     <Plug>CtrlSFPrompt      Input 'CtrlSF' in command line and waiting, just a
                             handy shortcut.
 
-    <Plug>CtrlSFQuickfixPrompt  Input 'CtrlSFQuickfix' in command line and
-                                waiting, just a handy shortcut to reveal in a
-                                quickfix window.
-
     <Plug>CtrlSFVwordPath    Input current visual selected word in command line
                              and waiting for any other user input.
 
-                             Use <Plug>CtrlSFQuickfixVwordPath for quickfix
-                             only window.
-
     <Plug>CtrlSFVwordExec    Similar to above, but execute it immediately.
-
-                             Use <Plug>CtrlSFQuickfixVwordExec for quickfix
-                             only window.
 
     <Plug>CtrlSFCwordPath    Input word in the cursor in command line and
                              waiting.
 
-                             Use <Plug>CtrlSFQuickfixCwordPath for quickfix
-                             only window.
-
     <Plug>CtrlSFCwordExec    Similar to above, but execute it immediately.
-
-                             Use <Plug>CtrlSFQuickfixCwordExec for quickfix
-                             only window.
 
     <Plug>CtrlSFCCwordPath   Similar to <Plug>CtrlSFCwordPath but will add word
                              boundary around searching word.
 
-                             Use <Plug>CtrlSFQuickfixCCwordPath for quickfix
-                             only window.
-
     <Plug>CtrlSFCCwordExec   Similar to above, but execute it immediately.
-
-                             Use <Plug>CtrlSFQuickfixCCwordExec for quickfix
-                             only window.
 
     <Plug>CtrlSFPwordPath    Input last search pattern in command line and
                              waiting.
 
-                             Use <Plug>CtrlSFQuickfixPwordPath for quickfix
-                             only window.
-
     <Plug>CtrlSFPwordExec    Similar to above, but execute it immediately.
-
-                             Use <Plug>CtrlSFQuickfixPwordExec for quickfix
-                             only window.
 
   Maps by default in CtrlSF window:
 
@@ -426,6 +392,14 @@ Explanation for each option:
     Option 'project' is identical to 'project+ff'.
 >
     let g:ctrlsf_default_root = 'project+fw'
+<
+g:ctrlsf_default_view_mode                        *'g:ctrlsf_default_view_mode'*
+Default: 'normal'
+Available: 'normal', 'compact'
+Defines default view mode of CtrlSF result window. 'normal' is a Sublime-like
+view and 'compact' is a quickfix-like view.
+>
+    let g:ctrlsf_debug_mode = 'compact
 <
 g:ctrlsf_extra_backend_args                      *'g:ctrlsf_extra_backend_args'*
 Default: {}
