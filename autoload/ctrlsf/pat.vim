@@ -76,7 +76,7 @@ endf
 
 " HighlightRegex()
 "
-func! ctrlsf#pat#HighlightRegex() abort
+func! ctrlsf#pat#HighlightRegex(vmode) abort
     let base = ctrlsf#pat#Regex()
 
     let magic   = strpart(base, 0, 2)
@@ -85,10 +85,19 @@ func! ctrlsf#pat#HighlightRegex() abort
 
     " sign (to prevent matching out of file body)
     let sign = ''
-    if magic ==# '\v'
-        let sign = '(^\d+:.*)@<='
+
+    if a:vmode ==# 'normal'
+        if magic ==# '\v'
+            let sign = '(^\d+:.*)@<='
+        else
+            let sign = '\(\^\d\+:\.\*\)\@<='
+        endif
     else
-        let sign = '\(\^\d\+:\.\*\)\@<='
+        if magic ==# '\v'
+            let sign = '(\|\d+ col \d+\|.*)@<='
+        else
+            let sign = '\(|\d\+ col \d\+|\.\*\)\@<='
+        endif
     endif
 
     return printf('%s%s%s%s', magic, case, sign, pattern)

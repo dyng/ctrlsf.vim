@@ -289,7 +289,10 @@ func! ctrlsf#opt#ParseOptions(options_str) abort
     let s:options["_vimregex"] = ctrlsf#pat#Regex()
 
     " vimhlregex
-    let s:options["_vimhlregex"] = ctrlsf#pat#HighlightRegex()
+    let s:options["_vimhlregex"] = {
+                \ 'normal': ctrlsf#pat#HighlightRegex('normal'),
+                \ 'compact': ctrlsf#pat#HighlightRegex('compact')
+                \ }
 
     call ctrlsf#log#Debug("Options: %s", string(s:options))
 endf

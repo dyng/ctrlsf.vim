@@ -256,9 +256,9 @@ endf
 " CurrentMode()
 "
 func! ctrlsf#CurrentMode()
-    let mode = empty(s:current_mode) ? 'normal' : s:current_mode
-    call ctrlsf#log#Debug("Current Mode: %s", mode)
-    return mode
+    let vmode = empty(s:current_mode) ? 'normal' : s:current_mode
+    call ctrlsf#log#Debug("Current Mode: %s", vmode)
+    return vmode
 endf
 
 " OpenFileInWindow()

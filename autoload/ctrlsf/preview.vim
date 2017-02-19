@@ -20,9 +20,9 @@ func! ctrlsf#preview#OpenPreviewWindow() abort
     " be sure doing this only when *opening new window*
     call ctrlsf#win#BackupAllWinSize()
 
-    let mode = ctrlsf#CurrentMode()
+    let vmode = ctrlsf#CurrentMode()
 
-    if mode ==# 'normal'
+    if vmode ==# 'normal'
         " normal mode
         if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
             let ctrlsf_width  = winwidth(0)
