@@ -73,6 +73,13 @@ func! ctrlsf#win#OpenMainWindow() abort
 
     call s:InitMainWindow()
 
+    " set 'modifiable' flag depending on current view mode
+    if ctrlsf#CurrentMode() ==# 'normal'
+        set modifiable
+    else
+        set nomodifiable
+    endif
+
     " resize other windows
     call s:ResizeNeighborWins()
 endf

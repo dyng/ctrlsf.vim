@@ -111,12 +111,15 @@ func! ctrlsf#SwitchViewMode() abort
 
     call ctrlsf#Quit()
     call s:OpenAndDraw()
-    call ctrlsf#hl#ReloadSyntax()
 endf
 
 " Save()
 "
 func! ctrlsf#Save()
+    if ctrlsf#CurrentMode() !=# 'normal'
+        ctrlsf#log#Notice("Edit mode is disabled in compact view.")
+    endif
+
     if !&l:modified
         return
     endif
@@ -228,6 +231,10 @@ endf
 " Move cursor to the next match after current cursor position.
 "
 func! ctrlsf#NextMatch(forward) abort
+    if ctrlsf#CurrentMode() !=# 'normal'
+        return
+    endif
+
     let [_, cur_vlnum, cur_vcol, _] = getpos('.')
     let [vlnum, vcol] = ctrlsf#view#FindNextMatch(a:forward, &wrapscan)
 
@@ -359,6 +366,7 @@ func! s:OpenAndDraw() abort
     call ctrlsf#win#OpenMainWindow()
     call ctrlsf#win#Draw()
     call ctrlsf#buf#ClearUndoHistory()
+    call ctrlsf#hl#ReloadSyntax()
     call ctrlsf#hl#HighlightMatch()
 
     " scroll up to top line
