@@ -164,7 +164,7 @@ let s:default_mapping = {
     \ "quit"    : "q",
     \ "next"    : "<C-J>",
     \ "prev"    : "<C-K>",
-    \ "chgmode" : "<C-S>",
+    \ "chgmode" : "M",
     \ "pquit"   : "q",
     \ "loclist" : "",
     \ }

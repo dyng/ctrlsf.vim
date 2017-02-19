@@ -75,9 +75,9 @@ func! ctrlsf#win#OpenMainWindow() abort
 
     " set 'modifiable' flag depending on current view mode
     if ctrlsf#CurrentMode() ==# 'normal'
-        set modifiable
+        setl modifiable
     else
-        set nomodifiable
+        setl nomodifiable
     endif
 
     " resize other windows
