@@ -229,8 +229,8 @@ endif
 " }}}
 
 " Commands {{{1
-com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSF         call ctrlsf#Search(<q-args>, 0)
-com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSFQuickfix call ctrlsf#Search(<q-args>, 1)
+com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSF         call ctrlsf#Search(<q-args>)
+com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSFQuickfix call ctrlsf#Quickfix(<q-args>)
 com! -n=0                                         CtrlSFOpen     call ctrlsf#Open()
 com! -n=0                                         CtrlSFUpdate   call ctrlsf#Update()
 com! -n=0                                         CtrlSFClose    call ctrlsf#Quit()
