@@ -127,6 +127,12 @@ if !exists('g:ctrlsf_default_root')
 endif
 " }}}
 
+" g:ctrlsf_default_view_mode {{{2
+if !exists('g:ctrlsf_default_view_mode')
+    let g:ctrlsf_default_view_mode = 'normal'
+endif
+" }}}
+
 " g:ctrlsf_extra_backend_args {{{2
 if !exists('g:ctrlsf_extra_backend_args')
     let g:ctrlsf_extra_backend_args = {}
@@ -158,6 +164,7 @@ let s:default_mapping = {
     \ "quit"    : "q",
     \ "next"    : "<C-J>",
     \ "prev"    : "<C-K>",
+    \ "chgmode" : "M",
     \ "pquit"   : "q",
     \ "loclist" : "",
     \ }
@@ -222,8 +229,8 @@ endif
 " }}}
 
 " Commands {{{1
-com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSF         call ctrlsf#Search(<q-args>, 0)
-com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSFQuickfix call ctrlsf#Search(<q-args>, 1)
+com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSF         call ctrlsf#Search(<q-args>)
+com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSFQuickfix call ctrlsf#Quickfix(<q-args>)
 com! -n=0                                         CtrlSFOpen     call ctrlsf#Open()
 com! -n=0                                         CtrlSFUpdate   call ctrlsf#Update()
 com! -n=0                                         CtrlSFClose    call ctrlsf#Quit()

@@ -50,11 +50,14 @@ endf
 "
 func! ctrlsf#buf#ClearUndoHistory() abort
     let modified_bak = getbufvar('%', '&modified')
+    let modifiable_bak = getbufvar('%', '&modifiable')
+    setl modifiable
     let ul_bak = &undolevels
     set undolevels=-1
     exe "normal a \<BS>\<Esc>"
     let &undolevels = ul_bak
     unlet ul_bak
+    call setbufvar('%', '&modifiable', modifiable_bak)
     call setbufvar('%', '&modified', modified_bak)
 endf
 
@@ -96,6 +99,7 @@ func! ctrlsf#buf#ToggleMap(...) abort
         \ "quit"    : "ctrlsf#Quit()",
         \ "next"    : "ctrlsf#NextMatch(1)",
         \ "prev"    : "ctrlsf#NextMatch(0)",
+        \ "chgmode" : "ctrlsf#SwitchViewMode()",
         \ "loclist" : "ctrlsf#OpenLocList()",
         \ "prevw"   : "ctrlsf#JumpTo('preview')",
         \ }
