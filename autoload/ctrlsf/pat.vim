@@ -108,7 +108,7 @@ endf
 " Regular expression to match the matched word. Difference from HighlightRegex()
 " is that this pattern only matches the first matched word in each line.
 "
-func! ctrlsf#pat#MatchPerLineRegex() abort
+func! ctrlsf#pat#MatchPerLineRegex(vmode) abort
     let base = ctrlsf#pat#Regex()
 
     let magic   = strpart(base, 0, 2)
@@ -117,10 +117,18 @@ func! ctrlsf#pat#MatchPerLineRegex() abort
 
     " sign (to prevent matching out of file body)
     let sign = ''
-    if magic ==# '\v'
-        let sign = '^\d+:.{-}\zs'
+    if a:vmode ==# 'normal'
+        if magic ==# '\v'
+            let sign = '^\d+:.{-}\zs'
+        else
+            let sign = '\^\d\+:\.\{-}\zs'
+        endif
     else
-        let sign = '\^\d\+:\.\{-}\zs'
+        if magic ==# '\v'
+            let sign = '\|\d+ col \d+\|.{-}\zs'
+        else
+            let sign = '|\d\+ col \d\+|\.\{-}\zs'
+        endif
     endif
 
     return printf('%s%s%s%s', magic, case, sign, pattern)
