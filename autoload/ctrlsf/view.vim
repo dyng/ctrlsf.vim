@@ -189,7 +189,7 @@ endf
 " [vlnum, vcol] line number and column number of next match
 "
 func! ctrlsf#view#FindNextMatch(forward, wrapscan) abort
-    let regex = ctrlsf#pat#MatchPerLineRegex()
+    let regex = ctrlsf#pat#MatchPerLineRegex(ctrlsf#CurrentMode())
     let flag  = a:forward ? 'n' : 'nb'
     let flag .= a:wrapscan ? 'w' : 'W'
     return searchpos(regex, flag)

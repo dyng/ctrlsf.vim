@@ -237,10 +237,6 @@ endf
 " Move cursor to the next match after current cursor position.
 "
 func! ctrlsf#NextMatch(forward) abort
-    if ctrlsf#CurrentMode() !=# 'normal'
-        return
-    endif
-
     let [_, cur_vlnum, cur_vcol, _] = getpos('.')
     let [vlnum, vcol] = ctrlsf#view#FindNextMatch(a:forward, &wrapscan)
 
