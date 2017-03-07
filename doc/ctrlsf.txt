@@ -433,6 +433,22 @@ in editing.  Then you can change default mapping by setting this option. A
 subset of available methods is valid, those unspecified methods will use default
 keys. You can also disable a method by mapping it to an empty string.
 
+Key id and its functionality:
+>
+    open    - open file.
+    openb   - open file in background.
+    split   - split window horizontally then open file.
+    vsplit  - split window vertically then open file.
+    tab     - open file in a new tab.
+    tabb    - open file in a background new tab.
+    popen   - open preview window.
+    quit    - close main window.
+    next    - jump to next match.
+    prev    - jump to previous match.
+    pquit   - close preview window.
+    loclist - open location list in main window.
+    chgmode - switch view mode.
+<
 Default:
 >
     {
@@ -448,6 +464,7 @@ Default:
         "prev"    : "<C-K>",
         "pquit"   : "q",
         "loclist" : "",
+        "chgmode" : "M",
     }
 <
 Example:
