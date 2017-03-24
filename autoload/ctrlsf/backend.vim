@@ -147,6 +147,9 @@ func! s:BuildCommand(args) abort
         call add(tokens, extra_args)
     endif
 
+    " no more flags
+    call add(tokens, "--")
+
     " pattern (including escape)
     call add(tokens, shellescape(ctrlsf#opt#GetOpt('pattern')))
 
