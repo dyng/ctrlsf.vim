@@ -99,12 +99,17 @@ func! ctrlsf#win#CloseMainWindow() abort
     endif
 
     " Surely we are in CtrlSF window
-    close
+    try
+      close
 
-    " restore width/height of other windows
-    call ctrlsf#win#RestoreAllWinSize()
+      " restore width/height of other windows
+      call ctrlsf#win#RestoreAllWinSize()
 
-    call ctrlsf#win#FocusCallerWindow()
+      call ctrlsf#win#FocusCallerWindow()
+    catch /^Vim\%((\a\+)\)\=:E444/
+      " This is the last window, simply delete the buffer
+      bdelete
+    endtry
 endf
 
 " ResizeNeighborWins()
