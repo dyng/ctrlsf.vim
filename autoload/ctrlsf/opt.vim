@@ -217,6 +217,7 @@ endf
 "
 func! s:ParseOptions(options_str) abort
     let options = {}
+    let no_more_options = 0
     let tokens  = ctrlsf#lex#Tokenize(a:options_str)
 
     let i = 0
@@ -225,7 +226,10 @@ func! s:ParseOptions(options_str) abort
         let i += 1
 
         if !has_key(s:option_list, token)
-            if token =~# '^-'
+            if token == '--'
+              let no_more_options = 1
+              continue
+            elseif token =~# '^-' && !no_more_options
                 call ctrlsf#log#Error("Unknown option '%s'. If you are user
                     \ from pre-v1.0, please be aware of that CtrlSF no longer
                     \ supports all options of ack and ag since v1.0. Read
