@@ -399,7 +399,7 @@ Available: 'normal', 'compact'
 Defines default view mode of CtrlSF result window. 'normal' is a Sublime-like
 view and 'compact' is a quickfix-like view.
 >
-    let g:ctrlsf_debug_mode = 'compact
+    let g:ctrlsf_default_view_mode = 'compact'
 <
 g:ctrlsf_extra_backend_args                      *'g:ctrlsf_extra_backend_args'*
 Default: {}
