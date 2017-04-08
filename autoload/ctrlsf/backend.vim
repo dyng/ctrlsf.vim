@@ -83,6 +83,11 @@ func! s:BuildCommand(args) abort
     endfo
     call add(tokens, context)
 
+    " whole world match
+    if runner ==# 'ag' && !empty(ctrlsf#opt#GetOpt('word'))
+        call add(tokens, '-w')
+    endif
+
     " ignorecase
     let case_sensitive = ctrlsf#opt#GetCaseSensitive()
     let case = s:backend_args_map[runner]['ignorecase'][case_sensitive]
