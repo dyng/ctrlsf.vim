@@ -59,7 +59,7 @@ Here we rename a method named `MoveCursor()` to `Cursor()` in multiple files, us
 
 1. Run `:CtrlSF [pattern]`, it will split a new window to show search result.
 
-2. Press `Enter` to open corresponding file, or press `q` to quit.
+2. Press `Enter`/`o` to open corresponding file, or press `q` to quit.
 
 3. Press `p` to explore file in a preview window if you only want a glance.
 
@@ -75,7 +75,7 @@ Here we rename a method named `MoveCursor()` to `Cursor()` in multiple files, us
 
 In CtrlSF window:
 
-- `Enter` - Open corresponding file of current line in the window which CtrlSF is launched from.
+- `Enter`, `o`, `double-click` - Open corresponding file of current line in the window which CtrlSF is launched from.
 - `<C-O>` - Like `Enter` but open file in a horizontal split window.
 - `t` - Like `Enter` but open file in a new tab.
 - `p` - Like `Enter` but open file in a preview window.

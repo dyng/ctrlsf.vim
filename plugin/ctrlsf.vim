@@ -153,7 +153,7 @@ endif
 
 " g:ctrlsf_mapping {{{
 let s:default_mapping = {
-    \ "open"    : ["<CR>", "o"],
+    \ "open"    : ["<CR>", "o", "<2-LeftMouse>"],
     \ "openb"   : "O",
     \ "split"   : "<C-O>",
     \ "vsplit"  : "",

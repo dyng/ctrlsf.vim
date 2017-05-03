@@ -206,7 +206,7 @@ mode:
 
   Maps by default in CtrlSF window:
 
-    <Enter>, <o>   Open file which contains the line under cursor.
+    <Enter>, <o>, <2-LeftMouse> Open file which contains the line under cursor.
 
     <C-O>          Open file in a horizontally split window.
 
