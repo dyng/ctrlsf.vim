@@ -299,7 +299,7 @@ endf
 "
 func! ctrlsf#win#MoveCursorCentral(lnum, col) abort
     " Move cursor to specific position
-    exec 'keepjumps normal ' . a:lnum . 'z.'
+    exec 'keepjumps normal ' . a:lnum . ' z.'
     call cursor(a:lnum, a:col)
 
     " Open fold
