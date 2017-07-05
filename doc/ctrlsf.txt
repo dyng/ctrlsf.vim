@@ -306,6 +306,14 @@ Make this search be smart-cased.
 ================================================================================
 6. Options                                                      *ctrlsf-options*
 
+g:ctrlsf_absolute_file_path                      *'g:ctrlsf_absolute_file_path'*
+Default: 0
+'g:ctrlsf_absolute_file_path' defines whether CtrlSF uses absolute path or
+relative path (if possible) for files. This option is automatically applied if
+'autochdir' is enabled.
+>
+    let g:ctrlsf_absolute_file_path = 1
+<
 g:ctrlsf_ackprg                                              *'g:ctrlsf_ackprg'*
 Default: auto
 Available: 'ag', 'ack', 'pt', 'rg'
