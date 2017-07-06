@@ -79,6 +79,12 @@ endf
 " }}}
 
 " Options {{{1
+" g:ctrlsf_absolute_file_path {{{2
+if !exists('g:ctrlsf_absolute_file_path')
+    let g:ctrlsf_absolute_file_path = 0
+endif
+" }}}
+
 " g:ctrlsf_ackprg {{{2
 if !exists('g:ctrlsf_ackprg')
     let g:ctrlsf_ackprg = ctrlsf#backend#Detect()
