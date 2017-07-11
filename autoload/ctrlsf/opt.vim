@@ -169,6 +169,9 @@ func! ctrlsf#opt#GetPath() abort
             if empty(path)
                 if opt_fbroot ==# 'f'
                     let path = expand('%:p')
+                    if empty(path)
+                        let path = getcwd()
+                    endif
                 elseif opt_fbroot ==# 'w'
                     let path = getcwd()
                 endif
