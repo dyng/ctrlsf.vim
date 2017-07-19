@@ -296,6 +296,12 @@ Make this search be case-sensitive.
 Use pattern as regular expression.
 >
     :CtrlSF -R foo.*
+
+'-word', '-W'                                               *ctrlsf_args_word*
+
+Search only for whole words.
+>
+    :CtrlSF -W foo
 <
 '-smartcase'                                           *ctrlsf_args_smartcase*
 
