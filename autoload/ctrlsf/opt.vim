@@ -11,6 +11,7 @@ let s:option_list = {
     \ '-before'     : {'args': 1},
     \ '-context'    : {'args': 1},
     \ '-filetype'   : {'args': 1},
+    \ '-word'       : {'args': 0},
     \ '-filematch'  : {'args': 1},
     \ '-ignorecase' : {'args': 0},
     \ '-ignoredir'  : {'args': 1},
@@ -26,6 +27,7 @@ let s:option_list = {
     \ '-L': {'fullname': '-literal'},
     \ '-R': {'fullname': '-regex'},
     \ '-S': {'fullname': '-matchcase'},
+    \ '-W': {'fullname': '-word'},
     \ }
 
 " default values to options

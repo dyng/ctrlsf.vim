@@ -161,6 +161,7 @@ CtrlSF has a lot of arguments you can use in search. Most arguments are similar 
 - `-R` - Use regular expression pattern.
 - `-I`, `-S` - Search case-insensitively (`-I`) or case-sensitively (`-S`).
 - `-C`, `-A`, `-B` - Specify how many context lines to be printed, identical to their counterparts in Ag/Ack.
+- `-W` - Only match whole words.
 
 Read `:h ctrlsf-arguments` for a full list of arguments.
 

@@ -111,6 +111,10 @@ func! s:BuildCommand(args) abort
         endif
     endif
 
+    if !empty(ctrlsf#opt#GetOpt('word'))
+        call add(tokens, '-w')
+    endif
+
     " filematch (NOT SUPPORTED BY ALL BACKEND)
     " support backend: ag, ack, pt
     if !empty(ctrlsf#opt#GetOpt('filematch'))
