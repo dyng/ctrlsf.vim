@@ -456,6 +456,7 @@ Key id and its functionality:
     tab     - open file in a new tab.
     tabb    - open file in a background new tab.
     popen   - open preview window.
+    popenf  - open preview window in foreground.
     quit    - close main window.
     next    - jump to next match.
     prev    - jump to previous match.
@@ -473,6 +474,7 @@ Default:
         "tab"     : "t",
         "tabb"    : "T",
         "popen"   : "p",
+        "popenf"  : "P",
         "quit"    : "q",
         "next"    : "<C-J>",
         "prev"    : "<C-K>",
