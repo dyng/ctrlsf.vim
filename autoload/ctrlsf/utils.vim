@@ -43,6 +43,20 @@ func! ctrlsf#utils#Nmap(map, act_func_ref) abort
                     \ . " :call " . a:act_func_ref[act] . "<CR>"
             endfo
         endif
+
+        if type(a:map[act]) == 4
+            let m = a:map[act]
+            let suffix = has_key(m, 'suffix') ? m['suffix'] : ''
+            if type(m['key']) == 1
+                exec "silent! nnoremap <silent><buffer> " . m['key']
+                    \ . " :call " . a:act_func_ref[act] . "<CR>" . suffix
+            elseif type(m['key']) == 3
+                for key in m['key']
+                    exec "silent! nnoremap <silent><buffer> " . key
+                        \ . " :call " . a:act_func_ref[act] . "<CR>" . suffix
+                endfo
+            endif
+        endif
     endfo
 endf
 
@@ -62,6 +76,17 @@ func! ctrlsf#utils#Nunmap(map, act_func_ref) abort
             for key in a:map[act]
                 exec "nunmap <silent><buffer> " . key
             endfo
+        endif
+
+        if type(a:map[act]) == 4
+            let m = a:map[act]
+            if type(m['key']) == 1
+                exec "nunmap <silent><buffer> " . m['key']
+            elseif type(a:map[act]) == 3
+                for key in m['key']
+                    exec "nunmap <silent><buffer> " . key
+                endfo
+            endif
         endif
     endfo
 endf
