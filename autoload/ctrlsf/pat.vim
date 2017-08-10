@@ -41,8 +41,8 @@ func! s:TranslateRegex(pattern) abort
     " '\B' non-word boundary (just remove it)
     let pattern = substitute(pattern, '\C\\B', '', 'g')
 
-    " vim-regex when magic is \v, '=' is no literally, should change to '\='
-    let pattern = escape(pattern, '=')
+    " vim-regex when magic is \v, '=' '&' is no literally, should change to '\=' and '\&'
+    let pattern = escape(pattern, '=&')
 
     return pattern
 endf
