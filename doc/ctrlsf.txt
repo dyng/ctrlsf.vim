@@ -467,9 +467,17 @@ Default:
         "chgmode" : "M",
     }
 <
+Sometimes you may wish for a method to also perform a complementary action such
+as scrolling the window, or returning focus to the CtrlSF window. In that case
+you can specify the method's value as a dictionary with a 'key' and a 'suffix',
+which contains the additional keys to execute after the method. In the following
+example, 'suffix' will return focus to the CtrlSF window after 'openb' is
+executed.
+
 Example:
 >
     let g:ctrlsf_mapping = {
+        \ "openb": { key: "O", suffix: "<C-w>p" },
         \ "next": "n",
         \ "prev": "N",
         \ "openb": "",
