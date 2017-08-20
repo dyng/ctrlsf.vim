@@ -239,10 +239,12 @@ Read `:h ctrlsf-arguments` for a full list of arguments.
         \ }
     ```
 
-- `g:ctrlsf_mapping` defines maps used in result window and preview window. Value of this option is a dictionary, where key is a method and value is a key for mapping. An empty value can disable that method. You can just define a subset of full dictionary, those not defined functionalities will use default key mapping.
+
+- `g:ctrlsf_mapping` defines maps used in result window and preview window. Value of this option is a dictionary, where key is a method and value is a key for mapping. An empty value can disable that method. To specify additional keys to run after a method, use the extended form demonstrated below to specify a `suffix`. You can just define a subset of full dictionary, those not defined functionalities will use default key mapping.
 
     ```vim
     let g:ctrlsf_mapping = {
+        \ "openb": { key: "O", suffix: "<C-w>p" },
         \ "next": "n",
         \ "prev": "N",
         \ }
