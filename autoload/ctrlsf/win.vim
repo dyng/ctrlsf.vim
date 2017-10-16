@@ -138,6 +138,7 @@ func! s:InitMainWindow() abort
     setl nobuflisted
     setl nolist
     setl nonumber
+    setl norelativenumber
     setl nowrap
     setl winfixwidth
     setl winfixheight
