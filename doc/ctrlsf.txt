@@ -262,6 +262,7 @@ Defines which type of files should the search be restricted to. view
 '-filematch', '-G'                       *ctrlsf_args_G* *ctrlsf_args_filematch*
 
 Defines a pattern that only files whose name is matching will be searched.
+The pattern might depend on the backend being used.
 >
     :Ctrlsf -filematch .*\.wrproject foo
 <
