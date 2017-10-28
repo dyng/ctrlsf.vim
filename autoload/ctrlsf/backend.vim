@@ -116,7 +116,7 @@ func! s:BuildCommand(args) abort
     endif
 
     " filematch (NOT SUPPORTED BY ALL BACKEND)
-    " support backend: ag, ack, pt
+    " support backend: ag, ack, pt, rg
     if !empty(ctrlsf#opt#GetOpt('filematch'))
         if runner ==# 'ag'
             call extend(tokens, [
@@ -125,6 +125,9 @@ func! s:BuildCommand(args) abort
                 \ ])
         elseif runner ==# 'pt'
             call add(tokens, printf("--file-search-regex=%s",
+                \ shellescape(ctrlsf#opt#GetOpt('filematch'))))
+        elseif runner ==# 'rg'
+            call add(tokens, printf("-g %s",
                 \ shellescape(ctrlsf#opt#GetOpt('filematch'))))
         elseif runner ==# 'ack'
             " pipe: 'ack -g ${filematch} ${path} |'
