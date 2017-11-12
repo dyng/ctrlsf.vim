@@ -290,7 +290,7 @@ func! s:OpenFileInWindow(file, lnum, col, mode, split) abort
     else
         exec target_winnr . 'wincmd w'
 
-        if bufname('%') !~# a:file
+        if bufname('%') !=# a:file
             if a:split || (&modified && !&hidden)
                 if a:split == 2
                     exec 'silent vertical split ' . fnameescape(a:file)
