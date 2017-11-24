@@ -11,7 +11,7 @@ func! ctrlsf#hl#HighlightMatch(...) abort
     " default: ctrlsfMatch
     let hlgroup = a:0 > 0 ? a:1 : 'ctrlsfMatch'
 
-    if !exists('b:current_syntax') || b:current_syntax !~# 'ctrlsf'
+    if !exists('b:current_syntax') || b:current_syntax !=# 'ctrlsf'
         return -1
     endif
 
