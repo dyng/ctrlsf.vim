@@ -55,7 +55,7 @@ let s:backend_args_map = {
             \ 'ignorecase': '--ignore-case',
             \ 'matchcase': ''
             \ },
-        \ 'ignoredir': '',
+        \ 'ignoredir': '-g',
         \ 'regex': {
             \ '1': '',
             \ '0': '--fixed-strings'
@@ -92,9 +92,15 @@ func! s:BuildCommand(args) abort
     let ignore_dir = ctrlsf#opt#GetIgnoreDir()
     let arg_name = s:backend_args_map[runner]['ignoredir']
     if !empty(arg_name)
-        for dir in ignore_dir
-            call add(tokens, arg_name . ' ' . shellescape(dir))
-        endfor
+        if runner ==# 'rg'
+            for dir in ignore_dir
+                call add(tokens, arg_name . ' !' . shellescape(dir))
+            endfor
+        else
+            for dir in ignore_dir
+                call add(tokens, arg_name . ' ' . shellescape(dir))
+            endfor
+        endif
     endif
 
     " regex
