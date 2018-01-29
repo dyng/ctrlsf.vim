@@ -20,7 +20,7 @@ let s:backend_args_map = {
             \ '1': '',
             \ '0': '--literal'
             \ },
-        \ 'default': '--noheading --nogroup --nocolor --nobreak'
+        \ 'default': '--noheading --nogroup --nocolor --nobreak --filename'
         \ },
     \ 'ack': {
         \ 'ignorecase': {
@@ -60,7 +60,7 @@ let s:backend_args_map = {
             \ '1': '',
             \ '0': '--fixed-strings'
             \ },
-        \ 'default': '--no-heading --color never --line-number'
+        \ 'default': '--no-heading --color never --line-number -H'
         \ }
     \ }
 
