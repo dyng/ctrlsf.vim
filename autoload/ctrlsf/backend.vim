@@ -20,7 +20,7 @@ let s:backend_args_map = {
             \ '1': '',
             \ '0': '--literal'
             \ },
-        \ 'default': '--noheading --nogroup --nocolor --nobreak --filename'
+        \ 'default': '--noheading --nogroup --nocolor --nobreak'
         \ },
     \ 'ack': {
         \ 'ignorecase': {
