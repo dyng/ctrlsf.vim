@@ -181,7 +181,7 @@ endf
 "
 func! ctrlsf#edit#Save() abort
     let orig = ctrlsf#db#FileResultSet()
-    let rs   = ctrlsf#view#Derender(getline(0, '$'))
+    let rs   = ctrlsf#view#Unrender(getline(0, '$'))
     let modi = ctrlsf#db#FileResultSetBy(rs)
 
     " check difference and validity

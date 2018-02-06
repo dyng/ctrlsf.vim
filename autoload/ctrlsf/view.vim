@@ -195,11 +195,11 @@ func! ctrlsf#view#FindNextMatch(forward, wrapscan) abort
     return searchpos(regex, flag)
 endf
 
-" Derender()
+" Unrender()
 "
 " Return a 'ResultSet' which is derendered from {content}.
 "
-func! ctrlsf#view#Derender(content) abort
+func! ctrlsf#view#Unrender(content) abort
     let lines  = type(a:content) == 3 ? a:content : split(a:content, "\n")
     let orig   = ctrlsf#db#ResultSet()
     let indent = ctrlsf#view#Indent()
