@@ -145,6 +145,7 @@ func! s:InitMainWindow() abort
     setl textwidth=0
     setl nospell
     setl nofoldenable
+    setl cursorline
 
     " map
     call ctrlsf#buf#ToggleMap(1)
