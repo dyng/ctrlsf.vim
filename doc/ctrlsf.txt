@@ -332,12 +332,21 @@ explicitly set it by
     let g:ctrlsf_ackprg = '/usr/local/bin/ag'
 <
 g:ctrlsf_auto_close                                      *'g:ctrlsf_auto_close'*
-Default: 1
-'g:ctrlsf_auto_close' defines how CtrlSF handle itself after you have opened
-a file from CtrlSF window. By default CtrlSF will close itself but you can
-prevent this behavior by setting this option to 0
+Default:
+    {
+        "normal" : 1,
+        "compact": 0
+    }
+'g:ctrlsf_auto_close' defines how CtrlSF handles itself in 'normal' and 'compact'
+view mode(|g:ctrlsf_default_view_mode|) respectively after you have opened a file
+from CtrlSF window. By default, CtrlSF will close itself in 'normal' view mode and
+keep open in 'compact' view mode.
+You can customize it as you will:
 >
-    let g:ctrlsf_auto_close = 0
+    let g:ctrlsf_auto_close = {
+        \ "normal" : 0,
+        \ "compact": 0
+        \ }
 <
 g:ctrlsf_case_sensitive                              *'g:ctrlsf_case_sensitive'*
 Default: 'smart'

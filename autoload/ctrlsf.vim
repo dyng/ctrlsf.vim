@@ -280,7 +280,7 @@ endf
 " '2' means split vertically
 "
 func! s:OpenFileInWindow(file, lnum, col, mode, split) abort
-    if a:mode == 1 && g:ctrlsf_auto_close
+    if a:mode == 1 && g:ctrlsf_auto_close[ctrlsf#CurrentMode()]
         call s:Quit()
     endif
 
@@ -320,7 +320,7 @@ endf
 " and never close CtrlSF window.
 "
 func! s:OpenFileInTab(file, lnum, col, mode) abort
-    if a:mode == 1 && g:ctrlsf_auto_close
+    if a:mode == 1 && g:ctrlsf_auto_close[ctrlsf#CurrentMode()]
         call s:Quit()
     endif
 
