@@ -212,6 +212,12 @@ func! ctrlsf#opt#GetIgnoreDir() abort
     return ignore_dir
 endf
 
+" AutoClose()
+"
+func! ctrlsf#opt#AutoClose() abort
+    return type(g:ctrlsf_auto_close) == type(0) ? g:ctrlsf_auto_close : g:ctrlsf_auto_close[ctrlsf#CurrentMode()]
+endf
+
 """""""""""""""""""""""""""""""""
 " Option Parsing
 """""""""""""""""""""""""""""""""
