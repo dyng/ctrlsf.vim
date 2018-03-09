@@ -201,10 +201,13 @@ Read `:h ctrlsf-arguments` for a full list of arguments.
 
 ## Configuration
 
-- `g:ctrlsf_auto_close` defines if CtrlSF close itself when you are opening some file. By default CtrlSF window will close automatically but you can prevent it by setting `g:ctrlsf_auto_close` to 0.
+- `g:ctrlsf_auto_close` defines if CtrlSF close itself when you are opening some file. By default, CtrlSF window will close automatically in `normal` view mode and keep open in `compact` view mode. You can customize the value as below:
 
     ```vim
-    let g:ctrlsf_auto_close = 0
+    let g:ctrlsf_auto_close = {
+        \ "normal" : 0,
+        \ "compact": 0
+        \}
     ```
 
 - `g:ctrlsf_case_sensitive` defines default case-sensitivity in search. Possible values are `yes`, `no` and `smart`, `smart` works the same as it is in vim. The default value is `smart`.

@@ -93,7 +93,10 @@ endif
 
 " g:ctrlsf_auto_close {{{2
 if !exists('g:ctrlsf_auto_close')
-    let g:ctrlsf_auto_close = 1
+    let g:ctrlsf_auto_close = {
+        \ "normal" : 1,
+        \ "compact": 0
+        \ }
 endif
 " }}}
 
