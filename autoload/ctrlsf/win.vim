@@ -11,7 +11,7 @@ let s:MAIN_BUF_NAME = "__CtrlSF__"
 " window which brings up ctrlsf window
 let s:caller_win = {
     \ 'bufnr' : -1,
-    \ 'winnr' : -1,
+    \ 'winid' : 0,
     \ }
 
 """""""""""""""""""""""""""""""""
@@ -21,10 +21,10 @@ let s:caller_win = {
 " OpenMainWindow()
 "
 func! ctrlsf#win#OpenMainWindow() abort
-    " backup current bufnr and winnr
+    " backup current bufnr and winid
     let s:caller_win = {
         \ 'bufnr' : bufnr('%'),
-        \ 'winnr' : winnr(),
+        \ 'winid' : win_getid(winnr()),
         \ }
 
     " try to focus an existing ctrlsf window, initialize a new one if failed
@@ -219,12 +219,7 @@ endf
 " FindCallerWindow()
 "
 func! ctrlsf#win#FindCallerWindow() abort
-    let ctrlsf_winnr = ctrlsf#win#FindMainWindow()
-    if ctrlsf_winnr > 0 && ctrlsf_winnr <= s:caller_win.winnr
-        return s:caller_win.winnr + 1
-    else
-        return s:caller_win.winnr
-    endif
+    return s:caller_win.winid > 0 ? win_id2win(s:caller_win.winid) : -1
 endf
 
 " FocusCallerWindow()
@@ -247,7 +242,7 @@ func! ctrlsf#win#FindTargetWindow(file) abort
     endif
 
     " case: previous window where ctrlsf was triggered
-    let target_winnr = s:caller_win.winnr
+    let target_winnr = ctrlsf#win#FindCallerWindow()
 
     let ctrlsf_winnr = ctrlsf#win#FindMainWindow()
     if ctrlsf_winnr > 0 && ctrlsf_winnr <= target_winnr
