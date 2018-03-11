@@ -66,10 +66,20 @@ func! ctrlsf#Search(args, ...) abort
 
     " if view mode is not specified, use 'g:ctrlsf_default_view_mode'
     let s:current_mode  = empty(a:000) ?
-                \ g:ctrlsf_default_view_mode :
+                \ s:InitViewMode() :
                 \ a:1
 
     call s:ExecSearch(s:current_query)
+endf
+
+" InitViewMode()
+"
+func! s:InitViewMode() abort
+    if ctrlsf#win#FindMainWindow() < 0
+        return g:ctrlsf_default_view_mode
+    else
+        return ctrlsf#CurrentMode()
+    endif
 endf
 
 " Update()
