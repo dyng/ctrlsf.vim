@@ -120,6 +120,14 @@ func! s:ResizeNeighborWins() abort
     wincmd =
 endf
 
+" UndoAllChanges()
+"
+func! s:UndoAllChanges() abort
+    if ctrlsf#win#InMainWindow()
+        call ctrlsf#buf#UndoAllChanges()
+    endif
+endf
+
 " InitMainWindow()
 func! s:InitMainWindow() abort
     if exists("b:ctrlsf_initialized")
@@ -163,7 +171,7 @@ func! s:InitMainWindow() abort
     augroup ctrlsf
         au!
         au BufWriteCmd         <buffer> call ctrlsf#Save()
-        au BufHidden,BufUnload <buffer> call ctrlsf#buf#UndoAllChanges()
+        au BufHidden,BufUnload <buffer> call s:UndoAllChanges()
     augroup END
 
     " hook for user customization
@@ -178,10 +186,22 @@ endf
 " Window Navigation
 """""""""""""""""""""""""""""""""
 
+" InWindow()
+"
+func! ctrlsf#win#InWindow(buf_name) abort
+    return bufname("%") ==# a:buf_name
+endf
+
 " FindWindow()
 "
 func! ctrlsf#win#FindWindow(buf_name) abort
     return bufwinnr(a:buf_name)
+endf
+
+" InMainWindow()
+"
+func! ctrlsf#win#InMainWindow() abort
+    return ctrlsf#win#InWindow(s:MAIN_BUF_NAME)
 endf
 
 " FocusWindow()
