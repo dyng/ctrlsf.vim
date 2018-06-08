@@ -14,6 +14,14 @@ let s:caller_win = {
     \ 'winid' : 0,
     \ }
 
+let s:drawn_lines = 0
+
+" Reset(0
+"
+func! ctrlsf#win#Reset() abort
+    let s:drawn_lines = 0
+endf
+
 """""""""""""""""""""""""""""""""
 " Open & Close
 """""""""""""""""""""""""""""""""
@@ -73,8 +81,8 @@ func! ctrlsf#win#OpenMainWindow() abort
 
     call s:InitMainWindow()
 
-    " set 'modifiable' flag depending on current view mode
-    if ctrlsf#CurrentMode() ==# 'normal'
+    " set 'modifiable' flag depending on current view mode and search mode
+    if ctrlsf#CurrentMode() ==# 'normal' && g:ctrlsf_search_mode ==# 'sync'
         setl modifiable
     else
         setl nomodifiable
@@ -87,8 +95,25 @@ endf
 " Draw()
 "
 func! ctrlsf#win#Draw() abort
+    let s:drawn_lines = 0
     let content = ctrlsf#view#Render()
     silent! undojoin | keepjumps call ctrlsf#buf#WriteString(content)
+endf
+
+" DrawIncr()
+"
+func! ctrlsf#win#DrawIncr() abort
+    if ctrlsf#CurrentMode() == 'normal'
+        silent! undojoin | keepjumps
+                    \ call ctrlsf#buf#SetLine(s:MAIN_BUF_NAME, 1, ctrlsf#view#RenderSummary())
+        if s:drawn_lines == 0
+            let s:drawn_lines = 1
+        endif
+    endif
+    let new_lines = ctrlsf#view#RenderIncr()
+    silent! undojoin | keepjumps
+                \ call ctrlsf#buf#SetLine(s:MAIN_BUF_NAME, s:drawn_lines + 1, new_lines)
+    let s:drawn_lines = s:drawn_lines + len(new_lines)
 endf
 
 " CloseMainWindow()

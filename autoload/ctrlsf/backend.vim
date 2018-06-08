@@ -66,7 +66,7 @@ let s:backend_args_map = {
 
 " BuildCommand()
 "
-func! s:BuildCommand(args) abort
+func! s:BuildCommand(args, for_shell) abort
     let tokens = []
     let runner = ctrlsf#backend#Runner()
 
@@ -94,11 +94,11 @@ func! s:BuildCommand(args) abort
     if !empty(arg_name)
         if runner ==# 'rg'
             for dir in ignore_dir
-                call add(tokens, arg_name . ' !' . shellescape(dir))
+                call add(tokens, arg_name . ' !' . s:Escape(a:for_shell, dir))
             endfor
         else
             for dir in ignore_dir
-                call add(tokens, arg_name . ' ' . shellescape(dir))
+                call add(tokens, arg_name . ' ' . s:Escape(a:for_shell, dir))
             endfor
         endif
     endif
@@ -127,20 +127,20 @@ func! s:BuildCommand(args) abort
         if runner ==# 'ag'
             call extend(tokens, [
                 \ '--file-search-regex',
-                \ shellescape(ctrlsf#opt#GetOpt('filematch'))
+                \ s:Escape(a:for_shell, ctrlsf#opt#GetOpt('filematch'))
                 \ ])
         elseif runner ==# 'pt'
             call add(tokens, printf("--file-search-regex=%s",
-                \ shellescape(ctrlsf#opt#GetOpt('filematch'))))
+                        \ s:Escape(a:for_shell, ctrlsf#opt#GetOpt('filematch'))))
         elseif runner ==# 'rg'
             call add(tokens, printf("-g %s",
-                \ shellescape(ctrlsf#opt#GetOpt('filematch'))))
+                        \ s:Escape(a:for_shell, ctrlsf#opt#GetOpt('filematch'))))
         elseif runner ==# 'ack'
             " pipe: 'ack -g ${filematch} ${path} |'
             let pipe_tokens = [
                 \ g:ctrlsf_ackprg,
                 \ '-g',
-                \ shellescape(ctrlsf#opt#GetOpt('filematch'))
+                \ s:Escape(a:for_shell, ctrlsf#opt#GetOpt('filematch'))
                 \ ]
             call extend(pipe_tokens, ctrlsf#opt#GetPath())
             call add(pipe_tokens, '|')
@@ -164,12 +164,21 @@ func! s:BuildCommand(args) abort
     call add(tokens, "--")
 
     " pattern (including escape)
-    call add(tokens, shellescape(ctrlsf#opt#GetOpt('pattern')))
+    call add(tokens, s:Escape(a:for_shell, ctrlsf#opt#GetOpt('pattern')))
 
     " path
-    call extend(tokens, ctrlsf#opt#GetPath())
+    let path = ctrlsf#opt#GetPath()
+    for p in path
+        call add(tokens, s:Escape(a:for_shell, p))
+    endfo
 
     return join(tokens, ' ')
+endf
+
+" s:Escape()
+"
+func! s:Escape(for_shell, str)
+    return a:for_shell ? shellescape(a:str) : ctrlsf#utils#Quote(a:str)
 endf
 
 " SelfCheck()
@@ -259,7 +268,7 @@ endf
 " [success/fail, output]
 "
 func! ctrlsf#backend#Run(args) abort
-    let command = s:BuildCommand(a:args)
+    let command = s:BuildCommand(a:args, 1)
     call ctrlsf#log#Debug("ExecCommand: %s", command)
 
     " A windows user reports CtrlSF doesn't work well when 'shelltemp' is
@@ -286,4 +295,11 @@ func! ctrlsf#backend#Run(args) abort
     else
         return [1, output]
     endif
+endf
+
+func! ctrlsf#backend#RunAsync(args) abort
+    let command = s:BuildCommand(a:args, 0)
+    call ctrlsf#log#Debug("ExecCommand: %s", command)
+
+    call ctrlsf#async#StartSearch(command)
 endf

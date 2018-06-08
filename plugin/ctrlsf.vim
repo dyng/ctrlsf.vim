@@ -171,6 +171,7 @@ let s:default_mapping = {
     \ "popen"   : "p",
     \ "popenf"  : "P",
     \ "quit"    : "q",
+    \ "stop"    : "<C-C>",
     \ "next"    : "<C-J>",
     \ "prev"    : "<C-K>",
     \ "chgmode" : "M",
@@ -221,6 +222,12 @@ if !exists('g:ctrlsf_selected_line_hl')
 endif
 " }}}
 
+" g:ctrlsf_search_mode {{{2
+if !exists('g:ctrlsf_search_mode')
+    let g:ctrlsf_search_mode = 'sync'
+endif
+" }}}
+
 " g:ctrlsf_toggle_map_key {{{2
 if !exists('g:ctrlsf_toggle_map_key')
     let g:ctrlsf_toggle_map_key = ''
@@ -245,6 +252,7 @@ com! -n=0                                         CtrlSFUpdate   call ctrlsf#Upd
 com! -n=0                                         CtrlSFClose    call ctrlsf#Quit()
 com! -n=0                                         CtrlSFClearHL  call ctrlsf#ClearSelectedLine()
 com! -n=0                                         CtrlSFToggle   call ctrlsf#Toggle()
+com! -n=0                                         CtrlSFStop     call ctrlsf#StopSearch()
 " }}}
 
 " Maps {{{1

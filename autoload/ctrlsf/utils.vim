@@ -91,13 +91,10 @@ func! ctrlsf#utils#Nunmap(map, act_func_ref) abort
     endfo
 endf
 
-" Time()
+" Quote()
 "
-func! ctrlsf#utils#Time(command) abort
-    let start = reltime()
-    exec a:command
-    let elapsed = reltime(start)
-    echom printf("Time: %s, For Command: %s", reltimestr(elapsed), a:command)
+func! ctrlsf#utils#Quote(str) abort
+    return '"' . escape(a:str, '"') . '"'
 endf
 
 """""""""""""""""""""""""""""""""

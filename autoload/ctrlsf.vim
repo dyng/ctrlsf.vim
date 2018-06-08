@@ -18,6 +18,9 @@ let s:current_query = ''
 " Basic process: query, parse, render and display.
 "
 func! s:ExecSearch(args) abort
+    " reset all states
+    call s:Reset()
+
     try
         call ctrlsf#opt#ParseOptions(a:args)
     catch /ParseOptionsException/
@@ -28,7 +31,33 @@ func! s:ExecSearch(args) abort
         return -1
     endif
 
+    call ctrlsf#profile#Sample("StartSearch")
+    if g:ctrlsf_search_mode ==# 'sync'
+        call s:DoSearchSync(a:args)
+    else
+        call s:DoSearchAsync(a:args)
+    endif
+
+endf
+
+" s:Reset()
+"
+" Reset all states of many modules
+"
+func! s:Reset() abort
+    call ctrlsf#db#Reset()
+    call ctrlsf#opt#Reset()
+    call ctrlsf#win#Reset()
+    call ctrlsf#view#Reset()
+    call ctrlsf#async#Reset()
+    call ctrlsf#profile#Reset()
+endf
+
+" s:DoSearchSync()
+"
+func! s:DoSearchSync(args) abort
     let [success, output] = ctrlsf#backend#Run(a:args)
+    call ctrlsf#profile#Sample("FinishSearch")
     if !success
         call ctrlsf#log#Error('Failed to call backend. Error messages: %s',
             \ output)
@@ -40,16 +69,32 @@ func! s:ExecSearch(args) abort
                 \ ctrlsf#backend#LastErrors())
 
     " Parsing
-    call ctrlsf#db#ParseAckprgResult(output)
+    call ctrlsf#profile#Sample("StartParse")
+    call ctrlsf#db#ParseBackendResult(output)
+    call ctrlsf#profile#Sample("FinishParse")
 
     " Open and draw contents
+    call ctrlsf#profile#Sample("StartDraw")
     call s:OpenAndDraw()
+    call ctrlsf#profile#Sample("FinishDraw")
 
     " populate quickfix and location list
     if g:ctrlsf_populate_qflist
         call setqflist(ctrlsf#db#MatchListQF())
     endif
     call setloclist(0, ctrlsf#db#MatchListQF())
+endf
+
+" s:DoSearchAsync()
+"
+func! s:DoSearchAsync(args) abort
+    " clear current content
+    if ctrlsf#win#FocusMainWindow() != -1
+        call ctrlsf#buf#WriteString("")
+        wincmd p
+    endif
+
+    call ctrlsf#backend#RunAsync(a:args)
 endf
 
 " Search()
@@ -110,6 +155,11 @@ endf
 " SwitchViewMode()
 "
 func! ctrlsf#SwitchViewMode() abort
+    if ctrlsf#async#IsSearching()
+        call ctrlsf#log#Warn("Can't switch view mode when searching is processing.")
+        return
+    endif
+
     let next = ctrlsf#CurrentMode() ==# 'normal' ? 'compact' : 'normal'
 
     " set current view mode
@@ -269,8 +319,13 @@ endf
 "
 func! ctrlsf#CurrentMode()
     let vmode = empty(s:current_mode) ? 'normal' : s:current_mode
-    call ctrlsf#log#Debug("Current Mode: %s", vmode)
     return vmode
+endf
+
+" StopSearch()
+"
+func! ctrlsf#StopSearch()
+    call ctrlsf#async#StopSearch()
 endf
 
 " OpenFileInWindow()

@@ -33,6 +33,18 @@ func! ctrlsf#buf#WriteFile(file) abort
     call setbufvar('%', '&modified', 0)
 endf
 
+" SetLine()
+"
+" Change content of a line in specified buffer.
+"
+func! ctrlsf#buf#SetLine(buf_name, lnum, content) abort
+    let modifiable_bak = getbufvar('%', '&modifiable')
+    call setbufvar(a:buf_name, '&modifiable', 1)
+    call setbufline(a:buf_name, a:lnum, a:content)
+    call setbufvar(a:buf_name, '&modifiable', modifiable_bak)
+    call setbufvar(a:buf_name, '&modified', 0)
+endf
+
 " WarnIfChanged()
 "
 func! ctrlsf#buf#WarnIfChanged() abort
@@ -97,6 +109,7 @@ func! ctrlsf#buf#ToggleMap(...) abort
         \ "popen"   : "ctrlsf#JumpTo('preview')",
         \ "popenf"  : "ctrlsf#JumpTo('preview_foreground')",
         \ "quit"    : "ctrlsf#Quit()",
+        \ "stop"    : "ctrlsf#StopSearch()",
         \ "next"    : "ctrlsf#NextMatch(1)",
         \ "prev"    : "ctrlsf#NextMatch(0)",
         \ "chgmode" : "ctrlsf#SwitchViewMode()",
