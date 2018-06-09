@@ -13,12 +13,10 @@ let s:samples = []
 " Take a sample.
 "
 func! ctrlsf#profile#Sample(name) abort
-    if g:ctrlsf_profile_mode
-        call add(s:samples, {
-                    \ "name": a:name,
-                    \ "time": reltime()
-                    \ })
-    endif
+    call add(s:samples, {
+                \ "name": a:name,
+                \ "time": reltime()
+                \ })
 endf
 
 " Report()
