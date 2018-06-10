@@ -4,13 +4,13 @@ An ack/ag/pt/rg powered code search and view tool, like ack.vim or `:vimgrep` bu
 
 ### Search and Explore
 
-![ctrlsf demo](http://i.imgur.com/NOy8gwj.gif)
+![ctrlsf async_demo](https://raw.githubusercontent.com/dyng/i/master/ctrlsf.vim/async-mode.gif)
 
 ### Edit Mode
 
 Here we rename a method named `MoveCursor()` to `Cursor()` in multiple files, using [vim-multiple-cursors][7].
 
-![ctrlsf_edit_demo](http://i.imgur.com/xMUm8Ii.gif)
+![ctrlsf_edit_demo](https://raw.githubusercontent.com/dyng/i/master/ctrlsf.vim/edit-mode.gif)
 
 ## Table of Contents
 
@@ -32,6 +32,8 @@ Here we rename a method named `MoveCursor()` to `Cursor()` in multiple files, us
 ## Features
 
 - Search and display result in a user-friendly view with adjustable context.
+
+- Works in both asynchronous (for Vim 8.0+) and synchronous (for old version of Vim) manner.
 
 - Edit mode which is incredible useful when you are doing project-wide refactoring. (Inspired by [vim-ags][6])
 
@@ -59,17 +61,19 @@ Here we rename a method named `MoveCursor()` to `Cursor()` in multiple files, us
 
 1. Run `:CtrlSF [pattern]`, it will split a new window to show search result.
 
-2. Press `Enter`/`o` to open corresponding file, or press `q` to quit.
+2. If you are doing an asynchronous searching, you can explore and edit other files in the meanwhile, and can always press `Ctrl-C` to stop searching.
 
-3. Press `p` to explore file in a preview window if you only want a glance.
+3. In the result window, press `Enter`/`o` to open corresponding file, or press `q` to quit.
 
-4. You can edit search result as you like. Whenever you apply a change, you can save your change to actual file by `:w`.
+4. Press `p` to explore file in a preview window if you only want a glance.
 
-5. If you change your mind after saving, you can always undo it by pressing `u` and saving it again.
+5. You can edit search result as you like. Whenever you apply a change, you can save your change to actual file by `:w`.
 
-6. `:CtrlSFOpen` can reopen CtrlSF window when you have closed CtrlSF window. It is free because it won't invoke a same but new search. A handy command `:CtrlSFToggle` is also available.
+6. If you change your mind after saving, you can always undo it by pressing `u` and saving it again.
 
-7. If you prefer a quickfix-like result window, just try to press `M` in CtrlSF window.
+7. `:CtrlSFOpen` can reopen CtrlSF window when you have closed CtrlSF window. It is free because it won't invoke a same but new search. A handy command `:CtrlSFToggle` is also available.
+
+8. If you prefer a quickfix-like result window, just try to press `M` in CtrlSF window.
 
 ## Key Maps
 
@@ -86,6 +90,7 @@ In CtrlSF window:
 - `q` - Quit CtrlSF window.
 - `<C-J>` - Move cursor to next match.
 - `<C-K>` - Move cursor to previous match.
+- `<C-C>` - Stop a background searching process.
 
 In preview window:
 
@@ -242,7 +247,6 @@ Read `:h ctrlsf-arguments` for a full list of arguments.
         \ }
     ```
 
-
 - `g:ctrlsf_mapping` defines maps used in result window and preview window. Value of this option is a dictionary, where key is a method and value is a key for mapping. An empty value can disable that method. To specify additional keys to run after a method, use the extended form demonstrated below to specify a `suffix`. You can just define a subset of full dictionary, those not defined functionalities will use default key mapping.
 
     ```vim
@@ -263,6 +267,12 @@ Read `:h ctrlsf-arguments` for a full list of arguments.
 
     ```vim
     let g:ctrlsf_regex_pattern = 1
+    ```
+
+- `g:ctrlsf_search_mode` defines whether CtrlSF works in synchronous or asynchronous way. `async` is the recommendation for users who are using Vim 8.0+.
+
+    ```vim
+    let g:ctrlsf_search_mode = 'async'
     ```
 
 - `g:ctrlsf_position` defines where CtrlSf places its window. Possible values are `left`, `right`, `top` and `bottom`. If nothing specified, the default value is `left`.

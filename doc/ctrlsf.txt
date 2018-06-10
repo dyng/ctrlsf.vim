@@ -167,6 +167,10 @@ mode:
   If you have turned on |g:ctrlsf_selected_line_hl|, use this command to clear
   highlighting on the selected line.
 
+:CtrlSFStop                                                        *:CtrlSFStop*
+
+  Stop a background searching process.
+
 :CtrlSFToggle                                                    *:CtrlSFToggle*
 
   Open the CtrlSF window if it is closed, or vice versa.
@@ -219,6 +223,8 @@ mode:
     <T>            Like <t>, but focus CtrlSF window instead of opened new tab.
 
     <q>            Quit CtrlSF. Also close preview window if any.
+
+    <C-C>          Stop running asynchronous searching.
 
     <C-J>          Move cursor to next match.
 
@@ -473,6 +479,7 @@ Key id and its functionality:
     pquit   - close preview window.
     loclist - open location list in main window.
     chgmode - switch view mode.
+    stop    - stop running asynchronous searching.
 <
 Default:
 >
@@ -491,6 +498,7 @@ Default:
         "pquit"   : "q",
         "loclist" : "",
         "chgmode" : "M",
+        "stop"    : "<C-C>",
     }
 <
 Sometimes you may wish for a method to also perform a complementary action such
@@ -509,6 +517,15 @@ Example:
         \ "openb": "",
         \ }
 <
+g:ctrlsf_parse_speed                                    *'g:ctrlsf_parse_speed'*
+Default: 300
+The count of lines which CtrlSF will parse in every 200 milliseconds. If you
+find the default value is too large and make your Vim slow during asynchronous
+searching, you can set it a more moderate value:
+>
+    let g:ctrlsf_parse_speed = 100
+<
+
 g:ctrlsf_populate_qflist                            *'g:ctrlsf_populate_qflist'*
 Default: 0
 Defines whether CtrlSF will feed quickfix and location list with search result.
@@ -532,6 +549,14 @@ pattern literally, if you want CtrlSF use regular expression by default (like
 Ack/Ag), you can set it to 1.
 >
     let g:ctrlsf_regex_pattern = 1
+<
+g:ctrlsf_search_mode                                    *'g:ctrlsf_search_mode'*
+Default: 'async' for version 8.0+, 'sync' for others
+Available: 'sync', 'async'
+Defines whether CtrlSF works in a synchronous or an asynchronous way. Note
+that 'async' is only supported in Vim with version above 8.0.
+>
+    let g:ctrlsf_search_mode = 'async'
 <
 g:ctrlsf_selected_line_hl                          *'g:ctrlsf_selected_line_hl'*
 Default: 'p'

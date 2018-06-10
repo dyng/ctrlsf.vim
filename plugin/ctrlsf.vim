@@ -188,6 +188,12 @@ else
     endfo
 endif
 " }}}
+"
+" g:ctrlsf_parse_speed {{{
+if !exists('g:ctrlsf_parse_speed')
+    let g:ctrlsf_parse_speed = 300
+endif
+" }}}
 
 " g:ctrlsf_populate_qflist {{{
 if !exists('g:ctrlsf_populate_qflist')
@@ -224,7 +230,11 @@ endif
 
 " g:ctrlsf_search_mode {{{2
 if !exists('g:ctrlsf_search_mode')
-    let g:ctrlsf_search_mode = 'sync'
+    if v:version < 800
+        let g:ctrlsf_search_mode = 'sync'
+    else
+        let g:ctrlsf_search_mode = 'async'
+    endif
 endif
 " }}}
 

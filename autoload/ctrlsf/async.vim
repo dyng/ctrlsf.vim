@@ -109,7 +109,7 @@ endf
 " ParseAndDrawCB()
 "
 func! ctrlsf#async#ParseAndDrawCB(timer_id) abort
-    let lines = ctrlsf#async#ConsumeResult(300)
+    let lines = ctrlsf#async#ConsumeResult(g:ctrlsf_parse_speed)
     call ctrlsf#log#Debug("ConsumeResult: size=%s", len(lines))
 
     let done = ctrlsf#async#IsSearchDone() && ctrlsf#async#IsAllConsumed()
