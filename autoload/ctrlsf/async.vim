@@ -83,6 +83,7 @@ func! ctrlsf#async#StartSearch(command) abort
                 \ 'close_cb': "ctrlsf#async#SearchCloseCB",
                 \ 'out_mode': 'nl',
                 \ 'err_mode': 'raw',
+                \ 'in_io': 'null',
                 \ })
     let s:timer_id = timer_start(200, "ctrlsf#async#ParseAndDrawCB", {'repeat': -1})
     call ctrlsf#log#Debug("TimerStarted: id=%s", s:timer_id)
@@ -97,6 +98,7 @@ func! ctrlsf#async#StopSearch() abort
         let stopped = job_stop(s:job_id, "int")
         if stopped
             call ctrlsf#async#DiscardResult()
+            let s:cancelled = 1
             let s:done = 1
         else
             call ctrlsf#log#Error("Failed to stop Job.")
