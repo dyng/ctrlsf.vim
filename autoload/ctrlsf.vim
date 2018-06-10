@@ -27,7 +27,7 @@ func! s:ExecSearch(args) abort
         return -1
     endtry
 
-    if ctrlsf#backend#SelfCheck() < 0
+    if ctrlsf#SelfCheck() < 0
         return -1
     endif
 
@@ -88,13 +88,37 @@ endf
 " s:DoSearchAsync()
 "
 func! s:DoSearchAsync(args) abort
-    " clear current content
-    if ctrlsf#win#FocusMainWindow() != -1
-        call ctrlsf#buf#WriteString("")
-        wincmd p
+    call ctrlsf#backend#RunAsync(a:args)
+
+    " open window and clear previous result
+    call s:Open()
+    call ctrlsf#win#SetModifiableByViewMode(0)
+    call ctrlsf#buf#WriteString("Searching...")
+    call ctrlsf#win#FocusCallerWindow()
+endf
+
+" SelfCheck()
+"
+func! ctrlsf#SelfCheck() abort
+    if !exists('g:ctrlsf_ackprg') || empty(g:ctrlsf_ackprg)
+        call ctrlsf#log#Error("Option 'g:ctrlsf_ackprg' is not defined or empty
+            \ .")
+        return -99
     endif
 
-    call ctrlsf#backend#RunAsync(a:args)
+    let prg = g:ctrlsf_ackprg
+
+    if !executable(prg)
+        call ctrlsf#log#Error('Can not locate %s in PATH, make sure you have it
+            \ installed.', prg)
+        return -2
+    endif
+
+    if g:ctrlsf_search_mode ==# 'async' && v:version < 800
+        call ctrlsf#log#Error('Asynchronous searching is only supported on vim
+                    \ with version above 8.0. Your version: %s', v:version)
+        return -3
+    endif
 endf
 
 " Search()
@@ -427,14 +451,20 @@ func! s:PreviewFile(file, lnum, col, follow) abort
     endif
 endf
 
+" s:Open()
+"
+func! s:Open() abort
+    call ctrlsf#win#OpenMainWindow()
+    call ctrlsf#hl#ReloadSyntax()
+    call ctrlsf#hl#HighlightMatch()
+endf
+
 " s:OpenAndDraw()
 "
 func! s:OpenAndDraw() abort
-    call ctrlsf#win#OpenMainWindow()
+    call s:Open()
     call ctrlsf#win#Draw()
     call ctrlsf#buf#ClearUndoHistory()
-    call ctrlsf#hl#ReloadSyntax()
-    call ctrlsf#hl#HighlightMatch()
 
     " scroll up to top line
     1normal! ^
@@ -444,6 +474,7 @@ endf
 " s:Quit()
 "
 func! s:Quit() abort
+    call ctrlsf#async#StopSearch()
     call ctrlsf#preview#ClosePreviewWindow()
     call ctrlsf#win#CloseMainWindow()
 endf

@@ -14,6 +14,7 @@ let s:caller_win = {
     \ 'winid' : 0,
     \ }
 
+" remember how many lines have been drawn
 let s:drawn_lines = 0
 
 " Reset(0
@@ -81,12 +82,8 @@ func! ctrlsf#win#OpenMainWindow() abort
 
     call s:InitMainWindow()
 
-    " set 'modifiable' flag depending on current view mode and search mode
-    if ctrlsf#CurrentMode() ==# 'normal' && g:ctrlsf_search_mode ==# 'sync'
-        setl modifiable
-    else
-        setl nomodifiable
-    endif
+    " set 'modifiable' flag depending on current view mode
+    call ctrlsf#win#SetModifiableByViewMode(1)
 
     " resize other windows
     call s:ResizeNeighborWins()
@@ -110,10 +107,23 @@ func! ctrlsf#win#DrawIncr() abort
             let s:drawn_lines = 1
         endif
     endif
+
     let new_lines = ctrlsf#view#RenderIncr()
-    silent! undojoin | keepjumps
-                \ call ctrlsf#buf#SetLine(s:MAIN_BUF_NAME, s:drawn_lines + 1, new_lines)
+    if !empty(new_lines)
+        silent! undojoin | keepjumps
+                    \ call ctrlsf#buf#SetLine(s:MAIN_BUF_NAME, s:drawn_lines + 1, new_lines)
+    endif
     let s:drawn_lines = s:drawn_lines + len(new_lines)
+endf
+
+" SetModifiable()
+"
+func! ctrlsf#win#SetModifiableByViewMode(modifiable) abort
+    if ctrlsf#CurrentMode() ==# 'normal'
+        call setbufvar(s:MAIN_BUF_NAME, '&modifiable', a:modifiable)
+    else
+        call setbufvar(s:MAIN_BUF_NAME, '&modifiable', 0)
+    endif
 endf
 
 " CloseMainWindow()

@@ -181,24 +181,6 @@ func! s:Escape(for_shell, str)
     return a:for_shell ? shellescape(a:str) : ctrlsf#utils#Quote(a:str)
 endf
 
-" SelfCheck()
-"
-func! ctrlsf#backend#SelfCheck() abort
-    if !exists('g:ctrlsf_ackprg') || empty(g:ctrlsf_ackprg)
-        call ctrlsf#log#Error("Option 'g:ctrlsf_ackprg' is not defined or empty
-            \ .")
-        return -99
-    endif
-
-    let prg = g:ctrlsf_ackprg
-
-    if !executable(prg)
-        call ctrlsf#log#Error('Can not locate %s in PATH, make sure you have it
-            \ installed.', prg)
-        return -2
-    endif
-endf
-
 " Detect()
 "
 func! ctrlsf#backend#Detect()
@@ -302,4 +284,5 @@ func! ctrlsf#backend#RunAsync(args) abort
     call ctrlsf#log#Debug("ExecCommand: %s", command)
 
     call ctrlsf#async#StartSearch(command)
+    call ctrlsf#log#Notice("Start searching...")
 endf

@@ -8,36 +8,52 @@
 let s:job_id = -1
 let s:timer_id = -1
 let s:done = -1
+let s:cancelled = 0
 
 let s:buffer = []
 let s:consumed = 0
 
+" IsSearching()
+"
 func! ctrlsf#async#IsSearching() abort
     return s:done == 0
 endf
 
+" IsSearchDone()
+"
 func! ctrlsf#async#IsSearchDone() abort
     return s:done == 1
 endf
 
+" Reset()
+"
 func! ctrlsf#async#Reset() abort
     let s:job_id = -1
     let s:timer_id = -1
     let s:done = -1
+    let s:cancelled = 0
 
     let s:buffer = []
     let s:consumed = 0
 endf
 
+" IsAllConsumed()
+"
 func! ctrlsf#async#IsAllConsumed() abort
     return s:consumed >= len(s:buffer)
 endf
 
+" DiscardResult()
+"
 func! ctrlsf#async#DiscardResult() abort
     let s:consumed = len(s:buffer)
     return
 endf
 
+" ConsumeResult()
+"
+" Consume at most {max} lines from result buffer.
+"
 func! ctrlsf#async#ConsumeResult(max) abort
     if s:consumed < len(s:buffer)
         let start = s:consumed
@@ -54,17 +70,28 @@ endf
 " Callback
 """""""""""""""""""""""""""""""""
 
+" StartSearch()
+"
+" Start an async search process and a timely parser.
+"
 func! ctrlsf#async#StartSearch(command) abort
+    " set state to 'searching'
     let s:done = 0
-
-    " FIXME: not compatible for Windows
-    let s:job_id = job_start(a:command,
-                \ {'callback': "ctrlsf#async#SearchCB", 'close_cb': "ctrlsf#async#SearchCloseCB"})
-
+    let s:job_id = job_start(a:command, {
+                \ 'out_cb': "ctrlsf#async#SearchCB",
+                \ 'err_cb': "ctrlsf#async#SearchErrorCB",
+                \ 'close_cb': "ctrlsf#async#SearchCloseCB",
+                \ 'out_mode': 'nl',
+                \ 'err_mode': 'raw',
+                \ })
     let s:timer_id = timer_start(200, "ctrlsf#async#ParseAndDrawCB", {'repeat': -1})
     call ctrlsf#log#Debug("TimerStarted: id=%s", s:timer_id)
 endf
 
+" StopSearch()
+"
+" Stop a processing search.
+"
 func! ctrlsf#async#StopSearch() abort
     if type(s:job_id) != type(-1)
         let stopped = job_stop(s:job_id, "int")
@@ -77,51 +104,54 @@ func! ctrlsf#async#StopSearch() abort
     endif
 endf
 
-func! ctrlsf#async#StopParse() abort
-    call ctrlsf#log#Debug("StopTimer: id=%s", s:timer_id)
-    call timer_stop(s:timer_id)
-endf
-
+" ParseAndDrawCB()
+"
 func! ctrlsf#async#ParseAndDrawCB(timer_id) abort
     let lines = ctrlsf#async#ConsumeResult(300)
     call ctrlsf#log#Debug("ConsumeResult: size=%s", len(lines))
 
     let done = ctrlsf#async#IsSearchDone() && ctrlsf#async#IsAllConsumed()
 
-    if !empty(lines)
-        if ctrlsf#win#FindMainWindow() == -1
-            call ctrlsf#win#OpenMainWindow()
-            call ctrlsf#buf#WriteString("")
-            call ctrlsf#hl#ReloadSyntax()
-            call ctrlsf#hl#HighlightMatch()
-            call ctrlsf#buf#ClearUndoHistory()
-        endif
-
-        call ctrlsf#db#ParseBackendResultIncr(lines, done)
-        call ctrlsf#win#DrawIncr()
-    end
+    call ctrlsf#db#ParseBackendResultIncr(lines, done)
+    call ctrlsf#win#DrawIncr()
 
     if done
         call ctrlsf#async#StopParse()
         call ctrlsf#profile#Sample("FinishParse")
-
-        if ctrlsf#win#FocusMainWindow() != -1
-            " make buffer modifiable
-            if ctrlsf#CurrentMode() ==# 'normal'
-                setl modifiable
-            endif
+        call ctrlsf#win#SetModifiableByViewMode(1)
+        if !s:cancelled
+            call ctrlsf#log#Notice("Done!")
         endif
-
-        call ctrlsf#log#Notice("Done!")
+        call ctrlsf#log#Debug("ParseFinish")
     endif
 endf
 
+" SearchCB()
+"
 func! ctrlsf#async#SearchCB(channel, msg) abort
     call ctrlsf#log#Debug("ReceiveMessage: %s", a:msg)
     call add(s:buffer, a:msg)
 endf
 
+" SearchErrorCB()
+"
+func! ctrlsf#async#SearchErrorCB(channel, msg) abort
+    call ctrlsf#log#Debug("ReceiveError: %s", a:msg)
+    call ctrlsf#log#Error('Backend Failure. Error messages: %s', a:msg)
+endf
+
+" SearchCloseCB()
+"
 func! ctrlsf#async#SearchCloseCB(channel) abort
+    " set state to 'done'
     let s:done = 1
+    call ctrlsf#log#Debug("ChannelClose")
     call ctrlsf#profile#Sample("FinishSearch")
+endf
+
+" StopParse()
+"
+func! ctrlsf#async#StopParse() abort
+    call ctrlsf#log#Debug("StopTimer: id=%s", s:timer_id)
+    call timer_stop(s:timer_id)
 endf

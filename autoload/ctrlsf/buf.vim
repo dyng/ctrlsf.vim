@@ -38,7 +38,7 @@ endf
 " Change content of a line in specified buffer.
 "
 func! ctrlsf#buf#SetLine(buf_name, lnum, content) abort
-    let modifiable_bak = getbufvar('%', '&modifiable')
+    let modifiable_bak = getbufvar(a:buf_name, '&modifiable')
     call setbufvar(a:buf_name, '&modifiable', 1)
     call setbufline(a:buf_name, a:lnum, a:content)
     call setbufvar(a:buf_name, '&modifiable', modifiable_bak)

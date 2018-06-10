@@ -185,6 +185,8 @@ func! ctrlsf#db#ParseBackendResultIncr(lines, close) abort
     endif
 endf
 
+" s:ParseOneLine()
+"
 func! s:ParseOneLine(line) abort
     " don't rely on division line any longer. ignore it.
     if a:line =~ '^--$' || a:line =~ '^$'
@@ -208,6 +210,8 @@ func! s:ParseOneLine(line) abort
     endif
 endf
 
+" s:MakeParagraph()
+"
 func! s:MakeParagraph() abort
     if len(s:buffer) > 0
         call s:AddParagraph(ctrlsf#class#paragraph#New(s:buffer))
