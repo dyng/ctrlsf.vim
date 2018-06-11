@@ -184,20 +184,20 @@ endf
 " Detect()
 "
 func! ctrlsf#backend#Detect()
-    if executable('ag')
-        return 'ag'
-    endif
-
-    if executable('ack')
-        return 'ack'
-    endif
-
     if executable('rg')
         return 'rg'
     endif
 
+    if executable('ag')
+        return 'ag'
+    endif
+
     if executable('pt')
         return 'pt'
+    endif
+
+    if executable('ack')
+        return 'ack'
     endif
 
     if executable('ack-grep')
