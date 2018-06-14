@@ -180,6 +180,14 @@ mode:
   Toggle CtrlSF's default key mapping. This command can be used in CtrlSF
   window only.
 
+:CtrlSFStop                                                        *:CtrlSFStop*
+
+  Stop a running asynchronous searching.
+
+:CtrlSFFocus                                                      *:CtrlSFFocus*
+
+  Move cursor to CtrlS window and focus the first result.
+
 ================================================================================
 4. Key Maps                                                     *ctrlsf-keymaps*
 

@@ -276,6 +276,16 @@ func! ctrlsf#ToggleMap() abort
     endif
 endf
 
+" Focus()
+"
+func! ctrlsf#Focus() abort
+    if ctrlsf#win#FocusMainWindow() != -1
+        " scroll up to top line
+        1normal! ^
+        call ctrlsf#NextMatch(1)
+    endif
+endf
+
 " JumpTo()
 "
 func! ctrlsf#JumpTo(mode) abort

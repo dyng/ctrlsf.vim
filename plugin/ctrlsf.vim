@@ -263,6 +263,7 @@ com! -n=0                                         CtrlSFClose    call ctrlsf#Qui
 com! -n=0                                         CtrlSFClearHL  call ctrlsf#ClearSelectedLine()
 com! -n=0                                         CtrlSFToggle   call ctrlsf#Toggle()
 com! -n=0                                         CtrlSFStop     call ctrlsf#StopSearch()
+com! -n=0                                         CtrlSFFocus    call ctrlsf#Focus()
 " }}}
 
 " Maps {{{1
