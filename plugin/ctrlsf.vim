@@ -230,7 +230,7 @@ endif
 
 " g:ctrlsf_search_mode {{{2
 if !exists('g:ctrlsf_search_mode')
-    if v:version < 800
+    if v:version < 800 || has('nvim')
         let g:ctrlsf_search_mode = 'sync'
     else
         let g:ctrlsf_search_mode = 'async'
