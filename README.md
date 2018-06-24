@@ -1,14 +1,16 @@
 # ctrlsf.vim
 
-An ack/ag/pt/rg powered code search and view tool, like ack.vim or `:vimgrep` but together with more context, and let you edit in-place with powerful edit mode.
+An ack/ag/pt/rg powered code search and view tool, takes advantage of Vim 8's power to support asynchronous searching, and lets you edit file in-place with *Edit Mode*.
 
 ### Search and Explore
+
+A demo shows how to search a word in an asynchronous way.
 
 ![ctrlsf async_demo](https://raw.githubusercontent.com/dyng/i/master/ctrlsf.vim/async-mode.gif)
 
 ### Edit Mode
 
-Here we rename a method named `MoveCursor()` to `Cursor()` in multiple files, using [vim-multiple-cursors][7].
+A demo shows how to rename a method named `MoveCursor()` to `Cursor()` in multiple files, using [vim-multiple-cursors][7].
 
 ![ctrlsf_edit_demo](https://raw.githubusercontent.com/dyng/i/master/ctrlsf.vim/edit-mode.gif)
 
@@ -33,7 +35,7 @@ Here we rename a method named `MoveCursor()` to `Cursor()` in multiple files, us
 
 - Search and display result in a user-friendly view with adjustable context.
 
-- Works in both asynchronous (for Vim 8.0+) and synchronous (for old version of Vim) manner.
+- Works in both asynchronous (for Vim 8.0+) and synchronous (for older version of Vim) manner.
 
 - Edit mode which is incredible useful when you are doing project-wide refactoring. (Inspired by [vim-ags][6])
 
