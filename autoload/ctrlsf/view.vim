@@ -2,8 +2,13 @@
 " Description: An ack/ag/pt/rg powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 1.9.0
+" Version: 2.0.0
 " ============================================================================
+
+let s:rendered_par = 0
+let s:rendered_line = 0
+let s:rendered_match = 0
+let s:cur_file = ''
 
 func! s:Summary(resultset) abort
     let files   = len(ctrlsf#db#FileResultSet())
@@ -36,9 +41,22 @@ func! s:MatchLine(match) abort
     return [out]
 endf
 
+" ctrlsf#view#Indent()
+"
 func! ctrlsf#view#Indent() abort
     let maxlnum = ctrlsf#db#MaxLnum()
     return strlen(string(maxlnum)) + 1 + g:ctrlsf_indent
+endf
+
+" Reset()
+"
+" Reset all states of this module.
+"
+func! ctrlsf#view#Reset() abort
+    let s:rendered_par = 0
+    let s:rendered_line = 0
+    let s:rendered_match = 0
+    let s:cur_file = ''
 endf
 
 " Render()
@@ -49,6 +67,7 @@ endf
 " Text of rendered view
 "
 func! ctrlsf#view#Render() abort
+    call ctrlsf#view#Reset()
     if ctrlsf#CurrentMode() ==# 'normal'
         return s:NormalView()
     else
@@ -56,18 +75,41 @@ func! ctrlsf#view#Render() abort
     endif
 endf
 
-func! s:NormalView() abort
+" RenderIncr()
+"
+" Render incrementally.
+"
+" Returns:
+" Text of rendered view to append
+"
+func! ctrlsf#view#RenderIncr() abort
+    if ctrlsf#CurrentMode() ==# 'normal'
+        return s:NormalViewIncr()
+    else
+        return s:CompactViewIncr()
+    endif
+endf
+
+" RenderSummary()
+"
+" Render a summary.
+"
+func! ctrlsf#view#RenderSummary() abort
     let resultset = ctrlsf#db#ResultSet()
-    let cur_file = ''
+    return join(s:Summary(resultset), "\n")
+endf
+
+" s:NormalViewIncr()
+"
+func! s:NormalViewIncr() abort
+    let resultset = ctrlsf#db#ResultSet()
+    let to_render = resultset[s:rendered_par:-1]
 
     let view = []
 
-    " append summary
-    call extend(view, s:Summary(resultset))
-
-    for par in resultset
-        if cur_file !=# par.filename
-            let cur_file = par.filename
+    for par in to_render
+        if s:cur_file !=# par.filename
+            let s:cur_file = par.filename
             call extend(view, s:Filename(par))
         else
             call extend(view, s:Ellipsis())
@@ -76,28 +118,50 @@ func! s:NormalView() abort
         for line in par.lines
             call extend(view, s:Line(line))
 
-            let line.vlnum = len(view)
+            let line.vlnum = s:rendered_line + len(view) + 1
 
             if line.matched()
-                let line.match.vlnum = len(view)
+                let line.match.vlnum = line.vlnum
                 let line.match.vcol  = line.match.col + ctrlsf#view#Indent()
             endif
         endfo
     endfo
 
-    return join(view, "\n")
+    let s:rendered_par = s:rendered_par + len(to_render)
+    let s:rendered_line = s:rendered_line + len(view)
+
+    return view
 endf
 
-func! s:CompactView() abort
+" s:CompactViewIncr()
+"
+func! s:CompactViewIncr() abort
     let matchlist = ctrlsf#db#MatchList()
+    let to_render = matchlist[s:rendered_match:-1]
 
     let view = []
 
-    for mat in matchlist
+    for mat in to_render
         call extend(view, s:MatchLine(mat))
     endfo
 
-    return join(view, "\n")
+    let s:rendered_match = s:rendered_match + len(to_render)
+
+    return view
+endf
+
+" s:NormalView()
+"
+func! s:NormalView() abort
+    let summary = ctrlsf#view#RenderSummary()
+    let body = join(s:NormalViewIncr(), "\n")
+    return summary . "\n" . body
+endf
+
+" s:CompactView()
+"
+func! s:CompactView() abort
+    return join(s:CompactViewIncr(), "\n")
 endf
 
 " Locate()
@@ -197,7 +261,7 @@ endf
 
 " Unrender()
 "
-" Return a 'ResultSet' which is derendered from {content}.
+" Return a 'ResultSet' which is unrendered from {content}.
 "
 func! ctrlsf#view#Unrender(content) abort
     let lines  = type(a:content) == 3 ? a:content : split(a:content, "\n")

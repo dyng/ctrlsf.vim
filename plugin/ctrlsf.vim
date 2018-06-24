@@ -2,7 +2,7 @@
 " Description: An ack/ag/pt/rg powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 1.9.0
+" Version: 2.0.0
 " ============================================================================
 
 " Loading Guard {{{1
@@ -171,6 +171,7 @@ let s:default_mapping = {
     \ "popen"   : "p",
     \ "popenf"  : "P",
     \ "quit"    : "q",
+    \ "stop"    : "<C-C>",
     \ "next"    : "<C-J>",
     \ "prev"    : "<C-K>",
     \ "chgmode" : "M",
@@ -185,6 +186,12 @@ else
         let g:ctrlsf_mapping[key] = get(g:ctrlsf_mapping, key,
             \ s:default_mapping[key])
     endfo
+endif
+" }}}
+"
+" g:ctrlsf_parse_speed {{{
+if !exists('g:ctrlsf_parse_speed')
+    let g:ctrlsf_parse_speed = 300
 endif
 " }}}
 
@@ -221,6 +228,16 @@ if !exists('g:ctrlsf_selected_line_hl')
 endif
 " }}}
 
+" g:ctrlsf_search_mode {{{2
+if !exists('g:ctrlsf_search_mode')
+    if v:version < 800
+        let g:ctrlsf_search_mode = 'sync'
+    else
+        let g:ctrlsf_search_mode = 'async'
+    endif
+endif
+" }}}
+
 " g:ctrlsf_toggle_map_key {{{2
 if !exists('g:ctrlsf_toggle_map_key')
     let g:ctrlsf_toggle_map_key = ''
@@ -245,6 +262,8 @@ com! -n=0                                         CtrlSFUpdate   call ctrlsf#Upd
 com! -n=0                                         CtrlSFClose    call ctrlsf#Quit()
 com! -n=0                                         CtrlSFClearHL  call ctrlsf#ClearSelectedLine()
 com! -n=0                                         CtrlSFToggle   call ctrlsf#Toggle()
+com! -n=0                                         CtrlSFStop     call ctrlsf#StopSearch()
+com! -n=0                                         CtrlSFFocus    call ctrlsf#Focus()
 " }}}
 
 " Maps {{{1

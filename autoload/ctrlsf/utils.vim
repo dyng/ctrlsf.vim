@@ -2,7 +2,7 @@
 " Description: An ack/ag/pt/rg powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 1.9.0
+" Version: 2.0.0
 " ============================================================================
 
 """""""""""""""""""""""""""""""""
@@ -91,13 +91,10 @@ func! ctrlsf#utils#Nunmap(map, act_func_ref) abort
     endfo
 endf
 
-" Time()
+" Quote()
 "
-func! ctrlsf#utils#Time(command) abort
-    let start = reltime()
-    exec a:command
-    let elapsed = reltime(start)
-    echom printf("Time: %s, For Command: %s", reltimestr(elapsed), a:command)
+func! ctrlsf#utils#Quote(str) abort
+    return '"' . escape(a:str, '"') . '"'
 endf
 
 """""""""""""""""""""""""""""""""

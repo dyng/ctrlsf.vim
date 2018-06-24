@@ -2,7 +2,7 @@
 " Description: An ack/ag/pt/rg powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 1.9.0
+" Version: 2.0.0
 " ============================================================================
 
 " option list of CtrlSF
@@ -39,6 +39,14 @@ let s:default = {
 
 " options
 let s:options = {}
+
+" ctrlsf#opt#Reset()
+"
+" Reset all states of this module.
+"
+func! ctrlsf#opt#Reset() abort
+    let s:options = {}
+endf
 
 " OptionNames()
 "
@@ -141,7 +149,7 @@ func! ctrlsf#opt#GetPath() abort
             let resolved_path = expand(path, 0, 1)
 
             for r_path in resolved_path
-                call add(path_tokens, shellescape(r_path))
+                call add(path_tokens, r_path)
             endfo
         endfo
     else
@@ -180,7 +188,7 @@ func! ctrlsf#opt#GetPath() abort
             endif
         endif
 
-        call add(path_tokens, shellescape(path))
+        call add(path_tokens, path)
     endif
 
     return path_tokens

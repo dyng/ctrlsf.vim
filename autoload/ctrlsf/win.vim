@@ -2,7 +2,7 @@
 " Description: An ack/ag/pt/rg powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 1.9.0
+" Version: 2.0.0
 " ============================================================================
 
 " ctrlsf buffer's name
@@ -13,6 +13,15 @@ let s:caller_win = {
     \ 'bufnr' : -1,
     \ 'winid' : 0,
     \ }
+
+" remember how many lines have been drawn
+let s:drawn_lines = 0
+
+" Reset(0
+"
+func! ctrlsf#win#Reset() abort
+    let s:drawn_lines = 0
+endf
 
 """""""""""""""""""""""""""""""""
 " Open & Close
@@ -74,11 +83,7 @@ func! ctrlsf#win#OpenMainWindow() abort
     call s:InitMainWindow()
 
     " set 'modifiable' flag depending on current view mode
-    if ctrlsf#CurrentMode() ==# 'normal'
-        setl modifiable
-    else
-        setl nomodifiable
-    endif
+    call ctrlsf#win#SetModifiableByViewMode(1)
 
     " resize other windows
     call s:ResizeNeighborWins()
@@ -87,8 +92,38 @@ endf
 " Draw()
 "
 func! ctrlsf#win#Draw() abort
+    let s:drawn_lines = 0
     let content = ctrlsf#view#Render()
     silent! undojoin | keepjumps call ctrlsf#buf#WriteString(content)
+endf
+
+" DrawIncr()
+"
+func! ctrlsf#win#DrawIncr() abort
+    if ctrlsf#CurrentMode() == 'normal'
+        silent! undojoin | keepjumps
+                    \ call ctrlsf#buf#SetLine(s:MAIN_BUF_NAME, 1, ctrlsf#view#RenderSummary())
+        if s:drawn_lines == 0
+            let s:drawn_lines = 1
+        endif
+    endif
+
+    let new_lines = ctrlsf#view#RenderIncr()
+    if !empty(new_lines)
+        silent! undojoin | keepjumps
+                    \ call ctrlsf#buf#SetLine(s:MAIN_BUF_NAME, s:drawn_lines + 1, new_lines)
+    endif
+    let s:drawn_lines = s:drawn_lines + len(new_lines)
+endf
+
+" SetModifiable()
+"
+func! ctrlsf#win#SetModifiableByViewMode(modifiable) abort
+    if ctrlsf#CurrentMode() ==# 'normal'
+        call setbufvar(s:MAIN_BUF_NAME, '&modifiable', a:modifiable)
+    else
+        call setbufvar(s:MAIN_BUF_NAME, '&modifiable', 0)
+    endif
 endf
 
 " CloseMainWindow()
