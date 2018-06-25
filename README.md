@@ -35,7 +35,7 @@ A demo shows how to rename a method named `MoveCursor()` to `Cursor()` in multip
 
 - Search and display result in a user-friendly view with adjustable context.
 
-- Works in both asynchronous (for Vim 8.0+) and synchronous (for older version of Vim) manner.
+- Works in both asynchronous (for Vim 8.0.1039+) and synchronous (for older version of Vim) manner.
 
 - Edit mode which is incredible useful when you are working on project-wide refactoring. (Inspired by [vim-ags][6])
 
