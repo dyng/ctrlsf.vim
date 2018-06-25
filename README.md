@@ -6,7 +6,7 @@ An ack/ag/pt/rg powered code search and view tool, takes advantage of Vim 8's po
 
 A demo shows how to search a word in an asynchronous way.
 
-![ctrlsf async_demo](https://raw.githubusercontent.com/dyng/i/master/ctrlsf.vim/async-mode.gif)
+![ctrlsf async_demo](https://raw.githubusercontent.com/dyng/i/master/ctrlsf.vim/async-demo.gif)
 
 ### Edit Mode
 
@@ -35,13 +35,13 @@ A demo shows how to rename a method named `MoveCursor()` to `Cursor()` in multip
 
 - Search and display result in a user-friendly view with adjustable context.
 
-- Works in both asynchronous (for Vim 8.0.1039+ and NeoVim) and synchronous (for older version of Vim) manner.
+- Works in both asynchronous (for **Vim 8.0.1039+** and **NeoVim**) and synchronous (for older version of Vim) manner.
 
-- Edit mode which is incredible useful when you are working on project-wide refactoring. (Inspired by [vim-ags][6])
+- **Edit mode** which is incredible useful when you are working on project-wide refactoring. (Inspired by [vim-ags][6])
 
 - Preview mode for fast exploring.
 
-- Two types of views. For both users who love a sublime-like, rich context result window, and users who feel more comfortable with good old quickfix window. (similar to ack.vim)
+- Has two types of view. For both users who love a **sublime-like**, rich context result window, and users who feel more comfortable with good old **quickfix** window. (similar to ack.vim)
 
 - Various options for customized search, view and edition.
 
@@ -102,7 +102,7 @@ Some default defined keys may conflict with keys you have been used to when you 
 
 ## Use Your Own Map
 
-CtrlSF provides many maps you can use for quick accessing all features, here I list some most used maps.
+CtrlSF provides many maps which you can use for quick accessing all features, here I will list some most useful ones.
 
 - `<Plug>CtrlSFPrompt`
 
