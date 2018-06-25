@@ -558,7 +558,7 @@ g:ctrlsf_search_mode                                    *'g:ctrlsf_search_mode'*
 Default: 'async' for version 8.0+, 'sync' for others
 Available: 'sync', 'async'
 Defines whether CtrlSF works in a synchronous or an asynchronous way. Note
-that 'async' is only supported in Vim with version above 8.0.
+that 'async' is only supported for Vim with version above 8.0.
 >
     let g:ctrlsf_search_mode = 'async'
 <

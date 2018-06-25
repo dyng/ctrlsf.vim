@@ -35,15 +35,15 @@ A demo shows how to rename a method named `MoveCursor()` to `Cursor()` in multip
 
 - Search and display result in a user-friendly view with adjustable context.
 
-- Works in both asynchronous (for Vim 8.0+) and synchronous (for older version of Vim) manner.
+- Works in both asynchronous (for Vim 8.0.1039+) and synchronous (for older version of Vim) manner.
 
-- Edit mode which is incredible useful when you are doing project-wide refactoring. (Inspired by [vim-ags][6])
+- Edit mode which is incredible useful when you are working on project-wide refactoring. (Inspired by [vim-ags][6])
 
 - Preview mode for fast exploring.
 
-- Two types of views. For both users who like a sublime-like, rich context result window, or who feel more comfortable with good old quickfix window. (similar to ack.vim)
+- Two types of views. For both users who love a sublime-like, rich context result window, and users who feel more comfortable with good old quickfix window. (similar to ack.vim)
 
-- Various options for customized search, view and edit.
+- Various options for customized search, view and edition.
 
 ## Installation
 

@@ -2,7 +2,7 @@
 " Description: An ack/ag/pt/rg powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 2.0.0
+" Version: 2.0.2
 " ============================================================================
 
 " Loading Guard {{{1
@@ -230,7 +230,7 @@ endif
 
 " g:ctrlsf_search_mode {{{2
 if !exists('g:ctrlsf_search_mode')
-    if v:version < 800 || has('nvim')
+    if v:version < 800 || (v:version == 800 && !has('patch1039')) || has('nvim')
         let g:ctrlsf_search_mode = 'sync'
     else
         let g:ctrlsf_search_mode = 'async'

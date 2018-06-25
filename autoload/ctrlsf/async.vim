@@ -2,7 +2,7 @@
 " Description: An ack/ag/pt/rg powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 2.0.0
+" Version: 2.0.2
 " ============================================================================
 
 let s:job_id = -1
@@ -16,13 +16,19 @@ let s:consumed = 0
 " IsSearching()
 "
 func! ctrlsf#async#IsSearching() abort
-    return s:done == 0
+    return !ctrlsf#async#IsSearchDone()
 endf
 
 " IsSearchDone()
 "
 func! ctrlsf#async#IsSearchDone() abort
-    return s:done == 1
+    return s:done == 1 && s:IsAllConsumed()
+endf
+
+" IsCancelled()
+"
+func! ctrlsf#async#IsCancelled() abort
+    return s:cancelled
 endf
 
 " Reset()
@@ -37,24 +43,24 @@ func! ctrlsf#async#Reset() abort
     let s:consumed = 0
 endf
 
-" IsAllConsumed()
+" s:IsAllConsumed()
 "
-func! ctrlsf#async#IsAllConsumed() abort
+func! s:IsAllConsumed() abort
     return s:consumed >= len(s:buffer)
 endf
 
-" DiscardResult()
+" s:DiscardResult()
 "
-func! ctrlsf#async#DiscardResult() abort
+func! s:DiscardResult() abort
     let s:consumed = len(s:buffer)
     return
 endf
 
-" ConsumeResult()
+" s:ConsumeResult()
 "
 " Consume at most {max} lines from result buffer.
 "
-func! ctrlsf#async#ConsumeResult(max) abort
+func! s:ConsumeResult(max) abort
     if s:consumed < len(s:buffer)
         let start = s:consumed
         let end = s:consumed + a:max
@@ -97,7 +103,7 @@ func! ctrlsf#async#StopSearch() abort
     if type(s:job_id) != type(-1)
         let stopped = job_stop(s:job_id, "int")
         if stopped
-            call ctrlsf#async#DiscardResult()
+            call s:DiscardResult()
             let s:cancelled = 1
             let s:done = 1
         else
@@ -109,10 +115,10 @@ endf
 " ParseAndDrawCB()
 "
 func! ctrlsf#async#ParseAndDrawCB(timer_id) abort
-    let lines = ctrlsf#async#ConsumeResult(g:ctrlsf_parse_speed)
+    let lines = s:ConsumeResult(g:ctrlsf_parse_speed)
     call ctrlsf#log#Debug("ConsumeResult: size=%s", len(lines))
 
-    let done = ctrlsf#async#IsSearchDone() && ctrlsf#async#IsAllConsumed()
+    let done = ctrlsf#async#IsSearchDone() && s:IsAllConsumed()
 
     call ctrlsf#db#ParseBackendResultIncr(lines, done)
     call ctrlsf#win#DrawIncr()
@@ -121,7 +127,7 @@ func! ctrlsf#async#ParseAndDrawCB(timer_id) abort
         call ctrlsf#async#StopParse()
         call ctrlsf#profile#Sample("FinishParse")
         call ctrlsf#win#SetModifiableByViewMode(1)
-        if !s:cancelled
+        if !ctrlsf#async#IsCancelled()
             call ctrlsf#log#Notice("Done!")
         endif
         call ctrlsf#log#Debug("ParseFinish")

@@ -2,18 +2,27 @@
 " Description: An ack/ag/pt/rg powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 2.0.0
+" Version: 2.0.2
 " ============================================================================
 
 let s:rendered_par = 0
 let s:rendered_line = 0
 let s:rendered_match = 0
 let s:cur_file = ''
+let s:procbar_dots = 0
 
-func! s:Summary(resultset) abort
+func! s:Summary(procbar) abort
     let files   = len(ctrlsf#db#FileResultSet())
     let matches = len(ctrlsf#db#MatchList())
-    return [printf("%s matched lines across %s files", matches, files)]
+    if a:procbar == 100
+        return [printf("%s matched lines across %s files. Done!", matches, files)]
+    elseif a:procbar == 0
+        return [printf("%s matched lines across %s files.", matches, files)]
+    elseif a:procbar == -1
+        return [printf("%s matched lines across %s files. Cancelled.", matches, files)]
+    else
+        return [printf("%s matched lines across %s files. Searching%s", matches, files, repeat('.', a:procbar))]
+    endif
 endf
 
 func! s:Filename(paragraph) abort
@@ -57,6 +66,7 @@ func! ctrlsf#view#Reset() abort
     let s:rendered_line = 0
     let s:rendered_match = 0
     let s:cur_file = ''
+    let s:procbar_dots = 0
 endf
 
 " Render()
@@ -95,8 +105,18 @@ endf
 " Render a summary.
 "
 func! ctrlsf#view#RenderSummary() abort
-    let resultset = ctrlsf#db#ResultSet()
-    return join(s:Summary(resultset), "\n")
+    if g:ctrlsf_search_mode ==# 'sync'
+        return join(s:Summary(0), "\n")
+    else
+        if ctrlsf#async#IsSearching()
+            let s:procbar_dots = s:procbar_dots % 3 + 1
+            return join(s:Summary(s:procbar_dots), "\n")
+        elseif ctrlsf#async#IsCancelled()
+            return join(s:Summary(-1), "\n")
+        else
+            return join(s:Summary(100), "\n")
+        endif
+    endif
 endf
 
 " s:NormalViewIncr()

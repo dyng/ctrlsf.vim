@@ -2,7 +2,7 @@
 " Description: An ack/ag/pt/rg powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 2.0.0
+" Version: 2.0.2
 " ============================================================================
 
 """""""""""""""""""""""""""""""""
@@ -114,9 +114,16 @@ func! ctrlsf#SelfCheck() abort
         return -2
     endif
 
-    if g:ctrlsf_search_mode ==# 'async' && v:version < 800
-        call ctrlsf#log#Error('Asynchronous searching is only supported on vim
-                    \ with version above 8.0. Your version: %s', v:version)
+    if g:ctrlsf_search_mode ==# 'async' &&
+                \ (v:version < 800 || (v:version == 800 && !has('patch1039')))
+        call ctrlsf#log#Error('Asynchronous searching is only supported for Vim
+                    \ with version above 8.0.1039. Please update your vim.')
+        return -3
+    endif
+
+    if has('nvim')
+        call ctrlsf#log#Error('Asynchronous searching is not supported for
+                    \ NeoVim yet.')
         return -3
     endif
 endf
