@@ -284,5 +284,5 @@ func! ctrlsf#backend#RunAsync(args) abort
     call ctrlsf#log#Debug("ExecCommand: %s", command)
 
     call ctrlsf#async#StartSearch(command)
-    call ctrlsf#log#Notice("Start searching...")
+    call ctrlsf#log#Notice("Searching...")
 endf
