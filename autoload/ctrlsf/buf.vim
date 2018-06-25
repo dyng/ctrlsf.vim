@@ -40,7 +40,30 @@ endf
 func! ctrlsf#buf#SetLine(buf_name, lnum, content) abort
     let modifiable_bak = getbufvar(a:buf_name, '&modifiable')
     call setbufvar(a:buf_name, '&modifiable', 1)
-    call setbufline(a:buf_name, a:lnum, a:content)
+    if !exists('*setbufline') && exists('*nvim_buf_set_lines')
+        " Unlike setbufline, nvim_buf_set_lines can only accept a list
+        if type(a:content) == type('')
+            let l:content = split(a:content, '\v(\r\n)|\n')
+        else
+            let l:content = a:content
+        endif
+
+        let l:buf_num = bufnr(a:buf_name)
+
+        " setbufline will append if a:num is the line after the last.
+        " nvim_buf_set_lines needs different arguments to do so.
+        if a:lnum == 1 + nvim_buf_line_count(l:buf_num)
+            let l:lfrom = a:lnum - 1
+            let l:lto = l:lfrom
+        else
+            let l:lfrom = a:lnum - 1
+            let l:lto = l:lfrom + len(l:content)
+        endif
+
+        call nvim_buf_set_lines(l:buf_num, l:lfrom, l:lto, v:true, l:content)
+    else
+        call setbufline(a:buf_name, a:lnum, a:content)
+    endif
     call setbufvar(a:buf_name, '&modifiable', modifiable_bak)
     call setbufvar(a:buf_name, '&modified', 0)
 endf
