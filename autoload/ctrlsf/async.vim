@@ -83,14 +83,22 @@ endf
 func! ctrlsf#async#StartSearch(command) abort
     " set state to 'searching'
     let s:done = 0
-    let s:job_id = job_start(a:command, {
-                \ 'out_cb': "ctrlsf#async#SearchCB",
-                \ 'err_cb': "ctrlsf#async#SearchErrorCB",
-                \ 'close_cb': "ctrlsf#async#SearchCloseCB",
-                \ 'out_mode': 'nl',
-                \ 'err_mode': 'raw',
-                \ 'in_io': 'null',
-                \ })
+    if has('nvim')
+        let s:job_id = jobstart(a:command, {
+                    \ 'on_stdout': "ctrlsf#async#NeoVimSearchCBWrapper",
+                    \ 'on_stderr': "ctrlsf#async#NeoVimSearchCBWrapper",
+                    \ 'on_exit': "ctrlsf#async#NeoVimSearchCBWrapper",
+                    \ })
+    else
+        let s:job_id = job_start(a:command, {
+                    \ 'out_cb': "ctrlsf#async#SearchCB",
+                    \ 'err_cb': "ctrlsf#async#SearchErrorCB",
+                    \ 'close_cb': "ctrlsf#async#SearchCloseCB",
+                    \ 'out_mode': 'nl',
+                    \ 'err_mode': 'raw',
+                    \ 'in_io': 'null',
+                    \ })
+    endif
     let s:timer_id = timer_start(200, "ctrlsf#async#ParseAndDrawCB", {'repeat': -1})
     call ctrlsf#log#Debug("TimerStarted: id=%s", s:timer_id)
 endf
@@ -101,7 +109,11 @@ endf
 "
 func! ctrlsf#async#StopSearch() abort
     if type(s:job_id) != type(-1)
-        let stopped = job_stop(s:job_id, "int")
+        if has('nvim')
+            let stopped = jobstop(s:job_id)
+        else
+            let stopped = job_stop(s:job_id, "int")
+        endif
         if stopped
             call s:DiscardResult()
             let s:cancelled = 1
@@ -155,6 +167,26 @@ func! ctrlsf#async#SearchCloseCB(channel) abort
     let s:done = 1
     call ctrlsf#log#Debug("ChannelClose")
     call ctrlsf#profile#Sample("FinishSearch")
+endf
+
+func! ctrlsf#async#NeoVimSearchCBWrapper(job_id, data, event) abort
+    if a:event == 'exit'
+        call ctrlsf#async#SearchCloseCB('unused')
+        return
+    endif
+
+    " The last value is always a blank line - unlike in Vim8
+    call remove(a:data, -1)
+
+    if a:event == 'stdout'
+        for l:line in a:data
+            call ctrlsf#async#SearchCB('unused', l:line)
+        endfor
+    elseif a:event == 'stderr'
+        for l:line in a:data
+            call ctrlsf#async#SearchErrorCB('unused', l:line)
+        endfor
+    endif
 endf
 
 " StopParse()

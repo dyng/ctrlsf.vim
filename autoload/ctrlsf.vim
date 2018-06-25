@@ -116,14 +116,9 @@ func! ctrlsf#SelfCheck() abort
 
     if g:ctrlsf_search_mode ==# 'async' &&
                 \ (v:version < 800 || (v:version == 800 && !has('patch1039')))
+                \ && !has('nvim')
         call ctrlsf#log#Error('Asynchronous searching is only supported for Vim
                     \ with version above 8.0.1039. Please update your vim.')
-        return -3
-    endif
-
-    if has('nvim')
-        call ctrlsf#log#Error('Asynchronous searching is not supported for
-                    \ NeoVim yet.')
         return -3
     endif
 endf
