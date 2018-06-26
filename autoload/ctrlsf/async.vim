@@ -16,7 +16,7 @@ let s:consumed = 0
 " IsSearching()
 "
 func! ctrlsf#async#IsSearching() abort
-    return !ctrlsf#async#IsSearchDone()
+    return s:done > -1 && !ctrlsf#async#IsSearchDone()
 endf
 
 " IsSearchDone()
