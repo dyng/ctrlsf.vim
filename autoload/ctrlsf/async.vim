@@ -2,7 +2,7 @@
 " Description: An ack/ag/pt/rg powered code search and view tool.
 " Author: Ye Ding <dygvirus@gmail.com>
 " Licence: Vim licence
-" Version: 2.1.0
+" Version: 2.1.1
 " ============================================================================
 
 let s:job_id = -1
@@ -16,7 +16,7 @@ let s:consumed = 0
 " IsSearching()
 "
 func! ctrlsf#async#IsSearching() abort
-    return !ctrlsf#async#IsSearchDone()
+    return s:done > -1 && !ctrlsf#async#IsSearchDone()
 endf
 
 " IsSearchDone()
