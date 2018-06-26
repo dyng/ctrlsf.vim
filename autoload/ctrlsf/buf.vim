@@ -40,32 +40,48 @@ endf
 func! ctrlsf#buf#SetLine(buf_name, lnum, content) abort
     let modifiable_bak = getbufvar(a:buf_name, '&modifiable')
     call setbufvar(a:buf_name, '&modifiable', 1)
-    if !exists('*setbufline') && exists('*nvim_buf_set_lines')
-        " Unlike setbufline, nvim_buf_set_lines can only accept a list
-        if type(a:content) == type('')
-            let l:content = split(a:content, '\v(\r\n)|\n')
-        else
-            let l:content = a:content
-        endif
 
-        let l:buf_num = bufnr(a:buf_name)
+    call s:setbufline(a:buf_name, a:lnum, a:content)
 
-        " setbufline will append if a:num is the line after the last.
-        " nvim_buf_set_lines needs different arguments to do so.
-        if a:lnum == 1 + nvim_buf_line_count(l:buf_num)
-            let l:lfrom = a:lnum - 1
-            let l:lto = l:lfrom
-        else
-            let l:lfrom = a:lnum - 1
-            let l:lto = l:lfrom + len(l:content)
-        endif
-
-        call nvim_buf_set_lines(l:buf_num, l:lfrom, l:lto, v:true, l:content)
-    else
-        call setbufline(a:buf_name, a:lnum, a:content)
-    endif
     call setbufvar(a:buf_name, '&modifiable', modifiable_bak)
     call setbufvar(a:buf_name, '&modified', 0)
+endf
+
+" s:setbufline
+"
+" Use Vim's setbufline or mimic it with NeoVim's nvim_buf_set_lines.
+"
+func! s:setbufline(buf_name, lnum, content) abort
+    if exists('*setbufline')
+        call setbufline(a:buf_name, a:lnum, a:content)
+        return
+    endif
+
+    " Unlike setbufline, nvim_buf_set_lines can only accept a list
+    if type(a:content) == type('')
+        let l:content = split(a:content, '\v(\r\n)|\n')
+    else
+        let l:content = a:content
+    endif
+
+    let l:buf_num = bufnr(a:buf_name)
+
+    let l:line_count = nvim_buf_line_count(l:buf_num)
+    if a:lnum == 1 + l:line_count
+        " setbufline, in this case, will append the lines.
+        call nvim_buf_set_lines(l:buf_num, a:lnum - 1, a:lnum - 1, v:true, l:content)
+    elseif a:lnum > 1 + l:line_count
+        " setbufline, in this case, will do nothing.
+    elseif a:lnum + len(l:content) - 1 > l:line_count
+        " setbufline, in this case, will replace the lines in can, and
+        " append the rest of the lines.
+        let l:lines_to_replace = l:line_count - a:lnum + 1
+        call nvim_buf_set_lines(l:buf_num, a:lnum - 1, a:lnum + l:lines_to_replace - 1, v:true, l:content[: l:lines_to_replace - 1])
+        call nvim_buf_set_lines(l:buf_num, l:line_count, l:line_count, v:true, l:content[l:lines_to_replace :])
+    else
+        " setbufline, in this case, will append the lines.
+        call nvim_buf_set_lines(l:buf_num, a:lnum - 1, a:lnum - 1 + len(l:content), v:true, l:content)
+    endif
 endf
 
 " WarnIfChanged()
