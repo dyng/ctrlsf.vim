@@ -24,7 +24,7 @@ func! ctrlsf#class#paragraph#New(buffer) abort
         \ 'trim_tail' : function("ctrlsf#class#paragraph#TrimTail")
         \ }
 
-    for [fname, lnum, content] in a:buffer
+    for [_, lnum, content] in a:buffer
         call add(paragraph.lines, ctrlsf#class#line#New(fname, lnum, content))
     endfo
 
