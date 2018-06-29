@@ -5,8 +5,15 @@
 " Version: 2.1.2
 " ============================================================================
 
-" Meta folder of several typical version control systems
-let s:vcs_folder = ['.git', '.hg', '.svn', '.bzr', '_darcs']
+" Meta folder or file of several typical version control systems
+let s:vcs_marker = [
+            \ {'name': '.git', 'type': 'f'},
+            \ {'name': '.git', 'type': 'd'},
+            \ {'name': '.hg', 'type': 'd'},
+            \ {'name': '.svn', 'type': 'd'},
+            \ {'name': '.bzr', 'type': 'd'},
+            \ {'name': '_darcs', 'type': 'd'},
+            \ ]
 
 " FindVcsRoot()
 "
@@ -17,15 +24,19 @@ func! ctrlsf#fs#FindVcsRoot(...) abort
         let start_dir = expand('%:p:h')
     endif
 
-    let vsc_dir = ''
-    for vcs in s:vcs_folder
-        let vsc_dir = finddir(vcs, start_dir.';')
-        if !empty(vsc_dir)
+    let marker = ''
+    for m in s:vcs_marker
+        if m.type ==# 'd'
+            let marker = finddir(m.name, start_dir.';')
+        else
+            let marker = findfile(m.name, start_dir.';')
+        endif
+        if !empty(marker)
             break
         endif
     endfo
 
-    let root = empty(vsc_dir) ? '' : fnamemodify(vsc_dir, ':h')
+    let root = empty(marker) ? '' : fnamemodify(marker, ':h')
     call ctrlsf#log#Debug("ProjectRoot: %s", root)
 
     return root
