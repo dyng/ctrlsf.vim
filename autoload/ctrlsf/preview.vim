@@ -80,7 +80,7 @@ func! s:InitPreviewWindow() abort
 
     augroup ctrlsfp
         au!
-        au BufUnload <buffer> unlet b:ctrlsf_file
+        au BufUnload <buffer> call setbufvar(s:PREVIEW_BUF_NAME, "ctrlsf_file", "")
     augroup END
 endf
 

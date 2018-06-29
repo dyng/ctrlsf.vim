@@ -443,7 +443,7 @@ endf
 func! s:PreviewFile(file, lnum, col, follow) abort
     call ctrlsf#preview#OpenPreviewWindow()
 
-    if !exists('b:ctrlsf_file') || b:ctrlsf_file !=# a:file
+    if !exists('b:ctrlsf_file') || empty(b:ctrlsf_file) || b:ctrlsf_file !=# a:file
         let b:ctrlsf_file = a:file
 
         call ctrlsf#buf#WriteFile(a:file)
