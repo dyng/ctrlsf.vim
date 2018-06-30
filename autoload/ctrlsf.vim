@@ -79,10 +79,7 @@ func! s:DoSearchSync(args) abort
     call ctrlsf#profile#Sample("FinishDraw")
 
     " populate quickfix and location list
-    if g:ctrlsf_populate_qflist
-        call setqflist(ctrlsf#db#MatchListQF())
-    endif
-    call setloclist(0, ctrlsf#db#MatchListQF())
+    call ctrlsf#PopulateQFList()
 endf
 
 " s:DoSearchAsync()
@@ -114,11 +111,17 @@ func! ctrlsf#SelfCheck() abort
         return -2
     endif
 
-    if g:ctrlsf_search_mode ==# 'async' &&
-                \ (v:version < 800 || (v:version == 800 && !has('patch1039')))
+    if v:version < 704 || (v:version == 704 && !has('patch1557'))
+        call ctrlsf#log#Error('CtrlSF does not support your Vim.
+                    \ Please update your Vim to at least 7.4.1557.')
+        return -3
+    endif
+
+    if g:ctrlsf_search_mode ==# 'async'
                 \ && !has('nvim')
-        call ctrlsf#log#Error('Asynchronous searching is only supported for Vim
-                    \ with version above 8.0.1039. Please update your vim.')
+                \ && (v:version < 800 || (v:version == 800 && !has('patch1039')))
+        call ctrlsf#log#Error('Asynchronous searching is not supported for your Vim.
+                    \ Please make sure you are using Vim 8.0.1039+ or NeoVim.')
         return -3
     endif
 endf
@@ -282,9 +285,7 @@ endf
 "
 func! ctrlsf#Focus() abort
     if ctrlsf#win#FocusMainWindow() != -1
-        " scroll up to top line
-        1normal! ^
-        call ctrlsf#NextMatch(1)
+        call ctrlsf#win#FocusFirstMatch()
     endif
 endf
 
@@ -349,6 +350,15 @@ func! ctrlsf#NextMatch(forward) abort
 
         call cursor(vlnum, vcol)
     endif
+endf
+
+" PopulateQFList()
+"
+func! ctrlsf#PopulateQFList()
+    if g:ctrlsf_populate_qflist
+        call setqflist(ctrlsf#db#MatchListQF())
+    endif
+    call setloclist(ctrlsf#win#FindMainWindow(), ctrlsf#db#MatchListQF())
 endf
 
 " CurrentMode()
@@ -443,7 +453,7 @@ endf
 func! s:PreviewFile(file, lnum, col, follow) abort
     call ctrlsf#preview#OpenPreviewWindow()
 
-    if !exists('b:ctrlsf_file') || b:ctrlsf_file !=# a:file
+    if !exists('b:ctrlsf_file') || empty(b:ctrlsf_file) || b:ctrlsf_file !=# a:file
         let b:ctrlsf_file = a:file
 
         call ctrlsf#buf#WriteFile(a:file)
@@ -477,10 +487,7 @@ func! s:OpenAndDraw() abort
     call s:Open()
     call ctrlsf#win#Draw()
     call ctrlsf#buf#ClearUndoHistory()
-
-    " scroll up to top line
-    1normal! ^
-    call ctrlsf#NextMatch(1)
+    call ctrlsf#win#FocusFirstMatch()
 endf
 
 " s:Quit()
