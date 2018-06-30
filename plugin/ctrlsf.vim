@@ -100,6 +100,20 @@ if !exists('g:ctrlsf_auto_close')
 endif
 " }}}
 
+" g:ctrlsf_auto_focus {{{2
+if !exists('g:ctrlsf_auto_focus')
+    let g:ctrlsf_auto_focus = {
+        \ "at" : "none",
+        \ }
+else
+    " set default 'duration_less_than': 1000 milliseconds
+    if g:ctrlsf_auto_focus['at'] ==# 'done'
+        \ && !has_key(g:ctrlsf_auto_focus, 'duration_less_than')
+        let g:ctrlsf_auto_focus['duration_less_than'] = 1000
+    endif
+endif
+" }}}
+
 " g:ctrlsf_case_sensitive {{{2
 if !exists('g:ctrlsf_case_sensitive')
     let g:ctrlsf_case_sensitive = 'smart'
