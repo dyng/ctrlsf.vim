@@ -130,7 +130,7 @@ func! ctrlsf#async#ParseAndDrawCB(timer_id) abort
     let lines = s:ConsumeResult(g:ctrlsf_parse_speed)
     call ctrlsf#log#Debug("ConsumeResult: size=%s", len(lines))
 
-    let done = ctrlsf#async#IsSearchDone() && s:IsAllConsumed()
+    let done = ctrlsf#async#IsSearchDone()
 
     call ctrlsf#db#ParseBackendResultIncr(lines, done)
     call ctrlsf#win#DrawIncr()
@@ -139,6 +139,7 @@ func! ctrlsf#async#ParseAndDrawCB(timer_id) abort
         call ctrlsf#async#StopParse()
         call ctrlsf#profile#Sample("FinishParse")
         call ctrlsf#win#SetModifiableByViewMode(1)
+        call ctrlsf#PopulateQFList()
         if !ctrlsf#async#IsCancelled()
             call ctrlsf#log#Notice("Done!")
         endif

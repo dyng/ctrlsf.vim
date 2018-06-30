@@ -79,10 +79,7 @@ func! s:DoSearchSync(args) abort
     call ctrlsf#profile#Sample("FinishDraw")
 
     " populate quickfix and location list
-    if g:ctrlsf_populate_qflist
-        call setqflist(ctrlsf#db#MatchListQF())
-    endif
-    call setloclist(0, ctrlsf#db#MatchListQF())
+    call ctrlsf#PopulateQFList()
 endf
 
 " s:DoSearchAsync()
@@ -288,9 +285,7 @@ endf
 "
 func! ctrlsf#Focus() abort
     if ctrlsf#win#FocusMainWindow() != -1
-        " scroll up to top line
-        1normal! ^
-        call ctrlsf#NextMatch(1)
+        call ctrlsf#win#FocusFirstMatch()
     endif
 endf
 
@@ -355,6 +350,15 @@ func! ctrlsf#NextMatch(forward) abort
 
         call cursor(vlnum, vcol)
     endif
+endf
+
+" PopulateQFList()
+"
+func! ctrlsf#PopulateQFList()
+    if g:ctrlsf_populate_qflist
+        call setqflist(ctrlsf#db#MatchListQF())
+    endif
+    call setloclist(ctrlsf#win#FindMainWindow(), ctrlsf#db#MatchListQF())
 endf
 
 " CurrentMode()
@@ -483,10 +487,7 @@ func! s:OpenAndDraw() abort
     call s:Open()
     call ctrlsf#win#Draw()
     call ctrlsf#buf#ClearUndoHistory()
-
-    " scroll up to top line
-    1normal! ^
-    call ctrlsf#NextMatch(1)
+    call ctrlsf#win#FocusFirstMatch()
 endf
 
 " s:Quit()

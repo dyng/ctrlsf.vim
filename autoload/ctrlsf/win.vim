@@ -327,6 +327,14 @@ func! ctrlsf#win#FindTargetWindow(file) abort
     return 0
 endf
 
+" FocusFirstMatch()
+"
+func! ctrlsf#win#FocusFirstMatch() abort
+    " scroll up to top line
+    1normal! ^
+    call ctrlsf#NextMatch(1)
+endf
+
 """""""""""""""""""""""""""""""""
 " Cursor
 """""""""""""""""""""""""""""""""
