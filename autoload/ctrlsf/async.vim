@@ -9,6 +9,7 @@ let s:job_id = -1
 let s:timer_id = -1
 let s:done = -1
 let s:cancelled = 0
+let s:start_ts = -1
 
 let s:buffer = []
 let s:consumed = 0
@@ -38,6 +39,7 @@ func! ctrlsf#async#Reset() abort
     let s:timer_id = -1
     let s:done = -1
     let s:cancelled = 0
+    let s:start_ts = -1
 
     let s:buffer = []
     let s:consumed = 0
@@ -81,8 +83,9 @@ endf
 " Start an async search process and a timely parser.
 "
 func! ctrlsf#async#StartSearch(command) abort
-    " set state to 'searching'
     let s:done = 0
+    let s:start_ts = reltime()
+
     if has('nvim')
         let s:job_id = jobstart(a:command, {
                     \ 'on_stdout': "ctrlsf#async#NeoVimSearchCBWrapper",
@@ -136,14 +139,7 @@ func! ctrlsf#async#ParseAndDrawCB(timer_id) abort
     call ctrlsf#win#DrawIncr()
 
     if done
-        call ctrlsf#async#StopParse()
-        call ctrlsf#profile#Sample("FinishParse")
-        call ctrlsf#win#SetModifiableByViewMode(1)
-        call ctrlsf#PopulateQFList()
-        if !ctrlsf#async#IsCancelled()
-            call ctrlsf#log#Notice("Done!")
-        endif
-        call ctrlsf#log#Debug("ParseFinish")
+        call s:SearchDone()
     endif
 endf
 
@@ -195,4 +191,31 @@ endf
 func! ctrlsf#async#StopParse() abort
     call ctrlsf#log#Debug("StopTimer: id=%s", s:timer_id)
     call timer_stop(s:timer_id)
+endf
+
+" SearchDone()
+"
+func! s:SearchDone() abort
+    call ctrlsf#async#StopParse()
+    call ctrlsf#profile#Sample("FinishParse")
+
+    call ctrlsf#win#SetModifiableByViewMode(1)
+    call ctrlsf#PopulateQFList()
+
+    " focus result pane if search is short lived
+    if g:ctrlsf_auto_focus['at'] ==# 'done'
+        " elapsed time in milliseconds
+        let elapsed = float2nr(str2float(reltimestr(reltime(s:start_ts))) * 1000)
+        call ctrlsf#log#Debug("ElapsedTime: %s", elapsed)
+        let max_duration = g:ctrlsf_auto_focus['duration_less_than']
+        if max_duration == -1 || elapsed < max_duration
+            call ctrlsf#Focus()
+        endif
+    endif
+
+    if !ctrlsf#async#IsCancelled()
+        call ctrlsf#log#Notice("Done!")
+    endif
+
+    call ctrlsf#log#Debug("ParseFinish")
 endf

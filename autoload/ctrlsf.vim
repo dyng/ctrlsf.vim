@@ -91,7 +91,9 @@ func! s:DoSearchAsync(args) abort
     call s:Open()
     call ctrlsf#win#SetModifiableByViewMode(0)
     call ctrlsf#buf#WriteString("Searching...")
-    call ctrlsf#win#FocusCallerWindow()
+    if g:ctrlsf_auto_focus['at'] !=# 'start'
+        call ctrlsf#win#FocusCallerWindow()
+    endif
 endf
 
 " SelfCheck()
@@ -283,8 +285,11 @@ endf
 
 " Focus()
 "
+" Focus the first match in result window. Do nothing if cursor has already
+" focused result window.
+"
 func! ctrlsf#Focus() abort
-    if ctrlsf#win#FocusMainWindow() != -1
+    if !ctrlsf#win#InMainWindow() && ctrlsf#win#FocusMainWindow() != -1
         call ctrlsf#win#FocusFirstMatch()
     endif
 endf

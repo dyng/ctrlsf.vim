@@ -358,6 +358,27 @@ You can customize it as you will:
         \ "compact": 0
         \ }
 <
+g:ctrlsf_auto_focus                                      *'g:ctrlsf_auto_focus'*
+Default:
+    {
+        "at" : "none"
+    }
+'g:ctrlsf_auto_focus' defines which timing CtrlSF should focus result pane when
+working in async search mode. There are 3 possible value: 'none', 'start' and
+'done'. 'none' makes CtrlSF not focus at all, 'start' makes CtrlSF focus at
+search starting, 'done' makes CtrlSF focus at search finished, but ONLY for
+those immediately finished search. An additional option 'duration_less_than'
+is available for 'done', only searches finished within this timeout will be
+focused. When you have set 'at' to 'done' but not set 'duration_less_than', a
+default value '1000' will be used. Time unit for 'duration_less_than' is
+millisecond.
+Example:
+>
+    let g:ctrlsf_auto_focus = {
+        \ "at" : "done",
+        \ "duration_less_than": 1000
+        \ }
+<
 g:ctrlsf_case_sensitive                              *'g:ctrlsf_case_sensitive'*
 Default: 'smart'
 Available: 'smart', 'yes', 'no'
@@ -452,7 +473,6 @@ that does not respect to '.gitignore'.
 >
     let g:ctrlsf_ignore_dir = ['bower_components', 'node_modules']
 <
-
 g:ctrlsf_indent                                              *'g:ctrlsf_indent'*
 Default: 4
 Defines how many spaces are placed between line number and line content. You
@@ -529,7 +549,6 @@ searching, you can set it a more moderate value:
 >
     let g:ctrlsf_parse_speed = 100
 <
-
 g:ctrlsf_populate_qflist                            *'g:ctrlsf_populate_qflist'*
 Default: 0
 Defines whether CtrlSF will feed quickfix and location list with search result.
@@ -583,7 +602,6 @@ this value is empty, means no key is mapped for this feature.
 >
     let g:ctrlsf_toggle_map_key = '\t'
 <
-
 g:ctrlsf_winsize                                                *'g:ctrlsf_width'*
 Default: 'auto'
 Available: 'auto', 'xx%', 'xx'

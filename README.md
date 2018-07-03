@@ -217,6 +217,19 @@ Read `:h ctrlsf-arguments` for a full list of arguments.
         \}
     ```
 
+- `g:ctrlsf_auto_focus` defines how CtrlSF focuses result pane when working in async search mode. By default, CtrlSF will not focus at all, setting to `start` makes CtrlSF focus at search starting, setting to `done` makes CtrlSF focus at search is done, but only for immediately finished search. An additional `duration_less_than` is used to define max duration of a search can be focused for 'at done', which is an integer value of milliseconds.
+
+    ```vim
+    let g:ctrlsf_auto_focus = {
+        \ "at": "start"
+        \ }
+    " or
+    let g:ctrlsf_auto_focus = {
+        \ "at": "done",
+        \ "duration_less_than": 1000
+        \ }
+    ```
+
 - `g:ctrlsf_case_sensitive` defines default case-sensitivity in search. Possible values are `yes`, `no` and `smart`, `smart` works the same as it is in vim. The default value is `smart`.
 
     ```vim
