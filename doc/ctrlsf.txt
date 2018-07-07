@@ -466,6 +466,15 @@ useful when you are needing backend-specific features. Acceptable keys are
         \ 'pt': '--home-ptignore'
         \ }
 <
+g:ctrlsf_extra_root_markers                      *'g:ctrlsf_extra_root_markers'*
+Default: []
+Defines a list of root markers that helps CtrlSF recognizing project root. For
+example, this option is set '[".root"]', and there exists a file or directory
+'/home/your/project/.root', then '/home/your/project' will be recognized as
+project root.
+>
+    let g:ctrlsf_extra_root_markers = ['.root']
+<
 g:ctrlsf_ignore_dir                                      *'g:ctrlsf_ignore_dir'*
 Default: ''
 Defines directories that will be ignored by default. It's useful for backend
