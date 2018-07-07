@@ -170,9 +170,9 @@ func! ctrlsf#opt#GetPath() abort
 
             " try to find project root
             if opt_sroot ==# 'f'
-                let path = ctrlsf#fs#FindVcsRoot()
+                let path = ctrlsf#fs#FindProjectRoot()
             elseif opt_sroot ==# 'w'
-                let path = ctrlsf#fs#FindVcsRoot(getcwd())
+                let path = ctrlsf#fs#FindProjectRoot(getcwd())
             endif
 
             " fallback to specified root

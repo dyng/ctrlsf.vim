@@ -162,6 +162,12 @@ if !exists('g:ctrlsf_extra_backend_args')
 endif
 " }}}
 
+" g:ctrlsf_extra_root_markers {{{2
+if !exists('g:ctrlsf_extra_root_markers')
+    let g:ctrlsf_extra_root_markers = []
+endif
+" }}}
+
 " g:ctrlsf_ignore_dir {{{2
 if !exists('g:ctrlsf_ignore_dir')
     let g:ctrlsf_ignore_dir = []
