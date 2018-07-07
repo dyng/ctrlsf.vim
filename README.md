@@ -262,6 +262,12 @@ Read `:h ctrlsf-arguments` for a full list of arguments.
         \ }
     ```
 
+- `g:ctrlsf_extra_root_markers` is a list contains custom root markers. For example, this option is set `['.root']`, and there exists a file or directory `/home/your/project/.root`, then `/home/your/project` will be recognized as project root.
+
+    ```vim
+    let g:ctrlsf_extra_root_markers = ['.root']
+    ```
+
 - `g:ctrlsf_mapping` defines maps used in result window and preview window. Value of this option is a dictionary, where key is a method and value is a key for mapping. An empty value can disable that method. To specify additional keys to run after a method, use the extended form demonstrated below to specify a `suffix`. You can just define a subset of full dictionary, those not defined functionalities will use default key mapping.
 
     ```vim

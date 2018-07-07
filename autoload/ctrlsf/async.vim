@@ -9,6 +9,7 @@ let s:job_id = -1
 let s:timer_id = -1
 let s:done = -1
 let s:cancelled = 0
+let s:start_render = 0
 let s:start_ts = -1
 
 let s:buffer = []
@@ -39,6 +40,7 @@ func! ctrlsf#async#Reset() abort
     let s:timer_id = -1
     let s:done = -1
     let s:cancelled = 0
+    let s:start_render = 0
     let s:start_ts = -1
 
     let s:buffer = []
@@ -137,6 +139,14 @@ func! ctrlsf#async#ParseAndDrawCB(timer_id) abort
 
     call ctrlsf#db#ParseBackendResultIncr(lines, done)
     call ctrlsf#win#DrawIncr()
+
+    " focus first match for auto-focus-mode: 'at start'
+    if s:start_render == 0
+        let s:start_render = 1
+        if ctrlsf#win#InMainWindow()
+            call ctrlsf#win#FocusFirstMatch()
+        endif
+    endif
 
     if done
         call s:SearchDone()

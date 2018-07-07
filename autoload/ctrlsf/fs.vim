@@ -6,40 +6,46 @@
 " ============================================================================
 
 " Meta folder or file of several typical version control systems
-let s:vcs_marker = [
-            \ {'name': '.git', 'type': 'f'},
-            \ {'name': '.git', 'type': 'd'},
-            \ {'name': '.hg', 'type': 'd'},
-            \ {'name': '.svn', 'type': 'd'},
-            \ {'name': '.bzr', 'type': 'd'},
-            \ {'name': '_darcs', 'type': 'd'},
-            \ ]
+let s:vcs_marker = ['.git', '.svn', '.bzr', '_darcs']
 
-" FindVcsRoot()
+" FindProjectRoot()
 "
-func! ctrlsf#fs#FindVcsRoot(...) abort
+func! ctrlsf#fs#FindProjectRoot(...) abort
     if a:0 > 0
         let start_dir = a:1
     else
         let start_dir = expand('%:p:h')
     endif
 
-    let marker = ''
-    for m in s:vcs_marker
-        if m.type ==# 'd'
-            let marker = finddir(m.name, start_dir.';')
-        else
-            let marker = findfile(m.name, start_dir.';')
-        endif
-        if !empty(marker)
-            break
-        endif
-    endfo
+    let markers = g:ctrlsf_extra_root_markers + s:vcs_marker
 
+    let marker = s:FindMarker(start_dir, markers)
     let root = empty(marker) ? '' : fnamemodify(marker, ':h')
     call ctrlsf#log#Debug("ProjectRoot: %s", root)
 
     return root
+endf
+
+" s:FindMarker()
+"
+" Find root marker recursively.
+"
+func! s:FindMarker(dir, markers) abort
+    for m in a:markers
+        let marker = globpath(a:dir, m, 1)
+        if !empty(marker)
+            return marker
+        endif
+    endfor
+
+    let parent = fnamemodify(a:dir, ':h')
+
+    " hit the root
+    if parent ==# a:dir
+        return ''
+    else
+        return s:FindMarker(parent, a:markers)
+    endif
 endf
 
 " DetectFileFormat
