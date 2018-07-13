@@ -94,7 +94,7 @@ endf
 " Quote()
 "
 func! ctrlsf#utils#Quote(str) abort
-    return '"' . escape(a:str, '"') . '"'
+    return '"' . escape(a:str, '"\') . '"'
 endf
 
 """""""""""""""""""""""""""""""""
