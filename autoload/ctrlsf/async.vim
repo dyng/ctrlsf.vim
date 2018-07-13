@@ -113,6 +113,7 @@ endf
 " Stop a processing search.
 "
 func! ctrlsf#async#StopSearch() abort
+    call ctrlsf#log#Debug("StopSearch")
     if type(s:job_id) != type(-1)
         if has('nvim')
             let stopped = jobstop(s:job_id)
