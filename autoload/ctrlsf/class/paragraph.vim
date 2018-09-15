@@ -82,9 +82,14 @@ endf
 " ModifyFileName()
 "
 func! s:ModifyFileName(filename) abort
-    if g:ctrlsf_absolute_file_path || &autochdir
-        return fnamemodify(a:filename, ":p")
+    if has('win32') || has('win64')
+        let filename = substitute(a:filename, '\\\\', '\', 'g')
     else
-        return fnamemodify(a:filename, ":.")
+        let filename = a:filename
+    endif
+    if g:ctrlsf_absolute_file_path || &autochdir
+        return fnamemodify(filename, ":p")
+    else
+        return fnamemodify(filename, ":.")
     endif
 endf
