@@ -116,17 +116,15 @@ func! ctrlsf#async#StopSearch() abort
     call ctrlsf#log#Debug("StopSearch")
     if type(s:job_id) != type(-1)
         if has('nvim')
-            let stopped = jobstop(s:job_id)
+            call jobstop(s:job_id)
         else
-            let stopped = job_stop(s:job_id, "int")
+            call job_stop(s:job_id, "int")
         endif
-        if stopped
-            call s:DiscardResult()
-            let s:cancelled = 1
-            let s:done = 1
-        else
-            call ctrlsf#log#Error("Failed to stop Job.")
-        endif
+    endif
+    if ctrlsf#async#IsSearching()
+        call s:DiscardResult()
+        let s:cancelled = 1
+        let s:done = 1
     endif
 endf
 
