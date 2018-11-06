@@ -74,7 +74,7 @@ let s:backend_args_map = {
             \ },
         \ 'follow': {
             \ '1': '--follow',
-            \ '0': '--nofollow'
+            \ '0': '--no-follow'
             \ },
         \ 'default': '--no-heading --color never --line-number -H'
         \ }
