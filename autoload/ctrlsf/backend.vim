@@ -20,6 +20,10 @@ let s:backend_args_map = {
             \ '1': '',
             \ '0': '--literal'
             \ },
+        \ 'follow': {
+            \ '1': '-f',
+            \ '0': '--nofollow'
+            \ },
         \ 'default': '--noheading --nogroup --nocolor --nobreak'
         \ },
     \ 'ack': {
@@ -32,6 +36,10 @@ let s:backend_args_map = {
         \ 'regex': {
             \ '1': '',
             \ '0': '--literal'
+            \ },
+        \ 'follow': {
+            \ '1': '--follow',
+            \ '0': '--nofollow'
             \ },
         \ 'default': '--noheading --nogroup --nocolor --nobreak --nocolumn
             \ --with-filename'
@@ -47,6 +55,10 @@ let s:backend_args_map = {
             \ '1': '-e',
             \ '0': ''
             \ },
+        \ 'follow': {
+            \ '1': '',
+            \ '0': ''
+            \ },
         \ 'default': '--nogroup --nocolor'
         \ },
     \ 'rg': {
@@ -59,6 +71,10 @@ let s:backend_args_map = {
         \ 'regex': {
             \ '1': '',
             \ '0': '--fixed-strings'
+            \ },
+        \ 'follow': {
+            \ '1': '--follow',
+            \ '0': '--nofollow'
             \ },
         \ 'default': '--no-heading --color never --line-number -H'
         \ }
@@ -149,6 +165,10 @@ func! s:BuildCommand(args, for_shell) abort
             call add(tokens, '--files-from=-')
         endif
     endif
+
+    " follow symlink
+    call add(tokens,
+        \ s:backend_args_map[runner]['follow'][g:ctrlsf_follow_symlinks])
 
     " default
     call add(tokens,

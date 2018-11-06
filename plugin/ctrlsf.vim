@@ -168,6 +168,12 @@ if !exists('g:ctrlsf_extra_root_markers')
 endif
 " }}}
 
+" g:ctrlsf_follow_symlinks {{{2
+if !exists('g:ctrlsf_follow_symlinks')
+    let g:ctrlsf_follow_symlinks = 0
+endif
+" }}}
+
 " g:ctrlsf_ignore_dir {{{2
 if !exists('g:ctrlsf_ignore_dir')
     let g:ctrlsf_ignore_dir = []
