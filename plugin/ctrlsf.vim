@@ -281,15 +281,16 @@ endif
 " }}}
 
 " Commands {{{1
-com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSF         call ctrlsf#Search(<q-args>)
-com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSFQuickfix call ctrlsf#Quickfix(<q-args>)
-com! -n=0                                         CtrlSFOpen     call ctrlsf#Open()
-com! -n=0                                         CtrlSFUpdate   call ctrlsf#Update()
-com! -n=0                                         CtrlSFClose    call ctrlsf#Quit()
-com! -n=0                                         CtrlSFClearHL  call ctrlsf#ClearSelectedLine()
-com! -n=0                                         CtrlSFToggle   call ctrlsf#Toggle()
-com! -n=0                                         CtrlSFStop     call ctrlsf#StopSearch()
-com! -n=0                                         CtrlSFFocus    call ctrlsf#Focus()
+com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSF             call ctrlsf#Search(<q-args>)
+com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSFQuickfix     call ctrlsf#Quickfix(<q-args>)
+com! -n=*                                         CtrlSFFromExternal call ctrlsf#FromExternal(<q-args>)
+com! -n=0                                         CtrlSFOpen         call ctrlsf#Open()
+com! -n=0                                         CtrlSFUpdate       call ctrlsf#Update()
+com! -n=0                                         CtrlSFClose        call ctrlsf#Quit()
+com! -n=0                                         CtrlSFClearHL      call ctrlsf#ClearSelectedLine()
+com! -n=0                                         CtrlSFToggle       call ctrlsf#Toggle()
+com! -n=0                                         CtrlSFStop         call ctrlsf#StopSearch()
+com! -n=0                                         CtrlSFFocus        call ctrlsf#Focus()
 " }}}
 
 " Maps {{{1

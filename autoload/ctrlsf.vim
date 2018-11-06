@@ -210,6 +210,31 @@ func! ctrlsf#Quickfix(args) abort
     call ctrlsf#Search(a:args, 'compact')
 endf
 
+" FromExternal()
+"
+func! ctrlsf#FromExternal(output_var, ...) abort
+    " Reset
+    call s:Reset()
+
+    " If view mode is not specified, use 'g:ctrlsf_default_view_mode'
+    let s:current_mode  = empty(a:000) ?
+                \ s:InitViewMode() :
+                \ a:1
+
+    " Parse backend output from variable
+    call ctrlsf#profile#Sample("StartParse")
+    call ctrlsf#db#ParseBackendResult({a:output_var})
+    call ctrlsf#profile#Sample("FinishParse")
+
+    " Open and draw contents
+    call ctrlsf#profile#Sample("StartDraw")
+    call s:OpenAndDraw()
+    call ctrlsf#profile#Sample("FinishDraw")
+
+    " Populate quickfix and location list
+    call ctrlsf#PopulateQFList()
+endf
+
 " Save()
 "
 func! ctrlsf#Save()
