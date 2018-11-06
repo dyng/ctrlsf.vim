@@ -476,10 +476,10 @@ project root.
     let g:ctrlsf_extra_root_markers = ['.root']
 <
 g:ctrlsf_follow_symlinks                            *'g:ctrlsf_follow_symlinks'*
-Default: 0
+Default: 1
 Defines whether the backend should follow symbolic links or not.
 >
-    let g:ctrlsf_follow_symlinks = 1
+    let g:ctrlsf_follow_symlinks = 0
 <
 g:ctrlsf_ignore_dir                                      *'g:ctrlsf_ignore_dir'*
 Default: ''

@@ -170,7 +170,7 @@ endif
 
 " g:ctrlsf_follow_symlinks {{{2
 if !exists('g:ctrlsf_follow_symlinks')
-    let g:ctrlsf_follow_symlinks = 0
+    let g:ctrlsf_follow_symlinks = 1
 endif
 " }}}
 
