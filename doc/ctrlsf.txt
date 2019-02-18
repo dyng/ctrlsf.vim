@@ -140,6 +140,9 @@ mode:
   Search {pattern}. Default is search by literal. Show result in a new CtrlSF
   window if there is no existing one, otherwise reuse that one.
 
+  If the {pattern} starts with '-', add a ' -- ' before it to distinguish it
+  from the [arguments].
+
   [arguments] are all valid CtrlSF arguments, see |ctrlsf-arguments| for what
   they are.
 

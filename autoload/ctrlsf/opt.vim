@@ -252,7 +252,9 @@ func! s:ParseOptions(options_str) abort
                 call ctrlsf#log#Error("Unknown option '%s'. If you are user
                     \ from pre-v1.0, please be aware of that CtrlSF no longer
                     \ supports all options of ack and ag since v1.0. Read
-                    \ manual for CtrlSF its own options.", token)
+                    \ manual for CtrlSF its own options. If you are searching
+                    \ a pattern that starts with '-', please add a ' -- '
+                    \ before it.", token)
                 throw 'ParseOptionsException'
             endif
 
