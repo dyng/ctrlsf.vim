@@ -128,6 +128,10 @@ CtrlSF provides many maps which you can use for quick accessing all features, he
 
     Input `:CtrlSF foo ` in command line where `foo` is the last search pattern of vim.
 
+- `<Plug>CtrlSFFilter`
+
+    Input `:CtrlSFFilter ` in command line for you.
+
 For a full list of maps, please refer to the document.
 
 I strongly recommend you should do some maps for a nicer user experience, because typing 8 characters for every single search is really boring and painful experience. Another reason is that **one of the most useful feature 'Search Visual Selected Word' can be accessed by map only.**

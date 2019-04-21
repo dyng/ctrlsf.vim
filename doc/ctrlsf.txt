@@ -187,6 +187,12 @@ mode:
 
   Move cursor to CtrlS window and focus the first result.
 
+:CtrlSFFilter {pattern}                                          *:CtrlSFFilter*
+
+  Further search in the result files of current search, especially useful if
+  your search pattern is complex and can not be written into a single regular
+  expression.
+
 ================================================================================
 4. Key Maps                                                     *ctrlsf-keymaps*
 
@@ -195,25 +201,27 @@ mode:
     <Plug>CtrlSFPrompt      Input 'CtrlSF' in command line and waiting, just a
                             handy shortcut.
 
-    <Plug>CtrlSFVwordPath    Input current visual selected word in command line
-                             and waiting for any other user input.
+    <Plug>CtrlSFVwordPath   Input current visual selected word in command line
+                            and waiting for any other user input.
 
-    <Plug>CtrlSFVwordExec    Similar to above, but execute it immediately.
+    <Plug>CtrlSFVwordExec   Similar to above, but execute it immediately.
 
-    <Plug>CtrlSFCwordPath    Input word in the cursor in command line and
-                             waiting.
+    <Plug>CtrlSFCwordPath   Input word in the cursor in command line and
+                            waiting.
 
-    <Plug>CtrlSFCwordExec    Similar to above, but execute it immediately.
+    <Plug>CtrlSFCwordExec   Similar to above, but execute it immediately.
 
-    <Plug>CtrlSFCCwordPath   Similar to <Plug>CtrlSFCwordPath but will add word
-                             boundary around searching word.
+    <Plug>CtrlSFCCwordPath  Similar to <Plug>CtrlSFCwordPath but will add word
+                            boundary around searching word.
 
-    <Plug>CtrlSFCCwordExec   Similar to above, but execute it immediately.
+    <Plug>CtrlSFCCwordExec  Similar to above, but execute it immediately.
 
-    <Plug>CtrlSFPwordPath    Input last search pattern in command line and
-                             waiting.
+    <Plug>CtrlSFPwordPath   Input last search pattern in command line and
+                            waiting.
 
-    <Plug>CtrlSFPwordExec    Similar to above, but execute it immediately.
+    <Plug>CtrlSFPwordExec   Similar to above, but execute it immediately.
+
+    <Plug>CtrlSFFilter      Input 'CtrlSFFilter' in command line and waiting.
 
   Maps by default in CtrlSF window:
 

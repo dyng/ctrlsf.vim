@@ -11,7 +11,6 @@
 
 " remember what user is searching
 let s:current_mode = ''
-let s:current_query = ''
 
 " s:ExecSearch()
 "
@@ -21,11 +20,15 @@ func! s:ExecSearch(args) abort
     " reset all states
     call s:Reset()
 
-    try
-        call ctrlsf#opt#ParseOptions(a:args)
-    catch /ParseOptionsException/
-        return -1
-    endtry
+    if type(a:args) == 4
+        call ctrlsf#opt#SetOpts(a:args)
+    else
+        try
+            call ctrlsf#opt#ParseOptions(a:args)
+        catch /ParseOptionsException/
+            return -1
+        endtry
+    endif
 
     if ctrlsf#SelfCheck() < 0
         return -1
@@ -138,14 +141,26 @@ func! ctrlsf#Search(args, ...) abort
         let args = expand('<cword>')
     endif
 
-    let s:current_query = args
-
     " if view mode is not specified, use 'g:ctrlsf_default_view_mode'
     let s:current_mode  = empty(a:000) ?
                 \ s:InitViewMode() :
                 \ a:1
 
-    call s:ExecSearch(s:current_query)
+    call s:ExecSearch(args)
+endf
+
+" Filter()
+"
+func! ctrlsf#Filter(args) abort
+    let opts = ctrlsf#opt#GetOpts()
+
+    if !empty(a:args)
+        let opts['pattern'] = a:args
+    endif
+
+    let opts['path'] = ctrlsf#db#FileList()
+
+    call s:ExecSearch(opts)
 endf
 
 " InitViewMode()
@@ -161,10 +176,7 @@ endf
 " Update()
 "
 func! ctrlsf#Update() abort
-    if empty(s:current_query)
-        return -1
-    endif
-    call s:ExecSearch(s:current_query)
+    call s:ExecSearch(ctrlsf#opt#GetOpts())
 endf
 
 " Open()
@@ -277,9 +289,9 @@ func! ctrlsf#ToggleMap() abort
     call ctrlsf#buf#ToggleMap()
 
     if b:ctrlsf_map_enabled
-        echo "Maps enabled."
+        call ctrlsf#log#Notice("Maps enabled.")
     else
-        echo "Maps disabled."
+        call ctrlsf#log#Notice("Maps disabled.")
     endif
 endf
 

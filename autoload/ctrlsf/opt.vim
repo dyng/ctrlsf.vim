@@ -38,14 +38,35 @@ let s:default = {
     \ }
 
 " options
-let s:options = {}
+let s:options = {"cache":{}}
 
 " ctrlsf#opt#Reset()
 "
 " Reset all states of this module.
 "
 func! ctrlsf#opt#Reset() abort
-    let s:options = {}
+    let s:options = {"cache":{}}
+endf
+
+" ctrlsf#opt#Reset()
+"
+" Set parsed options as given.
+"
+func! ctrlsf#opt#SetOpts(opts) abort
+    let s:options = a:opts
+    if !has_key(s:options, "cache")
+        let s:options["cache"] = {}
+    endif
+endf
+
+" ctrlsf#opt#Reset()
+"
+" Get parsed options.
+"
+func! ctrlsf#opt#GetOpts() abort
+    let cp = copy(s:options)
+    call remove(cp, "cache")
+    return cp
 endf
 
 " OptionNames()
@@ -74,6 +95,25 @@ func! ctrlsf#opt#GetOpt(name) abort
     else
         return get(s:default, a:name, '')
     endif
+endf
+
+func! ctrlsf#opt#GetVimRegex() abort
+    if !has_key(s:options["cache"], "vimregex")
+        let s:options["cache"]["vimregex"] = ctrlsf#pat#Regex()
+        call ctrlsf#log#Debug("Vimregex: %s", string(s:options["cache"]["vimregex"]))
+    endif
+    return s:options["cache"]["vimregex"]
+endf
+
+func! ctrlsf#opt#GetVimHlRegex() abort
+    if !has_key(s:options["cache"], "vimhlregex")
+        let s:options["cache"]["vimhlregex"] = {
+                    \ 'normal': ctrlsf#pat#HighlightRegex('normal'),
+                    \ 'compact': ctrlsf#pat#HighlightRegex('compact')
+                    \ }
+        call ctrlsf#log#Debug("Vimhlregex: %s", string(s:options["cache"]["vimhlregex"]))
+    endif
+    return s:options["cache"]["vimhlregex"]
 endf
 
 " GetContext()
@@ -306,18 +346,6 @@ endf
 " ParseOptions()
 "
 func! ctrlsf#opt#ParseOptions(options_str) abort
-    let s:options = s:ParseOptions(a:options_str)
-
-    " derivative options
-
-    " vimregex
-    let s:options["_vimregex"] = ctrlsf#pat#Regex()
-
-    " vimhlregex
-    let s:options["_vimhlregex"] = {
-                \ 'normal': ctrlsf#pat#HighlightRegex('normal'),
-                \ 'compact': ctrlsf#pat#HighlightRegex('compact')
-                \ }
-
+    call extend(s:options, s:ParseOptions(a:options_str))
     call ctrlsf#log#Debug("Options: %s", string(s:options))
 endf

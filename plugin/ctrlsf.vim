@@ -290,10 +290,12 @@ com! -n=0                                         CtrlSFClearHL  call ctrlsf#Cle
 com! -n=0                                         CtrlSFToggle   call ctrlsf#Toggle()
 com! -n=0                                         CtrlSFStop     call ctrlsf#StopSearch()
 com! -n=0                                         CtrlSFFocus    call ctrlsf#Focus()
+com! -n=*                                         CtrlSFFilter   call ctrlsf#Filter(<q-args>)
 " }}}
 
 " Maps {{{1
 nnoremap                 <Plug>CtrlSFPrompt     :CtrlSF<Space>
+nnoremap                 <Plug>CtrlSFFilter     :CtrlSFFilter<Space>
 nnoremap          <expr> <Plug>CtrlSFCwordPath  <SID>SearchCwordCmd('CtrlSF', 0, 0)
 nnoremap <silent> <expr> <Plug>CtrlSFCwordExec  <SID>SearchCwordCmd('CtrlSF', 0, 1)
 nnoremap          <expr> <Plug>CtrlSFCCwordPath <SID>SearchCwordCmd('CtrlSF', 1, 0)
