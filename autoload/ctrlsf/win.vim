@@ -427,4 +427,7 @@ func! ctrlsf#win#RestoreAllWinSize()
         endif
         let nr += 1
     endwh
+
+    " resize all others equally
+    wincmd =
 endf
