@@ -386,48 +386,17 @@ endf
 " BackupAllWinSize()
 "
 " Purpose of BackupAllWinSize() and RestoreAllWinSize() is to restore
-" width/height of fixed sized windows such like NERDTree's. As a result, we only
-" backup width/height of fixed window's to keep least side effects.
+" width/height of fixed sized windows such like NERDTree's.
 "
 func! ctrlsf#win#BackupAllWinSize()
-    let nr = 1
-    while winbufnr(nr) != -1
-        if getwinvar(nr, '&winfixwidth') || getwinvar(nr, '&winfixheight')
-            if type(getwinvar(nr, 'ctrlsf_winwidth_bak')) != 3
-                call setwinvar(nr, 'ctrlsf_winwidth_bak', [])
-            endif
-            call add(getwinvar(nr, 'ctrlsf_winwidth_bak'), winwidth(nr))
-
-            if type(getwinvar(nr, 'ctrlsf_winheight_bak')) != 3
-                call setwinvar(nr, 'ctrlsf_winheight_bak', [])
-            endif
-            call add(getwinvar(nr, 'ctrlsf_winheight_bak'), winheight(nr))
-        endif
-        let nr += 1
-    endwh
+    let t:ctrlsf_winrestcmd = winrestcmd()
 endf
 
 " RestoreAllWinSize()
 "
 func! ctrlsf#win#RestoreAllWinSize()
-    let nr = 1
-    while winbufnr(nr) != -1
-        if getwinvar(nr, '&winfixwidth') || getwinvar(nr, '&winfixheight')
-            exec nr . 'wincmd w'
-
-            let width_stack = getwinvar(nr, 'ctrlsf_winwidth_bak')
-            if type(width_stack) == 3 && !empty(width_stack)
-                exec "vertical resize " . remove(width_stack, -1)
-            endif
-
-            let height_stack = getwinvar(nr, 'ctrlsf_winheight_bak')
-            if type(height_stack) == 3 && !empty(height_stack)
-                exec "resize " . remove(height_stack, -1)
-            endif
-        endif
-        let nr += 1
-    endwh
-
-    " resize all others equally
-    wincmd =
+    if exists("t:ctrlsf_winrestcmd")
+        execute t:ctrlsf_winrestcmd
+    endif
 endf
+
