@@ -311,7 +311,7 @@ func! ctrlsf#view#Unrender(content) abort
 
             if line ==# '....' || line ==# ''
                 break
-            elseif line !~ '\v^\d+[:-]'
+            elseif line !~ '\v^\d+[:-]\s{2,}'
                 " strip trailing colon
                 let next_file = substitute(line, ':$', '', '')
                 break

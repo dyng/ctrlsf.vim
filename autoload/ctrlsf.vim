@@ -37,7 +37,6 @@ func! s:ExecSearch(args) abort
     else
         call s:DoSearchAsync(a:args)
     endif
-
 endf
 
 " s:Reset()
@@ -124,6 +123,11 @@ func! ctrlsf#SelfCheck() abort
                 \ && (v:version < 800 || (v:version == 800 && !has('patch1039')))
         call ctrlsf#log#Error('Asynchronous searching is not supported for your Vim.
                     \ Please make sure you are using Vim 8.0.1039+ or NeoVim.')
+        return -3
+    endif
+
+    if g:ctrlsf_indent < 2
+        call ctrlsf#log#Error("g:ctrlsf_indent can't be less than 2.")
         return -3
     endif
 endf

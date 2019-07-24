@@ -183,6 +183,7 @@ func! ctrlsf#edit#Save() abort
     let orig = ctrlsf#db#FileResultSet()
     let rs   = ctrlsf#view#Unrender(getline(0, '$'))
     let modi = ctrlsf#db#FileResultSetBy(rs)
+    call ctrlsf#log#Debug("UnrenderedResultSet: %s", rs)
 
     " check difference and validity
     try
