@@ -494,7 +494,8 @@ that does not respect to '.gitignore'.
 g:ctrlsf_indent                                              *'g:ctrlsf_indent'*
 Default: 4
 Defines how many spaces are placed between line number and line content. You
-can set a sane small value for more compact view.
+can set a sane small value for more compact view, but the value can't be less
+than 2.
 >
     let g:ctrlsf_indent = 2
 <
