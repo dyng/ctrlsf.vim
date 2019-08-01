@@ -105,7 +105,7 @@ func! ctrlsf#buf#ClearUndoHistory() abort
     setl modifiable
     let ul_bak = &undolevels
     set undolevels=-1
-    exe "normal a \<BS>\<Esc>"
+    exe "normal! a \<BS>\<Esc>"
     let &undolevels = ul_bak
     unlet ul_bak
     call setbufvar('%', '&modifiable', modifiable_bak)
