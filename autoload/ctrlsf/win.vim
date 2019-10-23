@@ -389,14 +389,16 @@ endf
 " width/height of fixed sized windows such like NERDTree's.
 "
 func! ctrlsf#win#BackupAllWinSize()
-    let t:ctrlsf_winrestcmd = winrestcmd()
+    if !exists("t:ctrlsf_winrestcmd")
+        let t:ctrlsf_winrestcmd = []
+    endif
+    call add(t:ctrlsf_winrestcmd, winrestcmd())
 endf
 
 " RestoreAllWinSize()
 "
 func! ctrlsf#win#RestoreAllWinSize()
-    if exists("t:ctrlsf_winrestcmd")
-        execute t:ctrlsf_winrestcmd
+    if exists("t:ctrlsf_winrestcmd") && !empty(t:ctrlsf_winrestcmd)
+        execute remove(t:ctrlsf_winrestcmd, -1)
     endif
 endf
-
