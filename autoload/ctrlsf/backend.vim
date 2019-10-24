@@ -300,7 +300,10 @@ func! ctrlsf#backend#Run(args) abort
 endf
 
 func! ctrlsf#backend#RunAsync(args) abort
-    let command = s:BuildCommand(a:args, 0)
+    " NeoVim executes commands using shell which is different from Vim
+    let for_shell = has('nvim')
+
+    let command = s:BuildCommand(a:args, for_shell)
     call ctrlsf#log#Debug("ExecCommand: %s", command)
 
     call ctrlsf#async#StartSearch(command)
