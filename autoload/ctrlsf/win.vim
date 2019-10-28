@@ -106,6 +106,14 @@ func! ctrlsf#win#DrawIncr() abort
         if s:drawn_lines == 0
             let s:drawn_lines = 1
         endif
+    else
+      if ctrlsf#async#IsSearchDone() && empty(ctrlsf#db#ResultSet())
+        silent! undojoin | keepjumps call ctrlsf#buf#WriteString("Nothing found!")
+      endif
+
+      if ctrlsf#async#IsCancelled() && empty(ctrlsf#db#ResultSet())
+        silent! undojoin | keepjumps call ctrlsf#buf#WriteString("Cancelled.")
+      endif
     endif
 
     let new_lines = ctrlsf#view#RenderIncr()
