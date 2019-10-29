@@ -293,6 +293,12 @@ here is '--ignore' for ag and '--ignore-dir' for ack.
 >
     :CtrlSF -ignoredir "bower_components" 'console.log'
 <
+'-hidden'                                                 *ctrlsf_args_hidden*
+
+Search hidden files and directories.
+>
+    :CtrlSF -hidden foo
+<
 '-literal', '-L'                           *ctrlsf_args_L* *ctrlsf_args_literal*
 
 Use pattern as literal string.
