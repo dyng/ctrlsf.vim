@@ -170,6 +170,14 @@ func! s:BuildCommand(args, for_shell) abort
     call add(tokens,
         \ s:backend_args_map[runner]['follow'][g:ctrlsf_follow_symlinks])
 
+    " search hidden files (NOT SUPPORTED BY ALL BACKEND)
+    " support backend: ag, rg, pt
+    if !empty(ctrlsf#opt#GetOpt('hidden'))
+      if runner !=# 'ack'
+        call add(tokens, "--hidden")
+      endif
+    endif
+
     " default
     call add(tokens,
         \ s:backend_args_map[runner]['default'])
