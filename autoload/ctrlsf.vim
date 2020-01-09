@@ -358,6 +358,9 @@ func! ctrlsf#NextMatch(forward) abort
         endif
 
         call cursor(vlnum, vcol)
+        if g:ctrlsf_auto_preview
+            call ctrlsf#JumpTo('preview')
+        endif
     endif
 endf
 

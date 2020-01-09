@@ -230,6 +230,12 @@ Read `:h ctrlsf-arguments` for a full list of arguments.
         \ }
     ```
 
+- `g:ctrlsf_auto_preview` defines whether CtrlSF shows the preview window automatically while moving from match to match in the results pane. The default value is 0.
+
+    ```vim
+    let g:ctrlsf_auto_preview = 1
+    ```
+
 - `g:ctrlsf_case_sensitive` defines default case-sensitivity in search. Possible values are `yes`, `no` and `smart`, `smart` works the same as it is in vim. The default value is `smart`.
 
     ```vim
