@@ -388,6 +388,13 @@ Example:
         \ "duration_less_than": 1000
         \ }
 <
+g:ctrlsf_auto_preview                                  *'g:ctrlsf_auto_preview'*
+Default: 0
+Defines whether CtrlSF shows the preview window automatically while moving from
+match to match in the results pane.
+>
+    let g:ctrlsf_auto_preview = 1
+<
 g:ctrlsf_case_sensitive                              *'g:ctrlsf_case_sensitive'*
 Default: 'smart'
 Available: 'smart', 'yes', 'no'

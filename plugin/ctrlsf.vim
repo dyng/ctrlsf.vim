@@ -114,6 +114,12 @@ else
 endif
 " }}}
 
+" g:ctrlsf_auto_preview {{{2
+if !exists('g:ctrlsf_auto_preview')
+    let g:ctrlsf_auto_preview = 0
+endif
+" }}}
+
 " g:ctrlsf_case_sensitive {{{2
 if !exists('g:ctrlsf_case_sensitive')
     let g:ctrlsf_case_sensitive = 'smart'
