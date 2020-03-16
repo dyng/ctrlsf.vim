@@ -106,14 +106,6 @@ func! ctrlsf#win#DrawIncr() abort
         if s:drawn_lines == 0
             let s:drawn_lines = 1
         endif
-    else
-      if ctrlsf#async#IsSearchDone() && empty(ctrlsf#db#ResultSet())
-        silent! undojoin | keepjumps call ctrlsf#buf#WriteString("Nothing found!")
-      endif
-
-      if ctrlsf#async#IsCancelled() && empty(ctrlsf#db#ResultSet())
-        silent! undojoin | keepjumps call ctrlsf#buf#WriteString("Cancelled.")
-      endif
     endif
 
     let new_lines = ctrlsf#view#RenderIncr()
@@ -122,6 +114,16 @@ func! ctrlsf#win#DrawIncr() abort
                     \ call ctrlsf#buf#SetLine(s:MAIN_BUF_NAME, s:drawn_lines + 1, new_lines)
     endif
     let s:drawn_lines = s:drawn_lines + len(new_lines)
+
+    if ctrlsf#CurrentMode() == 'compact' && ctrlsf#async#IsSearchDone()
+        " overwrite 'Searching...' to 'Nothing found' or 'Cancelled'
+        if empty(ctrlsf#db#ResultSet())
+            silent! undojoin | keepjumps
+                        \ call ctrlsf#buf#SetLine(s:MAIN_BUF_NAME, 1,
+                        \ ctrlsf#async#IsCancelled() ? "Cancelled." : "Nothing found!")
+            let s:drawn_lines = 1
+        endif
+    endif
 endf
 
 " SetModifiable()

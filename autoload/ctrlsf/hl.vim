@@ -18,7 +18,9 @@ func! ctrlsf#hl#HighlightMatch(...) abort
     let pattern = ctrlsf#opt#GetOpt("_vimhlregex")[ctrlsf#CurrentMode()]
     call ctrlsf#log#Debug("HighlightRegex: %s", pattern)
 
-    silent! call matchdelete(w:ctrlsf_match_hlid)
+    if exists('w:ctrlsf_match_hlid')
+        silent! call matchdelete(w:ctrlsf_match_hlid)
+    endif
     let w:ctrlsf_match_hlid = matchadd(hlgroup, pattern)
 endf
 

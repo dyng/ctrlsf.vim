@@ -23,6 +23,8 @@ endf
 
 " IsSearchDone()
 "
+" A search is done either finished or cancelled.
+"
 func! ctrlsf#async#IsSearchDone() abort
     return s:done == 1 && s:IsAllConsumed()
 endf
@@ -226,6 +228,8 @@ func! s:SearchDone() abort
 
     if !ctrlsf#async#IsCancelled()
         call ctrlsf#log#Notice("Done!")
+    else
+        call ctrlsf#log#Notice("Cancelled.")
     endif
 
     call ctrlsf#log#Debug("ParseFinish")
