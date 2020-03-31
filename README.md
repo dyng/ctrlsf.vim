@@ -200,7 +200,7 @@ Read `:h ctrlsf-arguments` for a full list of arguments.
 
 - By default, CtrlSF use working directory as search path when no path is specified. But CtrlSF can also use project root as its path if you set `g:ctrlsf_default_root` to `project`, CtrlSF does this by searching VCS directory (.git, .hg, etc.) upward from current file. It is useful when you are working with files across multiple projects.
 
-- `-filetype` is useful when you only want to search in files of specific type. Read option `--type` in `ack`'s [manual][6] for more information.
+- `-filetype` is useful when you only want to search in files of specific type. Read option `--type` in `ack`'s [manual][6] for more information. Also, a shortcut `-T` is available.
 
 - If `-filetype` does not exactly match your need, there is an option `-filematch` with which you have more control on which files should be searched. `-filematch` accepts a pattern that only files match this pattern will be searched. Note the pattern is in syntax of your backend but not vim's. Also, a shortcut `-G` is available.
 

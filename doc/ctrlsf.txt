@@ -265,9 +265,9 @@ alias for '-context'.
 >
     :CtrlSF -C 0 foo
 <
-'-filetype'                                             *ctrlsf_args_filetype*
+'-filetype', '-T'                                       *ctrlsf_args_filetype*
 
-Defines which type of files should the search be restricted to. view
+Defines which type of files should the search be restricted to. View
 `ack --help=types` for all available types.
 >
     :CtrlSF -filetype vim foo
