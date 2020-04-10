@@ -28,6 +28,7 @@ let s:option_list = {
     \ '-L': {'fullname': '-literal'},
     \ '-R': {'fullname': '-regex'},
     \ '-S': {'fullname': '-matchcase'},
+    \ '-T': {'fullname': '-filetype'},
     \ '-W': {'fullname': '-word'},
     \ }
 
