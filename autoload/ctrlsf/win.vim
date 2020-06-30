@@ -401,6 +401,7 @@ endf
 func! ctrlsf#win#BackupAllWinSize()
     if !exists("t:ctrlsf_winrestcmd")
         let t:ctrlsf_winrestcmd = []
+        let t:ctrlsf_screen = [&columns, &lines]
     endif
     call add(t:ctrlsf_winrestcmd, winrestcmd())
 endf
@@ -409,6 +410,9 @@ endf
 "
 func! ctrlsf#win#RestoreAllWinSize()
     if exists("t:ctrlsf_winrestcmd") && !empty(t:ctrlsf_winrestcmd)
-        execute remove(t:ctrlsf_winrestcmd, -1)
+        let winrestcmd = remove(t:ctrlsf_winrestcmd, -1)
+        if t:ctrlsf_screen == [&columns, &lines]
+            execute winrestcmd
+        endif
     endif
 endf
