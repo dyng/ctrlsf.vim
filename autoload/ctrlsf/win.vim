@@ -402,13 +402,41 @@ func! ctrlsf#win#BackupAllWinSize()
     if !exists("t:ctrlsf_winrestcmd")
         let t:ctrlsf_winrestcmd = []
     endif
-    call add(t:ctrlsf_winrestcmd, winrestcmd())
+    call add(t:ctrlsf_winrestcmd, join(s:BuildResizeCmd(winlayout(), 0, 0), '|'))
+endf
+
+func! s:BuildResizeCmd(layout, resize, vresize) abort
+    let cmds = []
+    if a:layout[0] ==# 'leaf'
+        let winnr = win_id2win(a:layout[1])
+        if a:resize
+            call add(cmds, printf('%dresize %d', winnr, winheight(winnr)))
+        endif
+        if a:vresize
+            call add(cmds, printf('vert %dresize %d', winnr, winwidth(winnr)))
+        endif
+    else
+        let nested_layout = a:layout[1]
+        let nested_len = len(nested_layout)
+        for i in range(nested_len)
+            let should_resize = (i + 1 != nested_len)
+            if a:layout[0] ==# 'col'
+                let cmds += s:BuildResizeCmd(nested_layout[i], should_resize, a:vresize)
+            else
+                let cmds += s:BuildResizeCmd(nested_layout[i], a:resize, should_resize)
+            endif
+        endfor
+    endif
+    return cmds
 endf
 
 " RestoreAllWinSize()
 "
 func! ctrlsf#win#RestoreAllWinSize()
     if exists("t:ctrlsf_winrestcmd") && !empty(t:ctrlsf_winrestcmd)
-        execute remove(t:ctrlsf_winrestcmd, -1)
+        let winrestcmd = remove(t:ctrlsf_winrestcmd, -1)
+        if !empty(winrestcmd)
+            execute winrestcmd
+        endif
     endif
 endf
