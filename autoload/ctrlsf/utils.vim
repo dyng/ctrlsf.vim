@@ -91,6 +91,19 @@ func! ctrlsf#utils#Nunmap(map, act_func_ref) abort
     endfo
 endf
 
+" ShellEscape()
+"
+" Almost builtin shellescape() but not affected by 'shellslash' setting on
+" windwos
+"
+func! ctrlsf#utils#ShellEscape(str) abort
+    if has('win32')
+        return '"' . substitute(a:str, '"', '""', 'g') . '"'
+    else
+        return shellescape(a:str)
+    endif
+endf
+
 " Quote()
 "
 func! ctrlsf#utils#Quote(str) abort

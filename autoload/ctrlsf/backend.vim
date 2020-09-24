@@ -206,7 +206,7 @@ endf
 " s:Escape()
 "
 func! s:Escape(for_shell, str)
-    return a:for_shell ? shellescape(a:str) : ctrlsf#utils#Quote(a:str)
+    return a:for_shell ? ctrlsf#utils#ShellEscape(a:str) : ctrlsf#utils#Quote(a:str)
 endf
 
 " Detect()
