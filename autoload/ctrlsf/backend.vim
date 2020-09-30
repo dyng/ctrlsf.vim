@@ -87,7 +87,7 @@ func! s:BuildCommand(args, for_shell) abort
     let runner = ctrlsf#backend#Runner()
 
     " add executable file
-    call add(tokens, g:ctrlsf_ackprg)
+    call add(tokens, g:ctrlsf_backend)
 
     " If user has specified '-A', '-B' or '-C', then use it without complaint
     " else use the default value 'g:ctrlsf_context'
@@ -154,7 +154,7 @@ func! s:BuildCommand(args, for_shell) abort
         elseif runner ==# 'ack'
             " pipe: 'ack -g ${filematch} ${path} |'
             let pipe_tokens = [
-                \ g:ctrlsf_ackprg,
+                \ g:ctrlsf_backend,
                 \ '-g',
                 \ s:Escape(a:for_shell, ctrlsf#opt#GetOpt('filematch'))
                 \ ]
@@ -238,17 +238,17 @@ endf
 " Runner()
 "
 func! ctrlsf#backend#Runner()
-    if !exists('g:ctrlsf_ackprg')
+    if !exists('g:ctrlsf_backend')
         return ''
-    elseif g:ctrlsf_ackprg =~# 'ag'
+    elseif g:ctrlsf_backend =~# 'ag'
         return 'ag'
-    elseif g:ctrlsf_ackprg =~# 'ack'
+    elseif g:ctrlsf_backend =~# 'ack'
         return 'ack'
-    elseif g:ctrlsf_ackprg =~# 'rg'
+    elseif g:ctrlsf_backend =~# 'rg'
         return 'rg'
-    elseif g:ctrlsf_ackprg =~# 'pt'
+    elseif g:ctrlsf_backend =~# 'pt'
         return 'pt'
-    elseif g:ctrlsf_ackprg =~# 'ack-grep'
+    elseif g:ctrlsf_backend =~# 'ack-grep'
         return 'ack'
     else
         return ''
