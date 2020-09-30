@@ -98,13 +98,13 @@ endf
 " SelfCheck()
 "
 func! ctrlsf#SelfCheck() abort
-    if !exists('g:ctrlsf_ackprg') || empty(g:ctrlsf_ackprg)
-        call ctrlsf#log#Error("Option 'g:ctrlsf_ackprg' is not defined or empty
+    if !exists('g:ctrlsf_backend') || empty(g:ctrlsf_backend)
+        call ctrlsf#log#Error("Option 'g:ctrlsf_backend' is not defined or empty
             \ .")
         return -99
     endif
 
-    let prg = g:ctrlsf_ackprg
+    let prg = g:ctrlsf_backend
 
     if !executable(prg)
         call ctrlsf#log#Error('Can not locate %s in PATH, make sure you have it

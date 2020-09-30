@@ -340,15 +340,19 @@ relative path (if possible) for files. This option is automatically applied if
 >
     let g:ctrlsf_absolute_file_path = 1
 <
-g:ctrlsf_ackprg                                              *'g:ctrlsf_ackprg'*
+g:ctrlsf_backend                                              *'g:ctrlsf_backend'*
 Default: auto
 Available: 'ag', 'ack', 'pt', 'rg'
-'g:ctrlsf_ackprg' defines the path of ack/ag which CtrlSF will use as its
+'g:ctrlsf_backend' defines the path of ack/ag which CtrlSF will use as its
 backend. If nothing is given, CtrlSF will try to figure out a proper backend.
-Preferred order is 'ag' > 'ack' > 'rg' > 'pt' > 'ack-grep'. You can also
+Preferred order is 'rg' > 'ag' > 'ack' > 'pt' > 'ack-grep'. You can also
 explicitly set it by
 >
-    let g:ctrlsf_ackprg = '/usr/local/bin/ag'
+    let g:ctrlsf_backend = 'ag'
+<
+or
+>
+    let g:ctrlsf_backend = '/usr/local/bin/ag'
 <
 g:ctrlsf_auto_close                                      *'g:ctrlsf_auto_close'*
 Default:

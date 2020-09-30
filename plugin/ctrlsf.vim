@@ -85,9 +85,13 @@ if !exists('g:ctrlsf_absolute_file_path')
 endif
 " }}}
 
-" g:ctrlsf_ackprg {{{2
-if !exists('g:ctrlsf_ackprg')
-    let g:ctrlsf_ackprg = ctrlsf#backend#Detect()
+" g:ctrlsf_backend {{{2
+if !exists('g:ctrlsf_backend')
+    if exists('g:ctrlsf_ackprg')
+        let g:ctrlsf_backend = g:ctrlsf_ackprg
+    else
+        let g:ctrlsf_backend = ctrlsf#backend#Detect()
+    endif
 endif
 " }}}
 
