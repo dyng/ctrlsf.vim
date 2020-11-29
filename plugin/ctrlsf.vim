@@ -288,6 +288,12 @@ if !exists('g:ctrlsf_winsize')
     let g:ctrlsf_winsize = 'auto'
 endif
 " }}}
+
+" g:ctrlsf_compact_winsize {{{2
+if !exists('g:ctrlsf_compact_winsize')
+    let g:ctrlsf_compact_winsize = '10'
+endif
+" }}}
 " }}}
 
 " Commands {{{1

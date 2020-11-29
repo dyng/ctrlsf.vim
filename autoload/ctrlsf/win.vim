@@ -70,8 +70,13 @@ func! ctrlsf#win#OpenMainWindow() abort
               \ 'bottom' : 'botright', 'right' : 'botright vertical'}
               \[g:ctrlsf_position] . ' '
     else
-        " compact mode: fixed window size and position
-        let winsize = 10
+        if g:ctrlsf_compact_winsize =~ '\d\{1,2}%'
+            let winsize = &lines * str2nr(g:ctrlsf_compact_winsize) / 100
+        elseif g:ctrlsf_compact_winsize =~ '\d\+'
+            let winsize = str2nr(g:ctrlsf_compact_winsize)
+        else
+            let winsize = &lines / 2
+        endif
         let openpos = 'botright'
     endif
 

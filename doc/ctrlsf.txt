@@ -430,6 +430,20 @@ as its counterpart in Ag/Ack.
 >
     let g:ctrlsf_context = '-B 5 -A 3'
 <
+g:ctrlsf_compact_winsize                             *'g:ctrlsf_compact_winsize'*
+Default: '10'
+Available: 'auto', 'xx%', 'xx'
+Height of CtrlSF compact window. It accepts a string as its value and there are
+3 types of argument:
+>
+    'auto' : half of current vim window height.
+    'xx%'  : xx percent of current vim window size.
+    'xx'   : absolute size in characters.
+<
+Example:
+>
+    let g:ctrlsf_compact_winsize = '20%'
+<
 g:ctrlsf_debug_mode                                      *'g:ctrlsf_debug_mode'*
 Default: 0
 Verbose informations will be printed if you turn this option on. It's useful
@@ -638,7 +652,7 @@ this value is empty, means no key is mapped for this feature.
 >
     let g:ctrlsf_toggle_map_key = '\t'
 <
-g:ctrlsf_winsize                                                *'g:ctrlsf_width'*
+g:ctrlsf_winsize                                              *'g:ctrlsf_winsize'*
 Default: 'auto'
 Available: 'auto', 'xx%', 'xx'
 Size of CtrlSF window. This is its width if the window opens vertically (to the
