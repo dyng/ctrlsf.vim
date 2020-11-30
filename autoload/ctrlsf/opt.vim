@@ -244,13 +244,14 @@ func! s:ParseOptions(options_str) abort
     let i = 0
     while i < len(tokens)
         let token = tokens[i]
+        let is_option = has_key(s:option_list, token)
         let i += 1
 
-        if !has_key(s:option_list, token)
+        if !is_option && !no_more_options
             if token == '--'
-              let no_more_options = 1
-              continue
-            elseif token =~# '^-' && !no_more_options
+                let no_more_options = 1
+                continue
+            elseif token =~# '^-'
                 call ctrlsf#log#Error("Unknown option '%s'. If you are user
                     \ from pre-v1.0, please be aware of that CtrlSF no longer
                     \ supports all options of ack and ag since v1.0. Read
@@ -259,7 +260,9 @@ func! s:ParseOptions(options_str) abort
                     \ before it.", token)
                 throw 'ParseOptionsException'
             endif
+        endif
 
+        if !is_option || no_more_options
             " resolve to PATTERN and PATH
             if !has_key(options, 'pattern')
                 let options['pattern'] = token
