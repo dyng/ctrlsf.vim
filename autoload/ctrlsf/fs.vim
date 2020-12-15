@@ -17,9 +17,14 @@ func! ctrlsf#fs#FindProjectRoot(...) abort
         let start_dir = expand('%:p:h')
     endif
 
-    let markers = g:ctrlsf_extra_root_markers + s:vcs_marker
+    if len(g:ctrlsf_extra_root_markers) > 0
+        let marker = s:FindMarker(start_dir, g:ctrlsf_extra_root_markers)
+    endif
 
-    let marker = s:FindMarker(start_dir, markers)
+    if empty(marker)
+        let marker = s:FindMarker(start_dir, s:vcs_marker)
+    endif
+
     let root = empty(marker) ? '' : fnamemodify(marker, ':h')
     call ctrlsf#log#Debug("ProjectRoot: %s", root)
 
