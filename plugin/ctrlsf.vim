@@ -252,6 +252,12 @@ if !exists('g:ctrlsf_position')
 endif
 " }}}
 
+" g:ctrlsf_preview_position {{{2
+if !exists('g:ctrlsf_preview_position')
+    let g:ctrlsf_preview_position = 'outside'
+endif
+" }}}
+
 " g:ctrlsf_regex_pattern {{{2
 if !exists('g:ctrlsf_regex_pattern')
     let g:ctrlsf_regex_pattern = 0

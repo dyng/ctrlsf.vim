@@ -601,6 +601,15 @@ be opened 'top', 'right', or 'bottom'. E.g.:
 >
     let g:ctrlsf_position = 'bottom'
 <
+g:ctrlsf_preview_position                           *'g:ctrlsf_preview_position'*
+Default: 'outside'
+Available: 'inside', 'outside'
+Defines where CtrlSF places preview window. By default preivew window is opened
+next to the main window. By setting to 'inside', preview window will be opened
+within the main window.
+>
+    let g:ctrlsf_preview_position = 'inside'
+<
 g:ctrlsf_regex_pattern                                *'g:ctrlsf_regex_pattern'*
 Default: 0
 Default case-sensitivity used in search. Default value 0 means CtrlSF search
