@@ -38,7 +38,7 @@ func! ctrlsf#preview#OpenPreviewWindow() abort
                 \[g:ctrlsf_position] . ' '
     else
         " compact mode
-        let winsize = &lines - 20
+        let winsize = &lines - winheight(0) - 10
         let openpos = 'leftabove'
     endif
 
