@@ -403,8 +403,13 @@ endf
 " '2' means split vertically
 "
 func! s:OpenFileInWindow(file, lnum, col, mode, split) abort
-    if a:mode == 1 && ctrlsf#opt#AutoClose()
-        call s:Quit()
+    if a:mode == 1
+        " close preview window if file is opened in current tab
+        call ctrlsf#preview#ClosePreviewWindow()
+
+        if ctrlsf#opt#AutoClose()
+            call s:Quit()
+        endif
     endif
 
     let target_winnr = ctrlsf#win#FindTargetWindow(a:file)
