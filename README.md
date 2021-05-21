@@ -2,17 +2,23 @@
 
 An ack/ag/pt/rg powered code search and view tool, takes advantage of Vim 8's power to support asynchronous searching, and lets you edit file in-place with *Edit Mode*.
 
-### Search and Explore
+### Asynchronous Search
 
 A demo shows how to search a word in an asynchronous way.
 
-![ctrlsf async_demo](https://raw.githubusercontent.com/dyng/i/master/ctrlsf.vim/async-demo.gif)
+![ctrlsf async_demo](https://raw.githubusercontent.com/dyng/i/master/ctrlsf.vim/async-demo3.gif)
+
+### Compact View
+
+A demo shows compact view which looks more similar to Vim's quickfix windows.
+
+![ctrlsf compact_demo](https://raw.githubusercontent.com/dyng/i/master/ctrlsf.vim/compact-demo3.gif)
 
 ### Edit Mode
 
-A demo shows how to rename a method named `MoveCursor()` to `Cursor()` in multiple files, using [vim-multiple-cursors][7].
+A demo shows how to rename a method named `FocusWindow()` to `Focus()` in multiple files, using [vim-multiple-cursors][7].
 
-![ctrlsf_edit_demo](https://raw.githubusercontent.com/dyng/i/master/ctrlsf.vim/edit-mode.gif)
+![ctrlsf_edit_demo](https://raw.githubusercontent.com/dyng/i/master/ctrlsf.vim/edit-mode3.gif)
 
 ## Table of Contents
 
