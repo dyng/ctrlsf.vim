@@ -617,6 +617,19 @@ be opened adjacent to the current window instead of at the edge of the tabpage.
 >
     let g:ctrlsf_position = 'bottom'
 <
+g:ctrlsf_compact_position                           *'g:ctrlsf_compact_position'*
+Default: 'bottom_outside'
+Available: 'bottom_inside', 'bottom_outside', 'top_inside', 'top_outside'
+Defines where CtrlSF places the main window when opened in 'compact' view
+(`g:ctrlsf_default_view_mode`). 'bottom_outside' and 'top_outside' open the
+CtrlSF window at the bottom or top of the tabpage respectively, so that the window
+takes up the entire width of the screen. 'bottom_inside' and 'top_inside' open
+the compact view inside the current vertical split, so that the width of the
+CtrlSF window is the same as the width of the current split. This option has
+no effect in `normal` view mode.
+>
+    let g:ctrlsf_compact_position = 'bottom_inside'
+<
 g:ctrlsf_preview_position                           *'g:ctrlsf_preview_position'*
 Default: 'outside'
 Available: 'inside', 'outside'

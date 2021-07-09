@@ -308,10 +308,16 @@ Read `:h ctrlsf-arguments` for a full list of arguments.
     let g:ctrlsf_search_mode = 'async'
     ```
 
-- `g:ctrlsf_position` defines where CtrlSf places its window. Possible values are `left`, `left_local`, `right`, `right_local`, `top` and `bottom`. If nothing specified, the default value is `left`.
+- `g:ctrlsf_position` defines where CtrlSf places its window in normal view mode. Possible values are `left`, `left_local`, `right`, `right_local`, `top` and `bottom`. If nothing specified, the default value is `left`.
 
     ```vim
     let g:ctrlsf_position = 'bottom'
+    ```
+
+- `g:ctrlsf_compact_position` defines where CtrlSf places its window in compact view mode. Possible values are `bottom_inside`, `bottom_outside`, `top_inside`, and `top_outside`. If nothing specified, the default value is `bottom_outside`.
+
+    ```vim
+    let g:ctrlsf_position = 'bottom_inside'
     ```
 
 - `g:ctrlsf_winsize` defines the width (if CtrlSF opens vertically) or height (if CtrlSF opens horizontally) of CtrlSF main window. You can specify it with percent value or absolute value.

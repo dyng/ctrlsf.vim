@@ -83,7 +83,12 @@ func! ctrlsf#win#OpenMainWindow() abort
         else
             let winsize = &lines / 2
         endif
-        let openpos = 'botright'
+        let openpos = {
+              \ 'bottom_outside': 'botright',
+              \ 'bottom_inside': 'rightbelow',
+              \ 'top_outside': 'topleft',
+              \ 'top_inside': 'leftabove',
+              \ }[g:ctrlsf_compact_position]
     endif
 
 
