@@ -50,7 +50,8 @@ func! ctrlsf#win#OpenMainWindow() abort
     if vmode ==# 'normal'
         " normal mode
         if g:ctrlsf_winsize =~ '\d\{1,2}%'
-            if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
+            if g:ctrlsf_position == "left" || g:ctrlsf_position == "right" ||
+             \ g:ctrlsf_position == 'left_local' || g:ctrlsf_position == 'right_local'
                 let winsize = &columns * str2nr(g:ctrlsf_winsize) / 100
             else
                 let winsize = &lines * str2nr(g:ctrlsf_winsize) / 100
@@ -58,7 +59,8 @@ func! ctrlsf#win#OpenMainWindow() abort
         elseif g:ctrlsf_winsize =~ '\d\+'
             let winsize = str2nr(g:ctrlsf_winsize)
         else
-            if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
+            if g:ctrlsf_position == "left" || g:ctrlsf_position == "right" ||
+             \ g:ctrlsf_position == 'left_local' || g:ctrlsf_position == 'right_local'
                 let winsize = &columns / 2
             else
                 let winsize = &lines / 2
@@ -66,8 +68,12 @@ func! ctrlsf#win#OpenMainWindow() abort
         endif
 
         let openpos = {
-              \ 'top'    : 'topleft',  'left'  : 'topleft vertical',
-              \ 'bottom' : 'botright', 'right' : 'botright vertical'}
+              \ 'top'         : 'topleft',
+              \ 'left'        : 'topleft vertical',
+              \ 'left_local'  : 'leftabove vertical',
+              \ 'bottom'      : 'botright',
+              \ 'right'       : 'botright vertical',
+              \ 'right_local' : 'rightbelow vertical'}
               \[g:ctrlsf_position] . ' '
     else
         if g:ctrlsf_compact_winsize =~ '\d\{1,2}%'
