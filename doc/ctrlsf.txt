@@ -684,6 +684,15 @@ window initialized. It can be used to override default window setting.
     function! g:CtrlSFAfterMainWindowInit()
         setl wrap
     endfunction
+
+g:CtrlSFAfterMainWindowClose                     *'g:CtrlSFAfterMainWindowClose'*
+Default: None
+'g:CtrlSFAfterMainWindowClose' defines a function will be called after CtrlSF
+window closed. It can be used to override default window setting.
+>
+    function! g:CtrlSFAfterMainWindowClose()
+        setl nowrap
+    endfunction
 <
 ================================================================================
 7. About                                                          *ctrlsf-about*

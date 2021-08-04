@@ -156,6 +156,11 @@ func! ctrlsf#win#CloseMainWindow() abort
       call ctrlsf#win#RestoreAllWinSize()
 
       call ctrlsf#win#FocusCallerWindow()
+
+      " hook for user customization
+      if exists("*g:CtrlSFAfterMainWindowClose")
+        silent! call g:CtrlSFAfterMainWindowClose()
+      end
     catch /^Vim\%((\a\+)\)\=:E444/
       " This is the last window, simply delete the buffer
       bdelete
