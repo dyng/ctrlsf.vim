@@ -185,6 +185,11 @@ endf
 
 " InitMainWindow()
 func! s:InitMainWindow() abort
+    " hook for user customization
+    if exists("*g:CtrlSFAfterMainWindowInit")
+        silent! call g:CtrlSFAfterMainWindowInit()
+    end
+
     if exists("b:ctrlsf_initialized")
         return
     endif
@@ -228,11 +233,6 @@ func! s:InitMainWindow() abort
         au BufWriteCmd         <buffer> call ctrlsf#Save()
         au BufHidden,BufUnload <buffer> call s:UndoAllChanges()
     augroup END
-
-    " hook for user customization
-    if exists("*g:CtrlSFAfterMainWindowInit")
-        silent! call g:CtrlSFAfterMainWindowInit()
-    end
 
     let b:ctrlsf_initialized = 1
 endf
