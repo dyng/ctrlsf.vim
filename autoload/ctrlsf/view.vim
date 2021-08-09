@@ -26,8 +26,17 @@ func! s:Summary(procbar) abort
 endf
 
 func! s:Filename(paragraph) abort
-    " empty line + filename
-    return ["", a:paragraph.filename . ":"]
+    " empty line + icon + filename
+lua << EOF
+    local fname = vim.api.nvim_eval('a:paragraph.filename')
+    local fname_parts = vim.split(fname, "/")
+    local fname_without_path = fname_parts[#fname_parts]
+    local extension = fname:match "[^.]+$"
+
+    local icon = require'nvim-web-devicons'.get_icon(fname_without_path, extension)
+    vim.g.ctrlsf_icon = icon
+EOF
+    return ["", g:ctrlsf_icon . " " . a:paragraph.filename . ":"]
 endf
 
 func! s:Ellipsis() abort
