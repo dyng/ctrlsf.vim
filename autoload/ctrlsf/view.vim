@@ -36,7 +36,8 @@ lua << EOF
     local icon = require'nvim-web-devicons'.get_icon(fname_without_path, extension)
     vim.g.ctrlsf_icon = icon
 EOF
-    return ["", g:ctrlsf_icon . " " . a:paragraph.filename . ":"]
+    let icon = get(g:, "ctrlsf_icon", "")
+    return ["", icon . " " . a:paragraph.filename . ":"]
 endf
 
 func! s:Ellipsis() abort
