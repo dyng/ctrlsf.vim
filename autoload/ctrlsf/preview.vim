@@ -25,18 +25,24 @@ func! ctrlsf#preview#OpenPreviewWindow() abort
     if vmode ==# 'normal'
         " normal mode
         if g:ctrlsf_preview_position == 'inside'
-            if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
+            if g:ctrlsf_position == "left" || g:ctrlsf_position == "right" ||
+             \ g:ctrlsf_position == 'left_local' || g:ctrlsf_position == 'right_local'
                 let winsize = winheight(0) / 2
             else
                 let winsize = winwidth(0) / 2
             endif
 
             let openpos = {
-                    \ 'bottom': 'rightbelow vertical',  'right' : 'rightbelow',
-                    \ 'top'   : 'rightbelow vertical',  'left' : 'rightbelow'}
+                    \ 'bottom': 'rightbelow vertical',
+                    \ 'right' : 'rightbelow',
+                    \ 'right_local' : 'rightbelow',
+                    \ 'top'   : 'rightbelow vertical',
+                    \ 'left' : 'rightbelow',
+                    \ 'left_local' : 'rightbelow'}
                     \[g:ctrlsf_position] . ' '
         else
-            if g:ctrlsf_position == "left" || g:ctrlsf_position == "right"
+            if g:ctrlsf_position == "left" || g:ctrlsf_position == "right" ||
+             \ g:ctrlsf_position == 'left_local' || g:ctrlsf_position == 'right_local'
                 let ctrlsf_width  = winwidth(0)
                 let winsize = min([&columns-ctrlsf_width, ctrlsf_width])
             else
@@ -45,8 +51,12 @@ func! ctrlsf#preview#OpenPreviewWindow() abort
             endif
 
             let openpos = {
-                    \ 'bottom': 'leftabove',  'right' : 'leftabove vertical',
-                    \ 'top'   : 'rightbelow',  'left' : 'rightbelow vertical'}
+                    \ 'bottom'      : 'leftabove',
+                    \ 'right'       : 'leftabove vertical',
+                    \ 'right_local' : 'leftabove vertical',
+                    \ 'top'         : 'rightbelow',
+                    \ 'left'        : 'rightbelow vertical',
+                    \ 'left_local'  : 'rightbelow vertical'}
                     \[g:ctrlsf_position] . ' '
         endif
     else

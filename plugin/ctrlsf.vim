@@ -142,6 +142,12 @@ if !exists('g:ctrlsf_confirm_unsaving_quit')
 endif
 " }}}
 
+" g:ctrlsf_compact_position {{{2
+if !exists('g:ctrlsf_compact_position')
+    let g:ctrlsf_compact_position = 'bottom_outside'
+endif
+" }}}
+
 " g:ctrlsf_context {{{2
 if !exists('g:ctrlsf_context')
     let g:ctrlsf_context = '-C 3'

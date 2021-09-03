@@ -609,11 +609,26 @@ If you are used to vim builtin quickfix list and want to use |:cnext|,
 <
 g:ctrlsf_position                                          *'g:ctrlsf_position'*
 Default: 'left'
-Available: 'left', 'right', 'top', 'bottom'
-By default CtrlSF window will be opened at left. You can also specify for it to
-be opened 'top', 'right', or 'bottom'. E.g.:
+Available: 'left', 'left_local', 'right', 'right_local', 'top', 'bottom'
+By default CtrlSF window will be opened in a new split on the left edge of the
+tabpage. You can also specify for it to be opened 'left_local', top', 'right',
+'right_local' or 'bottom'. 'left_local' and 'right_local' cause the window to
+be opened adjacent to the current window instead of at the edge of the tabpage.
 >
     let g:ctrlsf_position = 'bottom'
+<
+g:ctrlsf_compact_position                           *'g:ctrlsf_compact_position'*
+Default: 'bottom_outside'
+Available: 'bottom_inside', 'bottom_outside', 'top_inside', 'top_outside'
+Defines where CtrlSF places the main window when opened in 'compact' view
+(`g:ctrlsf_default_view_mode`). 'bottom_outside' and 'top_outside' open the
+CtrlSF window at the bottom or top of the tabpage respectively, so that the window
+takes up the entire width of the screen. 'bottom_inside' and 'top_inside' open
+the compact view inside the current vertical split, so that the width of the
+CtrlSF window is the same as the width of the current split. This option has
+no effect in `normal` view mode.
+>
+    let g:ctrlsf_compact_position = 'bottom_inside'
 <
 g:ctrlsf_preview_position                           *'g:ctrlsf_preview_position'*
 Default: 'outside'
