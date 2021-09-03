@@ -27,7 +27,11 @@ endf
 
 func! s:Filename(paragraph) abort
     " empty line + filename
-    return ["", a:paragraph.filename . ":"]
+    if exists('*WebDevIconsGetFileTypeSymbol')
+        return ["", WebDevIconsGetFileTypeSymbol(a:paragraph.filename) . a:paragraph.filename . ":"]
+    else
+        return ["", a:paragraph.filename . ":"]
+    endif
 endf
 
 func! s:Ellipsis() abort
@@ -42,8 +46,12 @@ func! s:Line(line) abort
 endf
 
 func! s:MatchLine(match) abort
+    let filename = a:match.filename
+    if exists('*WebDevIconsGetFileTypeSymbol')
+        let filename = WebDevIconsGetFileTypeSymbol(filename) . filename
+    endif
     let out = printf("%s|%s col %s| %s",
-                \ a:match.filename,
+                \ filename,
                 \ a:match.lnum,
                 \ a:match.col,
                 \ a:match.text)
