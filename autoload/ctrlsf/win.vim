@@ -426,7 +426,15 @@ func! ctrlsf#win#BackupAllWinSize()
     if !exists("t:ctrlsf_winrestcmd")
         let t:ctrlsf_winrestcmd = []
     endif
-    call add(t:ctrlsf_winrestcmd, join(s:BuildResizeCmd(winlayout(), 0, 0), '|'))
+    call add(t:ctrlsf_winrestcmd, s:WinRestCmd())
+endf
+
+func! s:WinRestCmd() abort
+    if v:version < 800
+        return winrestcmd()
+    else
+        return join(s:BuildResizeCmd(winlayout(), 0, 0), '|')
+    endif
 endf
 
 func! s:BuildResizeCmd(layout, resize, vresize) abort
