@@ -18,10 +18,12 @@ syntax clear
 
 if vmode ==# 'normal'
     syntax case match
-    syntax region ctrlsfHeader start=/\%1l/ end=/\%2l/
+    syntax region ctrlsfHeader keepend start=/\%1l/ end=/\%2l/
                 \ contains=ctrlsfSearching,ctrlsfSearchDone,ctrlsfSearchCancelled,
                 \ ctrlsfMatchCount,ctrlsfFileCount
-    syntax match ctrlsfFilename        /^.*\ze:$/
+    syntax region ctrlsfFile keepend start=/^.*:$/ end=/^\s*$/ fold
+                \ contains=ctrlsfFilename,ctrlsfLnumMatch,ctrlsfLnumUnmatch,ctrlsfCuttingLine
+    syntax match ctrlsfFilename        /^.*\ze:$/              contained
     syntax match ctrlsfLnumMatch       /^\d\+:/
     syntax match ctrlsfLnumUnmatch     /^\d\+-/
     syntax match ctrlsfCuttingLine     /^\.\+$/

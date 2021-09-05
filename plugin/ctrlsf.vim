@@ -184,6 +184,12 @@ if !exists('g:ctrlsf_extra_root_markers')
 endif
 " }}}
 
+" g:ctrlsf_fold_result {{{2
+if !exists('g:ctrlsf_fold_result')
+    let g:ctrlsf_fold_result = 0
+endif
+" }}}
+
 " g:ctrlsf_follow_symlinks {{{2
 if !exists('g:ctrlsf_follow_symlinks')
     let g:ctrlsf_follow_symlinks = 1
