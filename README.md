@@ -97,7 +97,9 @@ In CtrlSF window:
 - `M` - Switch result window between **normal** view and **compact** view.
 - `q` - Quit CtrlSF window.
 - `<C-J>` - Move cursor to next match.
+- `<C-N>` - Move cursor to next file's first match.
 - `<C-K>` - Move cursor to previous match.
+- `<C-P>` - Move cursor to previous file's first match.
 - `<C-C>` - Stop a background searching process.
 
 In preview window:

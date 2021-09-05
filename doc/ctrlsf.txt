@@ -237,6 +237,10 @@ mode:
 
     <C-K>          Move cursor to previous match.
 
+    <C-N>          Move cursor to first match of next file.
+
+    <C-P>          Move cursor to fist match of previous file.
+
   Maps by default in preview window:
 
     <q>            Quit preview mode.
@@ -550,6 +554,8 @@ Key id and its functionality:
     quit    - close main window.
     next    - jump to next match.
     prev    - jump to previous match.
+    nfile   - jump to first match of next file.
+    pfile   - jump to first match of previous file.
     pquit   - close preview window.
     loclist - open location list in main window.
     chgmode - switch view mode.
@@ -569,6 +575,8 @@ Default:
         "quit"    : "q",
         "next"    : "<C-J>",
         "prev"    : "<C-K>",
+        "nfile"   : "<C-N>",
+        "pfile"   : "<C-P>",
         "pquit"   : "q",
         "loclist" : "",
         "chgmode" : "M",
