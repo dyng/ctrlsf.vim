@@ -20,8 +20,8 @@ func! ctrlsf#class#paragraph#New(buffer) abort
         \ 'range'     : function("ctrlsf#class#paragraph#Range"),
         \ 'lines'     : [],
         \ 'matches'   : function("ctrlsf#class#paragraph#Matches"),
-        \ 'setlnum'   : function("ctrlsf#class#paragraph#SetLnum"),
-        \ 'trim_tail' : function("ctrlsf#class#paragraph#TrimTail")
+        \ 'trim_tail' : function("ctrlsf#class#paragraph#TrimTail"),
+        \ '_matches'  : 0,
         \ }
 
     for [_, lnum, content] in a:buffer
@@ -39,8 +39,9 @@ endf
 
 " Vlnum()
 "
-func! ctrlsf#class#paragraph#Vlnum() abort dict
-    return self.lines[0].vlnum
+func! ctrlsf#class#paragraph#Vlnum(...) abort dict
+    let vmode = get(a:, 1, 'normal')
+    return self.lines[0].vlnum(vmode)
 endf
 
 " Range()
@@ -52,23 +53,15 @@ endf
 " Matches()
 "
 func! ctrlsf#class#paragraph#Matches() abort dict
-    let matches = []
-    for line in self.lines
-        if line.matched()
-            call add(matches, line.match)
-        endif
-    endfo
-    return matches
-endf
-
-" SetLnum()
-"
-func! ctrlsf#class#paragraph#SetLnum(lnum) abort dict
-    let i = 0
-    for line in self.lines
-        call line.setlnum(a:lnum + i)
-        let i += 1
-    endfo
+    if type(self._matches) == type(0)
+        let self._matches = []
+        for line in self.lines
+            if line.matched()
+                call add(self._matches, line.match)
+            endif
+        endfo
+    endif
+    return self._matches
 endf
 
 " TrimTail()

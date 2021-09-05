@@ -342,9 +342,11 @@ endf
 "
 " Move cursor to the next match after current cursor position.
 "
-func! ctrlsf#NextMatch(forward) abort
+func! ctrlsf#NextMatch(forward, ...) abort
+    let file_based = get(a:, 1, 0)
+
     let [_, cur_vlnum, cur_vcol, _] = getpos('.')
-    let [vlnum, vcol] = ctrlsf#view#FindNextMatch(a:forward, &wrapscan)
+    let [vlnum, vcol] = ctrlsf#view#FindNextMatch(a:forward, &wrapscan, file_based)
 
     if vlnum > 0
         if a:forward && (vlnum < cur_vlnum || (vlnum == cur_vlnum && vcol < cur_vcol))

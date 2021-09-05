@@ -151,6 +151,8 @@ func! ctrlsf#buf#ToggleMap(...) abort
         \ "stop"    : "ctrlsf#StopSearch()",
         \ "next"    : "ctrlsf#NextMatch(1)",
         \ "prev"    : "ctrlsf#NextMatch(0)",
+        \ "nfile"   : "ctrlsf#NextMatch(1, 1)",
+        \ "pfile"   : "ctrlsf#NextMatch(0, 1)",
         \ "chgmode" : "ctrlsf#SwitchViewMode()",
         \ "loclist" : "ctrlsf#OpenLocList()",
         \ "prevw"   : "ctrlsf#JumpTo('preview')",
