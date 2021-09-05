@@ -513,6 +513,13 @@ project root.
 >
     let g:ctrlsf_extra_root_markers = ['.root']
 <
+g:ctrlsf_fold_result                                    *'g:ctrlsf_fold_result'*
+Default: 0
+Defines whether the result is folded by default. You can always fold or unfold
+manually by "zc" and "zo".
+>
+    let g:ctrlsf_fold_result = 1
+<
 g:ctrlsf_follow_symlinks                            *'g:ctrlsf_follow_symlinks'*
 Default: 1
 Defines whether the backend should follow symbolic links or not.

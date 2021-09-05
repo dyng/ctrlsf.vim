@@ -282,6 +282,12 @@ Read `:h ctrlsf-arguments` for a full list of arguments.
     let g:ctrlsf_extra_root_markers = ['.root']
     ```
 
+- `g:ctrlsf_fold_result` defines whether CtrlSF should fold result at first. Despite this option you can always fold or unfold manually by `zc` and `zo`.
+
+    ```vim
+    let g:ctrlsf_fold_result = 1
+    ```
+
 - `g:ctrlsf_mapping` defines maps used in result window and preview window. Value of this option is a dictionary, where key is a method and value is a key for mapping. An empty value can disable that method. To specify additional keys to run after a method, use the extended form demonstrated below to specify a `suffix`. You can just define a subset of full dictionary, those not defined functionalities will use default key mapping.
 
     ```vim
