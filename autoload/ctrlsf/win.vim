@@ -213,8 +213,16 @@ func! s:InitMainWindow() abort
     setl winfixheight
     setl textwidth=0
     setl nospell
-    setl nofoldenable
+    setl foldenable
+    setl foldmethod=syntax
     setl cursorline
+
+    " fold
+    if g:ctrlsf_fold_result
+        setl foldlevel=0
+    else
+        setl foldlevel=99
+    endif
 
     " map
     call ctrlsf#buf#ToggleMap(1)
