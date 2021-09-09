@@ -32,6 +32,7 @@ if vmode ==# 'normal'
     syntax match ctrlsfSearchCancelled /Cancelled./            contained
     syntax match ctrlsfMatchCount      /\d\+\(\s*matched\)\@=/ contained
     syntax match ctrlsfFileCount       /\d\+\(\s*files\)\@=/   contained
+    syntax sync fromstart
 else
     syntax case match
     syntax match qfLineNr    /[^|]*/  contained contains=qfError
