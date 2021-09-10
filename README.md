@@ -101,6 +101,7 @@ In CtrlSF window:
 - `<C-K>` - Move cursor to previous match.
 - `<C-P>` - Move cursor to previous file's first match.
 - `<C-C>` - Stop a background searching process.
+- `<C-T>` - (If you have fzf installed) Use fzf for faster navigation. In the fzf window, use `<Enter>` to focus specific match and `<C-O>` to open matched file.
 
 In preview window:
 
