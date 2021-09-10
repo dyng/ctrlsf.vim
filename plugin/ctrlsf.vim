@@ -222,6 +222,8 @@ let s:default_mapping = {
     \ "stop"    : "<C-C>",
     \ "next"    : "<C-J>",
     \ "prev"    : "<C-K>",
+    \ "nfile"   : "<C-N>",
+    \ "pfile"   : "<C-P>",
     \ "chgmode" : "M",
     \ "pquit"   : "q",
     \ "loclist" : "",

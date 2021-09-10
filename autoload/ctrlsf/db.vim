@@ -41,12 +41,9 @@ func! ctrlsf#db#FileResultSetBy(resultset) abort
     for par in a:resultset
         if cur_file !=# par.filename
             let cur_file = par.filename
-            call add(fileset, {
-                \ "filename"   : cur_file,
-                \ "paragraphs" : [],
-                \ })
+            call add(fileset, ctrlsf#class#file#New(cur_file, []))
         endif
-        call add(fileset[-1].paragraphs, par)
+        call fileset[-1].add(par)
     endfo
 
     return fileset
@@ -67,7 +64,16 @@ endf
 " MatchListQF()
 "
 func! ctrlsf#db#MatchListQF() abort
-    return ctrlsf#db#MatchList()
+    let matches_qf = []
+    for mat in s:matchlist
+        call add(matches_qf, {
+            \ 'filename' : mat.filename,
+            \ 'lnum'     : mat.lnum,
+            \ 'col'      : mat.col,
+            \ 'vcol'     : 1,
+            \ })
+    endfor
+    return matches_qf
 endf
 
 " MaxLnum()
@@ -141,12 +147,9 @@ func! s:AddParagraph(paragraph) abort
     " update fileset
     let f = get(s:fileset, -1, {})
     if f == {} || f.filename !=# a:paragraph.filename
-        call add(s:fileset, {
-            \ "filename"   : a:paragraph.filename,
-            \ "paragraphs" : [],
-            \ })
+        call add(s:fileset, ctrlsf#class#file#New(a:paragraph.filename, []))
     endif
-    call add(s:fileset[-1].paragraphs, a:paragraph)
+    call s:fileset[-1].add(a:paragraph)
 
     " update matchlist
     call extend(s:matchlist, a:paragraph.matches())

@@ -6,7 +6,6 @@
 " ============================================================================
 
 let s:rendered_par = 0
-let s:rendered_line = 0
 let s:rendered_match = 0
 let s:cur_file = ''
 let s:procbar_dots = 0
@@ -41,7 +40,7 @@ func! s:Line(line) abort
     return [out]
 endf
 
-func! s:MatchLine(match) abort
+func! s:LineCompact(match) abort
     let out = printf("%s|%s col %s| %s",
                 \ a:match.filename,
                 \ a:match.lnum,
@@ -63,7 +62,6 @@ endf
 "
 func! ctrlsf#view#Reset() abort
     let s:rendered_par = 0
-    let s:rendered_line = 0
     let s:rendered_match = 0
     let s:cur_file = ''
     let s:procbar_dots = 0
@@ -92,11 +90,11 @@ endf
 " Returns:
 " Text of rendered view to append
 "
-func! ctrlsf#view#RenderIncr() abort
+func! ctrlsf#view#RenderIncr(base_vlnum) abort
     if ctrlsf#CurrentMode() ==# 'normal'
-        return s:NormalViewIncr()
+        return s:NormalViewIncr(a:base_vlnum)
     else
-        return s:CompactViewIncr()
+        return s:CompactViewIncr(a:base_vlnum)
     endif
 endf
 
@@ -121,7 +119,7 @@ endf
 
 " s:NormalViewIncr()
 "
-func! s:NormalViewIncr() abort
+func! s:NormalViewIncr(base_vlnum) abort
     let resultset = ctrlsf#db#ResultSet()
     let to_render = resultset[s:rendered_par:-1]
 
@@ -138,31 +136,37 @@ func! s:NormalViewIncr() abort
         for line in par.lines
             call extend(view, s:Line(line))
 
-            let line.vlnum = s:rendered_line + len(view) + 1
+            call line.set_vlnum(a:base_vlnum + len(view))
 
             if line.matched()
-                let line.match.vlnum = line.vlnum
-                let line.match.vcol  = line.match.col + ctrlsf#view#Indent()
+                call line.match.set_vpos(line.vlnum(), line.match.col + ctrlsf#view#Indent())
             endif
         endfo
     endfo
 
     let s:rendered_par = s:rendered_par + len(to_render)
-    let s:rendered_line = s:rendered_line + len(view)
 
     return view
 endf
 
 " s:CompactViewIncr()
 "
-func! s:CompactViewIncr() abort
+func! s:CompactViewIncr(base_vlnum) abort
     let matchlist = ctrlsf#db#MatchList()
     let to_render = matchlist[s:rendered_match:-1]
 
     let view = []
 
     for mat in to_render
-        call extend(view, s:MatchLine(mat))
+        call extend(view, s:LineCompact(mat))
+
+        let vlnum = a:base_vlnum + len(view)
+        let indent = printf("%s|%s col %s| ",
+                    \ mat.filename,
+                    \ mat.lnum,
+                    \ mat.col)
+        let vcol = mat.col + len(indent)
+        call mat.set_vpos(vlnum, vcol, 'compact')
     endfo
 
     let s:rendered_match = s:rendered_match + len(to_render)
@@ -174,14 +178,14 @@ endf
 "
 func! s:NormalView() abort
     let summary = ctrlsf#view#RenderSummary()
-    let body = join(s:NormalViewIncr(), "\n")
+    let body = join(s:NormalViewIncr(1), "\n") " 1 stands for summary line
     return summary . "\n" . body
 endf
 
 " s:CompactView()
 "
 func! s:CompactView() abort
-    return join(s:CompactViewIncr(), "\n")
+    return join(s:CompactViewIncr(0), "\n")
 endf
 
 " Locate()
@@ -272,11 +276,56 @@ endf
 " Returns:
 " [vlnum, vcol] line number and column number of next match
 "
-func! ctrlsf#view#FindNextMatch(forward, wrapscan) abort
-    let regex = ctrlsf#pat#MatchPerLineRegex(ctrlsf#CurrentMode())
+func! ctrlsf#view#FindNextMatch(forward, wrapscan, ...) abort
+    let file_based = get(a:, 1, 0)
+
+    if file_based
+        let vlnum = s:FindNextFile(a:forward)
+    else
+        let vlnum = 0
+    endif
+
+    let regex = ctrlsf#pat#MatchPerLineRegex(ctrlsf#CurrentMode(), vlnum, vlnum)
     let flag  = a:forward ? 'n' : 'nb'
     let flag .= a:wrapscan ? 'w' : 'W'
     return searchpos(regex, flag)
+endf
+
+func! s:FindNextFile(forward) abort
+    let vmode = ctrlsf#CurrentMode()
+    let fileset = ctrlsf#db#FileResultSet()
+
+    if empty(fileset)
+        return 0
+    endif
+
+    let cur_vlnum = line('.')
+
+    let left = 0
+    let right = len(fileset) - 1
+
+    while left <= right
+        let pivot = (left + right) / 2
+        let file = fileset[pivot]
+
+        if file.start_vlnum(vmode) > cur_vlnum
+            let right = pivot - 1
+        elseif file.end_vlnum(vmode) < cur_vlnum
+            let left = pivot + 1
+        else
+            let current = pivot
+            break
+        endif
+    endwh
+
+    if !exists('current')
+        let next = a:forward ? 0 : -1
+    else
+        let next = a:forward ?
+                    \ (current + 1) % len(fileset) :
+                    \ current - 1
+    endif
+    return fileset[next].first_match().vlnum(vmode)
 endf
 
 " Unrender()

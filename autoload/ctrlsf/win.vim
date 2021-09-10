@@ -124,7 +124,7 @@ func! ctrlsf#win#DrawIncr() abort
         endif
     endif
 
-    let new_lines = ctrlsf#view#RenderIncr()
+    let new_lines = ctrlsf#view#RenderIncr(s:drawn_lines)
     if !empty(new_lines)
         silent! undojoin | keepjumps
                     \ call ctrlsf#buf#SetLine(s:MAIN_BUF_NAME, s:drawn_lines + 1, new_lines)
@@ -366,7 +366,7 @@ endf
 func! ctrlsf#win#FocusFirstMatch() abort
     " scroll up to top line
     1normal! ^
-    call ctrlsf#NextMatch(1)
+    call ctrlsf#NextMatch(1, 0)
 endf
 
 """""""""""""""""""""""""""""""""

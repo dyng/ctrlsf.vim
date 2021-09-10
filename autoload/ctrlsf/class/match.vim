@@ -16,16 +16,33 @@ func! ctrlsf#class#match#New(fname, lnum, col, content) abort
     return {
         \ 'filename' : a:fname,
         \ 'lnum'     : a:lnum,
-        \ 'vlnum'    : -1,
         \ 'col'      : a:col,
-        \ 'vcol'     : -1,
+        \ 'vpos'     : {'normal':{'lnum':-1, 'col':-1}, 'compact':{'lnum':-1, 'col':-1}},
         \ 'text'     : a:content,
-        \ 'setlnum'  : function("ctrlsf#class#match#SetLnum"),
+        \ 'vlnum'    : function('ctrlsf#class#match#Vlnum'),
+        \ 'vcol'     : function('ctrlsf#class#match#Vcol'),
+        \ 'set_vpos' : function('ctrlsf#class#match#SetViewPosition'),
         \ }
 endf
 
-" SetLnum()
+" Vlnum()
 "
-func! ctrlsf#class#match#SetLnum(lnum) abort dict
-    let self.lnum = a:lnum
+func! ctrlsf#class#match#Vlnum(...) abort dict
+    let vmode = get(a:, 1, 'normal')
+    return self.vpos[vmode]['lnum']
+endf
+
+" Vcol()
+"
+func! ctrlsf#class#match#Vcol(...) abort dict
+    let vmode = get(a:, 1, 'normal')
+    return self.vpos[vmode]['col']
+endf
+
+" SetViewPosition()
+"
+func! ctrlsf#class#match#SetViewPosition(lnum, col, ...) abort dict
+    let vmode = get(a:, 1, 'normal')
+    let self.vpos[vmode]['lnum'] = a:lnum
+    let self.vpos[vmode]['col'] = a:col
 endf
