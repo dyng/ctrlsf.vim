@@ -281,12 +281,11 @@ func! ctrlsf#view#FindNextMatch(forward, wrapscan, ...) abort
 
     if file_based
         let vlnum = s:FindNextFile(a:forward)
-    else
-        let vlnum = 0
+        call cursor(vlnum, 1)
     endif
 
-    let regex = ctrlsf#pat#MatchPerLineRegex(ctrlsf#CurrentMode(), vlnum, vlnum)
-    let flag  = a:forward ? 'n' : 'nb'
+    let regex = ctrlsf#pat#MatchPerLineRegex(ctrlsf#CurrentMode())
+    let flag  = (a:forward || file_based) ? 'n' : 'nb'
     let flag .= a:wrapscan ? 'w' : 'W'
     return searchpos(regex, flag)
 endf
