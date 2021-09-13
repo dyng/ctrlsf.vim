@@ -227,6 +227,7 @@ let s:default_mapping = {
     \ "chgmode" : "M",
     \ "pquit"   : "q",
     \ "loclist" : "",
+    \ "fzf"     : "<C-T>",
     \ }
 
 if !exists('g:ctrlsf_mapping')

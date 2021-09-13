@@ -33,3 +33,4 @@ endf
 if exists('g:loaded_airline')
     call airline#add_statusline_func('CtrlSFStatusLine')
 endif
+" }}}

@@ -241,6 +241,9 @@ mode:
 
     <C-P>          Move cursor to fist match of previous file.
 
+    <C-T>          (If you have fzf installed) Use fzf to fuzzy search through
+                   result.
+
   Maps by default in preview window:
 
     <q>            Quit preview mode.

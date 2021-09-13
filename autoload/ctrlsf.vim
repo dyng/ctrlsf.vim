@@ -300,8 +300,14 @@ endf
 
 " JumpTo()
 "
-func! ctrlsf#JumpTo(mode) abort
-    let [file, line, match] = ctrlsf#view#Locate(line('.'))
+func! ctrlsf#JumpTo(mode, ...) abort
+    if a:0 == 0
+        let [file, line, match] = ctrlsf#view#Locate(line('.'))
+    elseif a:0 == 3
+        let [file, line, match] = a:000
+    else
+        throw 'UnexpectedArguments'
+    endif
 
     if empty(file) || empty(line)
         return
@@ -371,10 +377,11 @@ endf
 " PopulateQFList()
 "
 func! ctrlsf#PopulateQFList()
+    let qflist = ctrlsf#db#MatchListQF()
     if g:ctrlsf_populate_qflist
-        call setqflist(ctrlsf#db#MatchListQF())
+        call setqflist(qflist)
     endif
-    call setloclist(ctrlsf#win#FindMainWindow(), ctrlsf#db#MatchListQF())
+    call setloclist(ctrlsf#win#FindMainWindow(), qflist)
 endf
 
 " CurrentMode()

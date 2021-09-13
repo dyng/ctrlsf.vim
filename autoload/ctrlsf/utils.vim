@@ -154,3 +154,67 @@ endf
 func! ctrlsf#utils#PreviewSectionC()
     return get(b:, 'ctrlsf_file', '')
 endf
+
+"""""""""""""""""""""""""""""""""
+" Fzf Support
+"""""""""""""""""""""""""""""""""
+
+" ctrlsf#utils#FzfRun()
+"
+func! ctrlsf#utils#FzfRun() abort
+    if exists('g:loaded_fzf')
+        " backup g:fzf_action
+        if exists('g:fzf_action')
+            let fzf_action_bak = g:fzf_action
+        endif
+
+        let g:fzf_action = {
+                    \ 'enter': function('s:FocusMatch'),
+                    \ 'ctrl-o': function('s:OpenMatch'),
+                    \ }
+        call fzf#run(fzf#wrap({
+                    \ 'source': ctrlsf#utils#FzfSource(),
+                    \ }))
+
+        " restore g:fzf_action
+        if exists('fzf_action_bak')
+            let g:fzf_action = fzf_action_bak
+        else
+            unlet g:fzf_action
+        endif
+    endif
+endf
+
+" ctrlsf#utils#FzfSource()
+"
+func! ctrlsf#utils#FzfSource() abort
+    let matchlist = ctrlsf#db#MatchList()
+    let num_len = strlen(len(matchlist))
+
+    let lines = []
+    for i in range(len(matchlist))
+        let mat = matchlist[i]
+        let line = printf("%".num_len."d:%s:%d:%s",
+                    \ i+1, mat.filename, mat.lnum, mat.text)
+        call add(lines, line)
+    endfo
+
+    return lines
+endf
+
+func! s:FocusMatch(lines) abort
+    echom 'called FocusMatch'
+    let n = trim(matchlist(a:lines[0], '\v^(\s*\d+):')[1])
+    let match = ctrlsf#db#MatchList()[n-1]
+    let vmode = ctrlsf#CurrentMode()
+    call cursor(match.vlnum(vmode), match.vcol(vmode))
+    normal! zv
+endf
+
+func! s:OpenMatch(lines) abort
+    echom 'called OpenMatch'
+    let n = trim(matchlist(a:lines[0], '\v^(\s*\d+):')[1])
+    let match = ctrlsf#db#MatchList()[n-1]
+    let line = ctrlsf#class#line#New(match.filename, match.lnum, match.text)
+    call ctrlsf#JumpTo('open', match.filename, line, match)
+endf
