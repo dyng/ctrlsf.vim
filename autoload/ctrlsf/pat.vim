@@ -111,9 +111,7 @@ endf
 " Regular expression to match the matched word. Different from HighlightRegex(),
 " this pattern only hit the first match in a line.
 "
-func! ctrlsf#pat#MatchPerLineRegex(vmode, ...) abort
-    let vlnum = get(a:, 1, 0)
-
+func! ctrlsf#pat#MatchPerLineRegex(vmode) abort
     let base = ctrlsf#pat#Regex()
 
     let magic   = strpart(base, 0, 2)
@@ -136,16 +134,5 @@ func! ctrlsf#pat#MatchPerLineRegex(vmode, ...) abort
         endif
     endif
 
-    " vlnum
-    if vlnum > 0
-        if magic ==# '\v'
-            let lnum = '%' . vlnum . 'l'
-        else
-            let lnum = '\%' . vlnum . 'l'
-        endif
-    else
-        let lnum = ''
-    endif
-
-    return printf('%s%s%s%s%s', magic, case, lnum, sign, pattern)
+    return printf('%s%s%s%s', magic, case, sign, pattern)
 endf
