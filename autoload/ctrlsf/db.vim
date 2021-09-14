@@ -71,6 +71,7 @@ func! ctrlsf#db#MatchListQF() abort
             \ 'lnum'     : mat.lnum,
             \ 'col'      : mat.col,
             \ 'vcol'     : 1,
+            \ 'text'     : mat.text,
             \ })
     endfor
     return matches_qf
