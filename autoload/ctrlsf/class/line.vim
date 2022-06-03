@@ -18,7 +18,7 @@ func! ctrlsf#class#line#New(fname, lnum, content) abort
     return {
         \ 'lnum'      : a:lnum,
         \ 'vpos'      : {'normal':{'lnum':-1}},
-        \ 'content'   : a:content,
+        \ 'content'   : substitute(a:content, "\r$", "", ""),
         \ 'match'     : match,
         \ 'matched'   : function("ctrlsf#class#line#Matched"),
         \ 'vlnum'     : function('ctrlsf#class#line#Vlnum'),
