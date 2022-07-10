@@ -181,6 +181,8 @@ endf
 "
 func! ctrlsf#db#ParseBackendResultIncr(lines, close) abort
     for line in a:lines
+        " remove trailing <CR> of lines from win-style files
+        let line = substitute(line, "\r$", "", "")
         call s:ParseOneLine(line)
     endfo
 
