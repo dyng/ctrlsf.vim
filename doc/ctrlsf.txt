@@ -284,7 +284,7 @@ Defines which type of files should the search be restricted to. View
 Defines a pattern that only files whose name is matching will be searched.
 The pattern might depend on the backend being used.
 >
-    :Ctrlsf -filematch .*\.wrproject foo
+    :CtrlSF -filematch .*\.wrproject foo
 <
 '-ignorecase', '-I'                     *ctrlsf_args_I* *ctrlsf_args_ignorecase*
 
