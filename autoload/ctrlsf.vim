@@ -220,7 +220,7 @@ endf
 "
 func! ctrlsf#Save()
     if ctrlsf#CurrentMode() !=# 'normal'
-        ctrlsf#log#Notice("Edit mode is disabled in compact view.")
+        call ctrlsf#log#Notice("Edit mode is disabled in compact view.")
     endif
 
     if !&l:modified
@@ -510,6 +510,11 @@ func! s:Open() abort
     call ctrlsf#hl#ReloadSyntax()
     call ctrlsf#hl#HighlightMatch()
 endf
+
+function! ctrlsf#Reload() abort
+    call s:Open()
+    call ctrlsf#Redraw()
+endfunction
 
 " s:OpenAndDraw()
 "
