@@ -164,11 +164,13 @@ endf
 
 " Update()
 "
-func! ctrlsf#Update() abort
+func! ctrlsf#Update(args = '') abort
     if empty(s:current_query)
         return -1
     endif
-    call s:ExecSearch(s:current_query)
+
+    let update_args = printf("%s %s", s:current_query, a:args)
+    call s:ExecSearch(update_args)
 endf
 
 " Open()
