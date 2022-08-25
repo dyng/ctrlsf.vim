@@ -117,11 +117,6 @@ func! ctrlsf#view#RenderSummary() abort
     endif
 endf
 
-function! s:NonContextZero()
-  let context = ctrlsf#opt#GetContext()
-  return !(has_key(context, 'context') && context.context == 0)
-endfunction
-
 " s:NormalViewIncr()
 "
 func! s:NormalViewIncr(base_vlnum) abort
@@ -134,7 +129,7 @@ func! s:NormalViewIncr(base_vlnum) abort
         if s:cur_file !=# par.filename
             let s:cur_file = par.filename
             call extend(view, s:Filename(par))
-        elseif s:NonContextZero()
+        elseif !ctrlsf#opt#IsContextZero()
             call extend(view, s:Ellipsis())
         endif
 
@@ -372,6 +367,9 @@ func! ctrlsf#view#Unrender(content) abort
                 let lnum = base_lnum + len(buffer) + offset
                 let content = strpart(line, indent)
                 call add(buffer, [current_file, lnum, content])
+                if ctrlsf#opt#IsContextZero()
+                    break
+                endif
             endif
         endwh
 

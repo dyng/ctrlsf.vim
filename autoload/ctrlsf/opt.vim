@@ -78,6 +78,11 @@ func! ctrlsf#opt#GetOpt(name) abort
     endif
 endf
 
+function! ctrlsf#opt#IsContextZero()
+  let context = ctrlsf#opt#GetContext()
+  return (has_key(context, 'context') && context.context == 0)
+endfunction
+
 " GetContext()
 "
 " Return a dict contains 'after', 'before' and/or 'context'
