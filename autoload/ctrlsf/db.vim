@@ -206,7 +206,10 @@ func! s:ParseOneLine(line) abort
         call s:MakeParagraph()
         call s:ParseOneLine(a:line)
     else
-        if (s:pre_ln == -1) || (lnum == s:pre_ln + 1)
+        if ctrlsf#opt#IsContextZero()
+            call add(s:buffer, [fname, lnum, content])
+            call s:MakeParagraph()
+        elseif (s:pre_ln == -1) || (lnum == s:pre_ln + 1)
             let s:pre_ln = lnum
             call add(s:buffer, [fname, lnum, content])
         else
