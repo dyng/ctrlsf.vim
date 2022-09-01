@@ -129,7 +129,7 @@ func! s:NormalViewIncr(base_vlnum) abort
         if s:cur_file !=# par.filename
             let s:cur_file = par.filename
             call extend(view, s:Filename(par))
-        else
+        elseif !ctrlsf#opt#IsContextZero()
             call extend(view, s:Ellipsis())
         endif
 
@@ -367,6 +367,9 @@ func! ctrlsf#view#Unrender(content) abort
                 let lnum = base_lnum + len(buffer) + offset
                 let content = strpart(line, indent)
                 call add(buffer, [current_file, lnum, content])
+                if ctrlsf#opt#IsContextZero()
+                    break
+                endif
             endif
         endwh
 
