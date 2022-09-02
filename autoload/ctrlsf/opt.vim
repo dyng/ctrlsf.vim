@@ -313,10 +313,20 @@ func! s:ParseOptions(options_str) abort
     return options
 endf
 
+function! ctrlsf#opt#Options()
+    return s:options
+endfunction
+
 " ParseOptions()
 "
-func! ctrlsf#opt#ParseOptions(options_str) abort
-    let s:options = s:ParseOptions(a:options_str)
+func! ctrlsf#opt#ParseOptions(options_str, override = v:false) abort
+    let opts = s:ParseOptions(a:options_str)
+
+    if a:override
+        call extend(s:options, opts, 'force')
+    else
+        let s:options = opts
+    endif
 
     " derivative options
 

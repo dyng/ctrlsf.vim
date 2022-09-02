@@ -155,10 +155,11 @@ mode:
   If CtrlSF window is closed (by <q> or |:CtrlSFClose|), reopen it. If the
   window is already on display, then focus it.
 
-:CtrlSFUpdate                                                    *:CtrlSFUpdate*
+:CtrlSFUpdate [arguments] {pattern} [path] ...                   *:CtrlSFUpdate*
 
-  Update CtrlSF result by invoking a new search with same arguments and pattern
-  of last one.
+  If no arguments, update CtrlSF result by invoking a new search with same
+  arguments and pattern of last one. Otherwise, will override last search
+  arguments and do the search.
 
 :CtrlSFClose                                                      *:CtrlSFClose*
 

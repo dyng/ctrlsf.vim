@@ -17,12 +17,13 @@ let s:current_query = ''
 "
 " Basic process: query, parse, render and display.
 "
-func! s:ExecSearch(args) abort
+func! s:ExecSearch(args, override = v:false) abort
     " reset all states
-    call s:Reset()
+
+    call s:Reset(a:override)
 
     try
-        call ctrlsf#opt#ParseOptions(a:args)
+        call ctrlsf#opt#ParseOptions(a:args, a:override)
     catch /ParseOptionsException/
         return -1
     endtry
@@ -43,9 +44,11 @@ endf
 "
 " Reset all states of many modules
 "
-func! s:Reset() abort
+func! s:Reset(override) abort
     call ctrlsf#db#Reset()
-    call ctrlsf#opt#Reset()
+    if !a:override
+        call ctrlsf#opt#Reset()
+    endif
     call ctrlsf#win#Reset()
     call ctrlsf#view#Reset()
     call ctrlsf#async#Reset()
@@ -164,11 +167,11 @@ endf
 
 " Update()
 "
-func! ctrlsf#Update() abort
+func! ctrlsf#Update(args) abort
     if empty(s:current_query)
         return -1
     endif
-    call s:ExecSearch(s:current_query)
+    call s:ExecSearch(a:args, v:true)
 endf
 
 " Open()

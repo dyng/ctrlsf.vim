@@ -321,7 +321,7 @@ endif
 com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSF         call ctrlsf#Search(<q-args>)
 com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSFQuickfix call ctrlsf#Quickfix(<q-args>)
 com! -n=0                                         CtrlSFOpen     call ctrlsf#Open()
-com! -n=0                                         CtrlSFUpdate   call ctrlsf#Update()
+com! -n=* -comp=customlist,ctrlsf#comp#Completion CtrlSFUpdate   call ctrlsf#Update(<q-args>)
 com! -n=0                                         CtrlSFClose    call ctrlsf#Quit()
 com! -n=0                                         CtrlSFClearHL  call ctrlsf#ClearSelectedLine()
 com! -n=0                                         CtrlSFToggle   call ctrlsf#Toggle()
