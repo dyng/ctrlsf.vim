@@ -426,21 +426,28 @@ func! s:OpenFileInWindow(file, lnum, col, mode, split) abort
         endif
     endif
 
+    let file_path = ''
+    if isabsolutepath(a:file)
+      let file_path = a:file
+    else
+      let file_path = g:ctrlsf_pwd . '/' . a:file
+    endif
+
     let target_winnr = ctrlsf#win#FindTargetWindow(a:file)
     if target_winnr == 0
-        exec 'silent split ' . fnameescape(a:file)
+        exec 'silent split ' . fnameescape(file_path)
     else
         exec target_winnr . 'wincmd w'
 
         if bufname('%') !=# a:file
             if a:split || (&modified && !&hidden)
                 if a:split == 2
-                    exec 'silent vertical split ' . fnameescape(a:file)
+                    exec 'silent vertical split ' . fnameescape(file_path)
                 else
-                    exec 'silent split ' . fnameescape(a:file)
+                    exec 'silent split ' . fnameescape(file_path)
                 endif
             else
-                exec 'silent edit ' . fnameescape(a:file)
+                exec 'silent edit ' . fnameescape(file_path)
             endif
         endif
     endif
