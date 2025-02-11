@@ -192,7 +192,7 @@ func! s:BuildCommand(args, for_shell) abort
     call add(tokens, "--")
 
     " pattern (including escape)
-    call add(tokens, s:Escape(a:for_shell, ctrlsf#opt#GetOpt('pattern')))
+    call add(tokens, ctrlsf#opt#GetOpt('pattern'))
 
     " path
     let path = ctrlsf#opt#GetPath()
