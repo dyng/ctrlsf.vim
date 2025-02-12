@@ -83,6 +83,7 @@ let s:backend_args_map = {
 " BuildCommand()
 "
 func! s:BuildCommand(args, for_shell) abort
+    let g:ctrlsf_encoding = 'utf-8'
     let tokens = []
     let runner = ctrlsf#backend#Runner()
 
@@ -122,6 +123,14 @@ func! s:BuildCommand(args, for_shell) abort
     " regex
     call add(tokens,
         \ s:backend_args_map[runner]['regex'][ctrlsf#opt#GetRegex()])
+
+    if !empty(ctrlsf#opt#GetOpt('encoding'))
+      if runner ==# 'rg'
+        let encoding = ctrlsf#opt#GetOpt('encoding')
+        call add(tokens, '-E ' . encoding)
+        let g:ctrlsf_encoding = encoding
+      endif
+    endif
 
     " filetype (NOT SUPPORTED BY ALL BACKEND)
     " support backend: ag, ack, rg

@@ -20,9 +20,11 @@ let s:option_list = {
     \ '-regex'      : {'args': 0},
     \ '-smartcase'  : {'args': 0},
     \ '-hidden'     : {'args': 0},
+    \ '-encoding'   : {'args': 1},
     \ '-A': {'fullname': '-after'},
     \ '-B': {'fullname': '-before'},
     \ '-C': {'fullname': '-context'},
+    \ '-E': {'fullname': '-encoding'},
     \ '-G': {'fullname': '-filematch'},
     \ '-I': {'fullname': '-ignorecase'},
     \ '-L': {'fullname': '-literal'},
@@ -34,6 +36,7 @@ let s:option_list = {
 
 " default values to options
 let s:default = {
+    \ 'encoding'   : '',
     \ 'filetype'   : '',
     \ 'pattern'    : '',
     \ 'path'       : [],
@@ -291,7 +294,7 @@ func! s:ParseOptions(options_str) abort
         if opt.args == 0
             let options[name] = 1
         elseif opt.args == 1
-            if tokens[i] =~# '\d\+'
+            if tokens[i] =~# '^\d\+'
                 let options[name] = str2nr(tokens[i])
             else
                 let options[name] = tokens[i]
