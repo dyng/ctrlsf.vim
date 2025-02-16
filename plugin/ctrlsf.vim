@@ -12,6 +12,8 @@ endif
 let g:ctrlsf_loaded = 1
 " }}}
 
+let g:ctrlsf_encoding = 'utf-8'
+
 " Utils {{{1
 " s:VisualSelection() {{{
 " Thanks to xolox!
