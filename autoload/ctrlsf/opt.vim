@@ -36,7 +36,7 @@ let s:option_list = {
 
 " default values to options
 let s:default = {
-    \ 'encoding'   : '',
+    \ 'encoding'   : 'utf-8',
     \ 'filetype'   : '',
     \ 'pattern'    : '',
     \ 'path'       : [],

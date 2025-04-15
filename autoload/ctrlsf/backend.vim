@@ -83,7 +83,6 @@ let s:backend_args_map = {
 " BuildCommand()
 "
 func! s:BuildCommand(args, for_shell) abort
-    let g:ctrlsf_encoding = 'utf-8'
     let tokens = []
     let runner = ctrlsf#backend#Runner()
 
@@ -128,7 +127,6 @@ func! s:BuildCommand(args, for_shell) abort
       if runner ==# 'rg'
         let encoding = ctrlsf#opt#GetOpt('encoding')
         call add(tokens, '-E ' . encoding)
-        let g:ctrlsf_encoding = encoding
       endif
     endif
 
