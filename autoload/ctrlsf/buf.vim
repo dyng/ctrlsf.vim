@@ -87,7 +87,8 @@ endf
 " WarnIfChanged()
 "
 func! ctrlsf#buf#WarnIfChanged() abort
-    if getbufvar('%', '&modified')
+    let bufnr = bufnr('__CtrlSF__')
+    if getbufvar(bufnr, '&modified')
         call ctrlsf#log#Warn("Will discard ALL unsaved changes, continue? (y/N)")
         let confirm = nr2char(getchar()) | redraw!
         if !(confirm ==? "y")
