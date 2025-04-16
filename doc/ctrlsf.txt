@@ -273,6 +273,14 @@ alias for '-context'.
 >
     :CtrlSF -C 0 foo
 <
+'-encoding', '-E'                         *ctrlsf_args_E* *ctrlsf_args_encoding*
+
+Defines the supposed encoding of the files to be searched (default utf-8).
+'-E' is an alias for '-encoding'. This is currently only supported for the
+`rg` runtime.
+>
+    :CtrlSF -E latin1 foo
+<
 '-filetype', '-T'                                       *ctrlsf_args_filetype*
 
 Defines which type of files should the search be restricted to. View

@@ -123,6 +123,13 @@ func! s:BuildCommand(args, for_shell) abort
     call add(tokens,
         \ s:backend_args_map[runner]['regex'][ctrlsf#opt#GetRegex()])
 
+    if !empty(ctrlsf#opt#GetOpt('encoding'))
+      if runner ==# 'rg'
+        let encoding = ctrlsf#opt#GetOpt('encoding')
+        call add(tokens, '-E ' . encoding)
+      endif
+    endif
+
     " filetype (NOT SUPPORTED BY ALL BACKEND)
     " support backend: ag, ack, rg
     if !empty(ctrlsf#opt#GetOpt('filetype'))
