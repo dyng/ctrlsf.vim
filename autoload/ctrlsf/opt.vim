@@ -36,7 +36,7 @@ let s:option_list = {
 
 " default values to options
 let s:default = {
-    \ 'encoding'   : 'utf-8',
+    \ 'encoding'   : '',
     \ 'filetype'   : '',
     \ 'pattern'    : '',
     \ 'path'       : [],
@@ -294,7 +294,7 @@ func! s:ParseOptions(options_str) abort
         if opt.args == 0
             let options[name] = 1
         elseif opt.args == 1
-            if tokens[i] =~# '^\d\+'
+            if tokens[i] =~# '^\d\+$'
                 let options[name] = str2nr(tokens[i])
             else
                 let options[name] = tokens[i]

@@ -90,7 +90,9 @@ func! s:VerifyConsistent(on_disk, on_mem) abort
             let line = par.lines[i]
 
             let content = line.content
-            let content = iconv(content, 'utf-8', ctrlsf#opt#GetOpt('encoding'))
+            if ctrlsf#opt#GetOpt('encoding') != ''
+              let line = iconv(content, 'utf-8', ctrlsf#opt#GetOpt('encoding'))
+            endif
             if content !=# a:on_disk[ln-1]
                 call ctrlsf#log#Debug("InconsistentContent: [Lnum]: %d,
                             \ [FileInMem]: %s, [FileOnDisk]: %s",
@@ -117,7 +119,9 @@ func! s:WriteParagraph(buffer, orig, modi) abort
         let ln    = start_lnum + i
 
         let line = mline.content
-        let line = iconv(line, 'utf-8', ctrlsf#opt#GetOpt('encoding'))
+        if ctrlsf#opt#GetOpt('encoding') != ''
+          let line = iconv(line, 'utf-8', ctrlsf#opt#GetOpt('encoding'))
+        endif
         if i < orig_count
             let a:buffer[ln-1] = line
         else

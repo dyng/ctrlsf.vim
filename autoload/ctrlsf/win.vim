@@ -145,7 +145,6 @@ endf
 " SetModifiable()
 "
 func! ctrlsf#win#SetModifiableByViewMode(modifiable) abort
-    call setbufvar(s:MAIN_BUF_NAME, '&modifiable', 1)
     if ctrlsf#CurrentMode() ==# 'normal'
         call setbufvar(s:MAIN_BUF_NAME, '&modifiable', a:modifiable)
     else
