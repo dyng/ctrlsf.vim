@@ -107,7 +107,11 @@ endf
 " Quote()
 "
 func! ctrlsf#utils#Quote(str) abort
-    return '"' . escape(a:str, '"\') . '"'
+    if has('win32')
+        return '"' . substitute(a:str, '"', '""', 'g') . '"'
+    else
+        return '"' . escape(a:str, '"\') . '"'
+    endif
 endf
 
 """""""""""""""""""""""""""""""""
