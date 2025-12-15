@@ -147,30 +147,33 @@ func! s:BuildCommand(args, for_shell) abort
     " filematch (NOT SUPPORTED BY ALL BACKEND)
     " support backend: ag, ack, pt, rg
     if !empty(ctrlsf#opt#GetOpt('filematch'))
-        if runner ==# 'ag'
-            call extend(tokens, [
-                \ '--file-search-regex',
-                \ s:Escape(a:for_shell, ctrlsf#opt#GetOpt('filematch'))
-                \ ])
-        elseif runner ==# 'pt'
-            call add(tokens, printf("--file-search-regex=%s",
-                        \ s:Escape(a:for_shell, ctrlsf#opt#GetOpt('filematch'))))
-        elseif runner ==# 'rg'
-            call add(tokens, printf("-g %s",
-                        \ s:Escape(a:for_shell, ctrlsf#opt#GetOpt('filematch'))))
-        elseif runner ==# 'ack'
-            " pipe: 'ack -g ${filematch} ${path} |'
-            let pipe_tokens = [
-                \ g:ctrlsf_backend,
-                \ '-g',
-                \ s:Escape(a:for_shell, ctrlsf#opt#GetOpt('filematch'))
-                \ ]
-            call extend(pipe_tokens, ctrlsf#opt#GetPath())
-            call add(pipe_tokens, '|')
+        let filematches = ctrlsf#opt#GetOpt('filematch')
+        for filematch in filematches
+          if runner ==# 'ag'
+              call extend(tokens, [
+                  \ '--file-search-regex',
+                  \ s:Escape(a:for_shell, filematch)
+                  \ ])
+          elseif runner ==# 'pt'
+              call add(tokens, printf("--file-search-regex=%s",
+                          \ s:Escape(a:for_shell, filematch)))
+          elseif runner ==# 'rg'
+              call add(tokens, printf("-g %s",
+                          \ s:Escape(a:for_shell, filematch)))
+          elseif runner ==# 'ack'
+              " pipe: 'ack -g ${filematch} ${path} |'
+              let pipe_tokens = [
+                  \ g:ctrlsf_backend,
+                  \ '-g',
+                  \ s:Escape(a:for_shell, filematch)
+                  \ ]
+              call extend(pipe_tokens, ctrlsf#opt#GetPath())
+              call add(pipe_tokens, '|')
 
-            call insert(tokens, join(pipe_tokens, ' '))
-            call add(tokens, '--files-from=-')
-        endif
+              call insert(tokens, join(pipe_tokens, ' '))
+              call add(tokens, '--files-from=-')
+          endif
+        endfor
     endif
 
     " follow symlink
