@@ -141,7 +141,12 @@ endf
 " s:SaveFile()
 "
 func! s:SaveFile(orig, modi) abort
-    let file = a:orig.filename
+    let file = ''
+    if isabsolutepath(a:orig.filename)
+      let file = a:orig.filename
+    else
+      let file = g:ctrlsf_pwd . '/' . a:orig.filename
+    endif
 
     try
         let buffer = readfile(file)
