@@ -7,20 +7,20 @@
 
 " option list of CtrlSF
 let s:option_list = {
-    \ '-after'      : {'args': 1},
-    \ '-before'     : {'args': 1},
-    \ '-context'    : {'args': 1},
-    \ '-filetype'   : {'args': 1},
-    \ '-word'       : {'args': 0},
-    \ '-filematch'  : {'args': 1},
-    \ '-ignorecase' : {'args': 0},
-    \ '-ignoredir'  : {'args': 1},
-    \ '-literal'    : {'args': 0},
-    \ '-matchcase'  : {'args': 0},
-    \ '-regex'      : {'args': 0},
-    \ '-smartcase'  : {'args': 0},
-    \ '-hidden'     : {'args': 0},
-    \ '-encoding'   : {'args': 1},
+    \ '-after'      : {'args': '1'},
+    \ '-before'     : {'args': '1'},
+    \ '-context'    : {'args': '1'},
+    \ '-filetype'   : {'args': '1'},
+    \ '-word'       : {'args': '0'},
+    \ '-filematch'  : {'args': '*'},
+    \ '-ignorecase' : {'args': '0'},
+    \ '-ignoredir'  : {'args': '1'},
+    \ '-literal'    : {'args': '0'},
+    \ '-matchcase'  : {'args': '0'},
+    \ '-regex'      : {'args': '0'},
+    \ '-smartcase'  : {'args': '0'},
+    \ '-hidden'     : {'args': '0'},
+    \ '-encoding'   : {'args': '1'},
     \ '-A': {'fullname': '-after'},
     \ '-B': {'fullname': '-before'},
     \ '-C': {'fullname': '-context'},
@@ -291,9 +291,10 @@ func! s:ParseOptions(options_str) abort
             let opt  = s:option_list[opt.fullname]
         endif
 
-        if opt.args == 0
+        if opt.args == '0'
             let options[name] = 1
-        elseif opt.args == 1
+
+        elseif opt.args == '1'
             if tokens[i] =~# '^\d\+$'
                 let options[name] = str2nr(tokens[i])
             else
@@ -301,6 +302,19 @@ func! s:ParseOptions(options_str) abort
             endif
 
             let i += 1
+
+        elseif opt.args == '*'
+          if !has_key(options, name)
+            let options[name] = []
+          endif
+
+          if tokens[i] =~# '^\d\+$'
+            call add(options[name], str2nr(tokens[i]))
+          else
+            call add(options[name], tokens[i])
+          endif
+
+          let i += 1
         else
             let argv = []
             for j in range(opt.args)
