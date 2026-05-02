@@ -83,7 +83,6 @@ let s:backend_args_map = {
 " BuildCommand()
 "
 func! s:BuildCommand(args, for_shell) abort
-    let g:ctrlsf_pwd = getcwd()
     let tokens = []
     let runner = ctrlsf#backend#Runner()
 

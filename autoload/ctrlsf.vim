@@ -32,6 +32,8 @@ func! s:ExecSearch(args, override = v:false) abort
         return -1
     endif
 
+    let g:ctrlsf_pwd = getcwd()
+
     call ctrlsf#profile#Sample("StartSearch")
     if g:ctrlsf_search_mode ==# 'sync'
         call s:DoSearchSync(a:args)
