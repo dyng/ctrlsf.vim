@@ -32,6 +32,8 @@ func! s:ExecSearch(args, override = v:false) abort
         return -1
     endif
 
+    let g:ctrlsf_pwd = getcwd()
+
     call ctrlsf#profile#Sample("StartSearch")
     if g:ctrlsf_search_mode ==# 'sync'
         call s:DoSearchSync(a:args)
@@ -426,21 +428,28 @@ func! s:OpenFileInWindow(file, lnum, col, mode, split) abort
         endif
     endif
 
+    let file_path = ''
+    if isabsolutepath(a:file)
+      let file_path = a:file
+    else
+      let file_path = g:ctrlsf_pwd . '/' . a:file
+    endif
+
     let target_winnr = ctrlsf#win#FindTargetWindow(a:file)
     if target_winnr == 0
-        exec 'silent split ' . fnameescape(a:file)
+        exec 'silent split ' . fnameescape(file_path)
     else
         exec target_winnr . 'wincmd w'
 
         if bufname('%') !=# a:file
             if a:split || (&modified && !&hidden)
                 if a:split == 2
-                    exec 'silent vertical split ' . fnameescape(a:file)
+                    exec 'silent vertical split ' . fnameescape(file_path)
                 else
-                    exec 'silent split ' . fnameescape(a:file)
+                    exec 'silent split ' . fnameescape(file_path)
                 endif
             else
-                exec 'silent edit ' . fnameescape(a:file)
+                exec 'silent edit ' . fnameescape(file_path)
             endif
         endif
     endif
@@ -484,13 +493,20 @@ endf
 func! s:PreviewFile(file, lnum, col, follow) abort
     call ctrlsf#preview#OpenPreviewWindow()
 
-    if !exists('b:ctrlsf_file') || empty(b:ctrlsf_file) || b:ctrlsf_file !=# a:file
-        let b:ctrlsf_file = a:file
+    let file_path = ''
+    if isabsolutepath(a:file)
+      let file_path = a:file
+    else
+      let file_path = g:ctrlsf_pwd . '/' . a:file
+    endif
 
-        call ctrlsf#buf#WriteFile(a:file)
+    if !exists('b:ctrlsf_file') || empty(b:ctrlsf_file) || b:ctrlsf_file !=# file_path
+        let b:ctrlsf_file = file_path
+
+        call ctrlsf#buf#WriteFile(file_path)
 
         " trigger filetypedetect (syntax highlight)
-        exec 'doau filetypedetect BufRead ' . fnameescape(a:file)
+        exec 'doau filetypedetect BufRead ' . fnameescape(file_path)
     endif
 
     call ctrlsf#win#MoveCursorCentral(a:lnum, a:col)
