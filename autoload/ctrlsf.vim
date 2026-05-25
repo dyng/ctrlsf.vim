@@ -451,6 +451,9 @@ func! s:OpenFileInWindow(file, lnum, col, mode, split) abort
             else
                 exec 'silent edit ' . fnameescape(file_path)
             endif
+        else
+            " Because we dont change any context, we have to set jump mark manualy.
+            mark '
         endif
     endif
 
