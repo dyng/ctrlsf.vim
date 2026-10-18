@@ -82,7 +82,7 @@ func! ctrlsf#utils#Nunmap(map, act_func_ref) abort
             let m = a:map[act]
             if type(m['key']) == 1
                 exec "nunmap <silent><buffer> " . m['key']
-            elseif type(a:map[act]) == 3
+            elseif type(m['key']) == 3
                 for key in m['key']
                     exec "nunmap <silent><buffer> " . key
                 endfo
